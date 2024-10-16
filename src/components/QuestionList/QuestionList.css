@@ -31,6 +31,10 @@
 	text-align: center;
 }
 
+.correct-answers-text > span {
+	color: #4CBB17;
+}
+
 /* Media Queries */
 
 @media screen and (max-width: 770px) {

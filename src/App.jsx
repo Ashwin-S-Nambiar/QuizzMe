@@ -10,7 +10,8 @@ const App = () => {
 		{
 			category: "",
 			difficulty: "",
-			type: ""
+			type: "",
+			questionno: 5
 		}
 	);
 	const [showFooter, setShowFooter] = useState(true);
@@ -130,6 +131,23 @@ const App = () => {
 									<option value="">Any Type</option>
 									<option value="multiple">Multiple Choice</option>
 									<option value="boolean">True / False</option>
+								</select>
+							</div>
+							<div className="select-container">
+								<label className="custom-label" htmlFor="questionno">No. of questions:</label>
+
+								<select
+									name="questionno"
+									id="questionno"
+									className="custom-select"
+									value={gameOptions.questionno}
+									onChange={handleChange}
+								>
+									<option value="5">5</option>
+									<option value="10">10</option>
+									<option value="15">15</option>
+									<option value="20">20</option>
+									<option value="25">25</option>
 								</select>
 							</div>
 						</div>
