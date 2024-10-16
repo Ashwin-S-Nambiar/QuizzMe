@@ -76,11 +76,12 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		setIsGameOver(false);
 		handleGameStart();
 	}
-
+	let i = 0;
 	const questionElements = questionsArray.map(question => (
 		<Question
 			key={question.id}
 			id={question.id}
+			num={++i}
 			question={question.question}
 			correctAnswer={question.correct_answer}
 			incorrectAnswers={question.incorrect_answers}
