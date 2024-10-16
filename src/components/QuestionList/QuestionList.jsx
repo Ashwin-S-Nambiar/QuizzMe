@@ -10,6 +10,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 	const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
 	const [isGameOver, setIsGameOver] = useState(false);
 
+	const questionTotal = gameOptions.questionno;
 	const allQuestionsAnswered = questionsArray.every(question => question.selectedAnswer !== "");
 
 	useEffect(() => {
@@ -98,7 +99,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 			<div className="bottom-container">
 				{isGameOver &&
 					<h3 className="correct-answers-text">
-						You scored {correctAnswersCount}/10 correct answers!
+						You got <span>{correctAnswersCount}</span>/{questionTotal} correct answers!
 					</h3>
 				}
 
