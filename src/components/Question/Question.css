@@ -13,11 +13,15 @@
 	margin-bottom: 12px;
 }
 
+.question-text > span {
+	color: indianred;
+}
+
 .question-btn {
 	min-width: 65px;
 	min-height: 25px;
 	border: 0.8px solid #4D5B9E;
-	border-radius: 8px;
+	border-radius: 6px;
 	cursor: pointer;
 	font-size: 1rem;
 	font-family: "Inter", sans-serif;
