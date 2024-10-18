@@ -72,6 +72,8 @@
 	text-align: center;
 }
 
+/* Media Queries */
+
 @media screen and (max-width: 625px) {
 	.game-container {
 		position: static;

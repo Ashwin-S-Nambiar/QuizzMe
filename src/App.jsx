@@ -2,7 +2,6 @@ import { useState } from "react";
 import "./App.css";
 import QuestionList from "./components/QuestionList/QuestionList";
 
-
 const App = () => {
 	const [gameStarted, setGameStarted] = useState(false);
 	const [showNoQuestionsError, setShowNoQuestionsError] = useState(false);
