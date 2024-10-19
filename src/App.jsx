@@ -10,7 +10,7 @@ const App = () => {
 			category: "",
 			difficulty: "",
 			type: "",
-			questionno: 5
+			questionno: 1 //Default value for number of questions.
 		}
 	);
 	const [showFooter, setShowFooter] = useState(true);
@@ -142,6 +142,7 @@ const App = () => {
 									value={gameOptions.questionno}
 									onChange={handleChange}
 								>
+									<option value="1">1</option>
 									<option value="5">5</option>
 									<option value="10">10</option>
 									<option value="15">15</option>
