@@ -10,7 +10,7 @@ const App = () => {
 			category: "",
 			difficulty: "",
 			type: "",
-			questionno: 1 //Default value for number of questions.
+			questionno: 1
 		}
 	);
 	const [showFooter, setShowFooter] = useState(true);
