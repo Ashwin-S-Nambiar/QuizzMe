@@ -10,6 +10,7 @@
 - **React**
 - **[Nano ID](https://www.npmjs.com/package/nanoid)**
 - **[HTML-Entities](https://www.npmjs.com/package/html-entities)**
+- **[React-Confetti](https://www.npmjs.com/package/react-confetti)**
 
 ## 📸 Screenshots
 
