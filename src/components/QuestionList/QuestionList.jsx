@@ -66,7 +66,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 
 	const checkAnswers = () => {
 		if (allQuestionsAnswered) {
-			if (correctAnswersCount === questionTotal) {
+			if (correctAnswersCount == questionTotal) {
 				setFullScore(true);
 			}
 			setIsGameOver(true);
