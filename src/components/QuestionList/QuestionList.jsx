@@ -3,12 +3,15 @@ import { nanoid } from "nanoid";
 import "./QuestionList.css";
 import Question from "../Question/Question";
 import getQuestions from "../../services/getQuestions";
+import Confetti from "react-confetti";
+import useWindowSize from 'react-use/lib/useWindowSize';
 
 const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) => {
 	const [questionsArray, setQuestionsArray] = useState([]);
 	const [checkAnswerBtn, setCheckAnswerBtn] = useState(false);
 	const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
 	const [isGameOver, setIsGameOver] = useState(false);
+	const [fullScore,setFullScore] = useState(false);
 
 	const questionTotal = gameOptions.questionno;
 	const allQuestionsAnswered = questionsArray.every(question => question.selectedAnswer !== "");
@@ -63,6 +66,9 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 
 	const checkAnswers = () => {
 		if (allQuestionsAnswered) {
+			if (correctAnswersCount === questionTotal) {
+				setFullScore(true);
+			}
 			setIsGameOver(true);
 
 			setQuestionsArray(prevQuestionsArray => (
@@ -75,6 +81,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		setCheckAnswerBtn(false);
 		setIsGameOver(false);
 		handleGameStart();
+		setFullScore(false);
 	}
 	let i = 0;
 	const questionElements = questionsArray.map(question => (
@@ -93,27 +100,31 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		/>
 	));
 
+	const { width, height } = useWindowSize();
+
 	return (
-		<section className="questionList-container">
-			{questionElements}
+		<>	{fullScore && <Confetti width={width} height={height}/>}
+			<section className="questionList-container">
+				{questionElements}
 
-			<div className="bottom-container">
-				{isGameOver &&
-					<h3 className="correct-answers-text">
-						You got <span>{correctAnswersCount}</span>/{questionTotal} correct answers!
-					</h3>
-				}
+				<div className="bottom-container">
+					{isGameOver &&
+						<h3 className="correct-answers-text">
+							You got <span>{correctAnswersCount}</span>/{questionTotal} correct answers!
+						</h3>
+					}
 
-				<button
-					className={`btn-primary ${checkAnswerBtn
-												? "btn-check-answers"
-												: "btn-check-answers-disabled"}`}
-					onClick={isGameOver ? resetGame : checkAnswers}
-				>
-					{isGameOver ? "Play again" : "Check answers"}
-				</button>
-			</div>
-		</section>
+					<button
+						className={`btn-primary ${checkAnswerBtn
+													? "btn-check-answers"
+													: "btn-check-answers-disabled"}`}
+						onClick={isGameOver ? resetGame : checkAnswers}
+					>
+						{isGameOver ? "Play again" : "Check answers"}
+					</button>
+				</div>
+			</section>
+		</>	
 	);
 }
 

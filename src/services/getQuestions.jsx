@@ -4,7 +4,7 @@ const getQuestions = gameOptions => {
 	let categoryQueryParam = "";
 	let difficultyQueryParam = "";
 	let typeQueryParam = "";
-	let questionnoParam = 5;
+	let questionnoParam = 1;
 
 	if (category !== "")
 		categoryQueryParam = `&category=${category}`;
