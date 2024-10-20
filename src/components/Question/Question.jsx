@@ -41,7 +41,7 @@ const Question = props => {
 	);
 
 	return (
-		<article className="question-container">
+		<article className="question-container Question">
 			<div>
 				<h3 className="question-text"><span>Q{ props.num }.</span> { decode(props.question) }</h3>
 				<div className="answer-container">

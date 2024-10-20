@@ -20,9 +20,11 @@ const App = () => {
 	};
 
 	const handleGameStart = () => {
-		setGameStarted(prevState => !prevState);
 		toggleFooter();
-	}
+		setTimeout(() => {
+		  setGameStarted(prevState => !prevState);
+		}, 120);
+	  };
 
 	const handleNoQuestionsError = boolean => setShowNoQuestionsError(boolean);
 	

@@ -7,6 +7,18 @@ body {
 	font-family: "Karla", sans-serif;
 }
 
+::-webkit-scrollbar {
+	width: 7px;
+}
+
+::-webkit-scrollbar-track {
+	background: #F5F7FB;
+}
+  
+::-webkit-scrollbar-thumb {
+	background: #4682B4;
+}
+
 main {
 	position: relative;
 	min-height: 100vh;
@@ -45,12 +57,14 @@ footer {
 	cursor: pointer;
 	z-index: 100;
 	user-select: none;
-	transition: background-color 0.3s ease-in-out;
-	&:hover{
+	transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease-in-out;
+	&:hover {
 		background-color: #4682B4;
+		transform: translateY(-3px);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	}
-}
-
-.btn-primary:active {
-	box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.75) inset;
+	&:active {
+		transform: translateY(-1px);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	  }
 }
