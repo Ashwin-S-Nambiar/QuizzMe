@@ -36,15 +36,18 @@ footer {
 	background-color: #4D5B9E;
 	color: #F5F7FB;
 	font-family: "Inter", sans-serif;
-	font-weight: 500;
+	font-weight: 600;
 	font-size: 1em;
 	border-radius: 8px;
 	width: 190px;
 	height: 50px;
-	border: 0;
+	border: none;
 	cursor: pointer;
 	z-index: 100;
 	user-select: none;
+	&:hover{
+		background-color: #4682B4;
+	}
 }
 
 .btn-primary:active {

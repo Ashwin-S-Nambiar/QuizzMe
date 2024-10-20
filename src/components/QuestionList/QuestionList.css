@@ -12,6 +12,9 @@
 	align-self: center;
 	opacity: 50%;
 	cursor: not-allowed;
+	&:hover {
+		background-color: #4D5B9E;
+	}
 }
 
 .btn-check-answers-disabled:active {
