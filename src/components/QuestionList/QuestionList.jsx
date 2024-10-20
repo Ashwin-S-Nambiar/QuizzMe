@@ -12,9 +12,18 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 	const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
 	const [isGameOver, setIsGameOver] = useState(false);
 	const [fullScore,setFullScore] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const questionTotal = gameOptions.questionno;
 	const allQuestionsAnswered = questionsArray.every(question => question.selectedAnswer !== "");
+
+	const generateQuestionStyles = () => {
+		let styles = '';
+		for (let i = 1; i <= questionTotal; i++) {
+		  styles += `.Question:nth-child(${i}) { animation-delay: ${i * 0.1}s; }\n`;
+		}
+		return styles;
+	};
 
 	useEffect(() => {
 		getQuestions(gameOptions).then(questions => {
@@ -26,16 +35,18 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 				handleNoQuestionsError(false);
 			}
 
-			return setQuestionsArray(questions.map(question => {
+			setQuestionsArray(questions.map(question => {
 				return {
-					...question,
-					id: nanoid(),
-					selectedAnswer: "",
-					showAnswer: false
+				  ...question,
+				  id: nanoid(),
+				  selectedAnswer: "",
+				  showAnswer: false
 				}
-			}));
-		});
-	}, []);
+			  }));
+			  
+			  setTimeout(() => setIsLoading(false), 100);
+			});
+		  }, []);
 
 	useEffect(() => {
 		if (questionsArray.length !== 0 && allQuestionsAnswered) {
@@ -104,7 +115,9 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 
 	return (
 		<>	{fullScore && <Confetti width={width} height={height}/>}
+			{!isLoading && (
 			<section className="questionList-container">
+				<style>{generateQuestionStyles()}</style>
 				{questionElements}
 
 				<div className="bottom-container">
@@ -124,6 +137,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 					</button>
 				</div>
 			</section>
+			)}
 		</>	
 	);
 }
