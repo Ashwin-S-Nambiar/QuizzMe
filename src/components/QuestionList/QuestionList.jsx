@@ -11,20 +11,12 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 	const [checkAnswerBtn, setCheckAnswerBtn] = useState(false);
 	const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
 	const [isGameOver, setIsGameOver] = useState(false);
-	const [fullScore,setFullScore] = useState(false);
+	const [showConfetti, setShowConfetti] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [pageHeight, setPageHeight] = useState(document.documentElement.scrollHeight);
 
 	const questionTotal = gameOptions.questionno;
 	const allQuestionsAnswered = questionsArray.every(question => question.selectedAnswer !== "");
-
-	const generateQuestionStyles = () => {
-		let styles = '';
-		for (let i = 1; i <= questionTotal; i++) {
-		  styles += `.Question:nth-child(${i}) { animation-delay: ${i * 0.1}s; }\n`;
-		}
-		return styles;
-	};
 
 	useEffect(() => {
         const handleResize = () => {
@@ -77,6 +69,24 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		}
 	}, [questionsArray]);
 
+	useEffect(() => {
+		if (showConfetti) {
+			const timer = setTimeout(() => {
+				setShowConfetti(false);
+			}, 8000);
+	
+			return () => clearTimeout(timer);
+		}
+	}, [showConfetti]);
+
+	const generateQuestionStyles = () => {
+		let styles = '';
+		for (let i = 1; i <= questionTotal; i++) {
+		  styles += `.Question:nth-child(${i}) { animation-delay: ${i * 0.1}s; }\n`;
+		}
+		return styles;
+	};
+
 	const handleSelectAnswer = (questionId, answer) => {
 		if (!isGameOver) {
 			setQuestionsArray(prevQuestionsArray => (
@@ -91,10 +101,11 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 
 	const checkAnswers = () => {
 		if (allQuestionsAnswered) {
-			if (correctAnswersCount == questionTotal) {
-				setFullScore(true);
-			}
 			setIsGameOver(true);
+
+			if (correctAnswersCount == questionTotal) {
+                setShowConfetti(true);
+            }
 
 			setQuestionsArray(prevQuestionsArray => (
 				prevQuestionsArray.map(question => ({...question, showAnswer: true }))
@@ -108,6 +119,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		handleGameStart();
 		setFullScore(false);
 	}
+
 	let i = 0;
 	const questionElements = questionsArray.map(question => (
 		<Question
@@ -129,7 +141,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 
 	return (
 		<>	
-			{fullScore && <Confetti width={width} height={pageHeight}/>}
+			{showConfetti && <Confetti width={width} height={pageHeight}/>}
 			{!isLoading && (
 				<section className="questionList-container">
 					<style>{generateQuestionStyles()}</style>
