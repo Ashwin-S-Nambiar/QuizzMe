@@ -1,6 +1,6 @@
 # 💬 QuizzMe! - A Quiz Platform
 
-**Deployed Link:**
+**Deployed Link: https://quizz-me.vercel.app/**
 
 ***`QuizzMe!` is a quiz taking platform that uses questions from [Open Trivia DB](https://opentdb.com/api_config.php). The website initially presents the user with a selection form, using which the user is able to select the `Category`, `Difficulty`, `Type` and `Number of Questions` accordingly. On clicking the `Start Quiz` button the questions are loaded on the screen. If the user has not selected any options and clicked `Start Quiz` button then the values for the selection will be the default ones that is `Any` which can give you a wide range of questions.***
 
