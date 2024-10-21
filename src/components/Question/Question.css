@@ -1,5 +1,5 @@
 .question-container {
-	padding-bottom: 10px;
+	padding: 1em;
 	margin-bottom: 1em;
 	border-bottom: 0.8px solid #DBDEF0;
 	display: flex;
