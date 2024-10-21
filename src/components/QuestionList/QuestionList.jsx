@@ -13,6 +13,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 	const [isGameOver, setIsGameOver] = useState(false);
 	const [fullScore,setFullScore] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [pageHeight, setPageHeight] = useState(document.documentElement.scrollHeight);
 
 	const questionTotal = gameOptions.questionno;
 	const allQuestionsAnswered = questionsArray.every(question => question.selectedAnswer !== "");
@@ -24,6 +25,21 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		}
 		return styles;
 	};
+
+	useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(document.documentElement.scrollHeight);
+        };
+
+        // Track window resize and scroll height changes
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('scroll', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('scroll', handleResize);
+        };
+    }, []);
 
 	useEffect(() => {
 		getQuestions(gameOptions).then(questions => {
@@ -111,10 +127,10 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		/>
 	));
 
-	const { width, height } = useWindowSize();
+	const { width } = useWindowSize();
 
 	return (
-		<>	{fullScore && <Confetti width={width} height={height}/>}
+		<>	{fullScore && <Confetti width={width} height={pageHeight}/>}
 			{!isLoading && (
 			<section className="questionList-container">
 				<style>{generateQuestionStyles()}</style>
