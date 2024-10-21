@@ -5,6 +5,7 @@ body {
 	background-image: url(./assets/images/nnnoise.svg);
 	color: #293264;
 	font-family: "Karla", sans-serif;
+	overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
