@@ -61,7 +61,7 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 			  
 			  setTimeout(() => setIsLoading(false), 100);
 			});
-		  }, []);
+	}, []);
 
 	useEffect(() => {
 		if (questionsArray.length !== 0 && allQuestionsAnswered) {
@@ -76,7 +76,6 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 			setCheckAnswerBtn(true);
 		}
 	}, [questionsArray]);
-
 
 	const handleSelectAnswer = (questionId, answer) => {
 		if (!isGameOver) {
@@ -129,30 +128,32 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 	const { width } = useWindowSize();
 
 	return (
-		<>	{fullScore && <Confetti width={width} height={pageHeight}/>}
+		<>	
+			{fullScore && <Confetti width={width} height={pageHeight}/>}
 			{!isLoading && (
-			<section className="questionList-container">
-				<style>{generateQuestionStyles()}</style>
-				{questionElements}
+				<section className="questionList-container">
+					<style>{generateQuestionStyles()}</style>
+					{questionElements}
 
-				<div className="bottom-container">
-					{isGameOver &&
-						<h3 className="correct-answers-text">
-							You got <span>{correctAnswersCount}</span>/{questionTotal} correct answers!
-						</h3>
-					}
+					<div className="bottom-container">
+						{isGameOver &&
+							<h3 className="correct-answers-text">
+								You got <span>{correctAnswersCount}</span>/{questionTotal} correct answers!
+							</h3>
+						}
 
-					<button
-						className={`btn-primary ${checkAnswerBtn
-													? "btn-check-answers"
-													: "btn-check-answers-disabled"}`}
-						onClick={isGameOver ? resetGame : checkAnswers}
-					>
-						{isGameOver ? "Play again" : "Check answers"}
-					</button>
-				</div>
-			</section>
-			)}
+						<button
+							className={`btn-primary ${checkAnswerBtn
+														? "btn-check-answers"
+														: "btn-check-answers-disabled"}`}
+							onClick={isGameOver ? resetGame : checkAnswers}
+						>
+							{isGameOver ? "Play again" : "Check answers"}
+						</button>
+					</div>
+				</section>
+				)
+			}
 		</>	
 	);
 }
