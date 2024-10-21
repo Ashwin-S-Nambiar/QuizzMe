@@ -31,7 +31,6 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
             setPageHeight(document.documentElement.scrollHeight);
         };
 
-        // Track window resize and scroll height changes
         window.addEventListener('resize', handleResize);
         window.addEventListener('scroll', handleResize);
 

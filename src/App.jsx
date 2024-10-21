@@ -59,7 +59,7 @@ const App = () => {
 
 						{showNoQuestionsError &&
 							<h2 className="noQuestions-text">
-								Oops! We couldn't find any questions with these options!
+								Oops! couldn't find any questions with these options!
 							</h2>
 						}
 
