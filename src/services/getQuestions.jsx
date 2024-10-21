@@ -1,4 +1,4 @@
-const getQuestions = gameOptions => {
+const getQuestions = async gameOptions => {
 	const { category, difficulty, type, questionno } = gameOptions;
 
 	let categoryQueryParam = "";
@@ -20,9 +20,9 @@ const getQuestions = gameOptions => {
 
 	let apiUrl = `https://opentdb.com/api.php?amount=${questionnoParam}${categoryQueryParam}${difficultyQueryParam}${typeQueryParam}`;
 
-	return fetch(apiUrl)
-		.then(res => res.json())
-		.then(data => data.results);
+	const res = await fetch(apiUrl);
+	const data = await res.json();
+	return data.results;
 }
 
 export default getQuestions;
