@@ -50,13 +50,13 @@
 	width: 100%;
 	height: 3em;
 	padding: 0 1em;
-	color: #293264;
+	color: var(--text-color-1);
 	border-radius: 0.25em;
 	box-shadow: 0 0 0.6em 0 rgba(0, 0, 0, 0.2);
 	cursor: pointer;
 	transition: border-color 0.3s ease, box-shadow 0.3s ease;
 	&:focus {
-		border-color: #007bff;
+		border-color: var(--border-color);
 		box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 	}
 }
@@ -72,6 +72,24 @@
 .noQuestions-text {
 	margin-bottom: 1.5em;
 	text-align: center;
+}
+
+.theme-toggle {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	margin: 0.5em 1em;
+	background: none;
+	color: var(--text-color);
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: color 0.3s ease-in-out;
+}
+
+.theme-toggle > svg {
+	fill: var(--text-color);
+	transition: fill 0.3s ease-in-out;
 }
 
 /* Media Queries */
@@ -137,6 +155,10 @@
 	}
   }
   
+  .theme-toggle {
+	animation: slideIn 0.8s ease-out;
+  }
+
   .game-intro {
 	animation: fadeIn 0.8s ease-out;
   }
