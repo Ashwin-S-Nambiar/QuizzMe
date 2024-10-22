@@ -45,15 +45,6 @@
 		width: 80vw;
 		margin: 4em auto 2em auto;
 	}
-	.theme-toggle {
-		margin-top: 3em;
-	}
-}
-
-@media screen and (min-width: 625px) and (max-width: 641px) {
-	.theme-toggle {
-		margin-top: -3em;
-	}
 }
 
 @media screen and (max-width: 500px) {
@@ -65,11 +56,7 @@
 		font-size: 1em;
 		margin-right: 1em;
 	}
-	.theme-toggle {
-		margin-top: 3em;
-	}
 }
-
 
 /* Animations */
 
@@ -84,7 +71,7 @@
 	}
   }
   
-  @keyframes scaleIn {
+@keyframes scaleIn {
 	from {
 	  opacity: 0;
 	  transform: scale(0.95);
@@ -93,31 +80,32 @@
 	  opacity: 1;
 	  transform: scale(1);
 	}
-  }
+}
 
-  .questionList-container {
+.questionList-container {
 	animation: fadeInUp 0.8s ease-out;
-  }
+}
   
-  .Question {
+.Question {
 	animation: scaleIn 0.6s ease-out both;
 	transition: all 0.3s ease;
-  }
+	border-radius: 6px;
+}
   
-  .Question:hover {
+.Question:hover {
 	transform: translateY(-3px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+	box-shadow: var(--box-shadow-ques);
+}
   
-  .bottom-container {
+.bottom-container {
 	animation: fadeInUp 0.8s ease-out 0.3s both;
-  }
+}
   
-  .correct-answers-text {
+.correct-answers-text {
 	animation: scaleIn 0.6s ease-out;
-  }
+}
   
-  .correct-answers-text span {
+.correct-answers-text span {
 	display: inline-block;
 	animation: scaleIn 0.6s ease-out 0.3s both;
-  }
+}

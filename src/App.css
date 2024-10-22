@@ -78,18 +78,73 @@
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	margin: 0.5em 1em;
-	background: none;
-	color: var(--text-color);
+	margin: 1em;
 	border: none;
-	border-radius: 50%;
 	cursor: pointer;
-	transition: color 0.3s ease-in-out;
+	color: var(--text-color);
+	padding: 8px;
+	border-radius: 50%;
+	transition: transform 0.3s ease, background-color 0.3s ease;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--box-shdow-toggle);
+	transition: transform 0.4s ease-in-out;
 }
 
-.theme-toggle > svg {
+.theme-toggle:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+	transform: scale(1.1);
+}
+
+.theme-toggle:active {
+	transform:rotate(180deg);
+}
+  
+.dark .theme-toggle:hover {
+	background-color: transparent;
+}
+  
+.theme-toggle svg {
 	fill: var(--text-color);
 	transition: fill 0.3s ease-in-out;
+	position: absolute;
+	transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+  
+.dark .theme-toggle .feather-sun {
+	transform: rotate(90deg) scale(1);
+	opacity: 1;
+}
+  
+.theme-toggle .feather-sun {
+	transform: rotate(-90deg) scale(0);
+	opacity: 0;
+}
+  
+.dark .theme-toggle .feather-moon {
+	transform: rotate(90deg) scale(0);
+	opacity: 0;
+}
+  
+.theme-toggle .feather-moon {
+	transform: rotate(0) scale(1);
+	opacity: 1;
+}
+  
+.theme-toggle svg * {
+	transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+}
+  
+.theme-toggle:focus {
+	outline: 2px solid var(--primary-color, #007bff);
+	outline-offset: 2px;
+}
+  
+.theme-toggle:focus:not(:focus-visible) {
+	outline: none;
 }
 
 /* Media Queries */
@@ -120,6 +175,19 @@
 	}
 }
 
+@media screen and (max-height: 800px) and (orientation: landscape) {
+	.game-container {
+		position: static;
+		top: unset;
+		left: unset;
+		transform: none;
+		padding: 2em 0;
+		width: 700px;
+		margin-right: auto;
+		margin-left: auto;
+	}
+}
+
 /* Animations */
 
 @keyframes fadeIn {
@@ -133,7 +201,7 @@
 	}
   }
   
-  @keyframes scaleIn {
+@keyframes scaleIn {
 	from {
 	  opacity: 0;
 	  transform: scale(0.9);
@@ -142,9 +210,9 @@
 	  opacity: 1;
 	  transform: scale(1);
 	}
-  }
+}
   
-  @keyframes slideIn {
+@keyframes slideIn {
 	from {
 	  opacity: 0;
 	  transform: translateX(-50px);
@@ -153,47 +221,32 @@
 	  opacity: 1;
 	  transform: translateX(0);
 	}
-  }
+}
   
-  .theme-toggle {
+.theme-toggle {
 	animation: slideIn 0.8s ease-out;
-  }
+}
 
-  .game-intro {
+.game-intro {
 	animation: fadeIn 0.8s ease-out;
-  }
+}
   
-  .game-title {
+.game-title {
 	animation: scaleIn 1s ease-out;
-  }
+}
   
-  .game-text {
+.game-text {
 	animation: fadeIn 1s ease-out 0.3s both;
-  }
+}
   
-  .gameOptions-container {
+.gameOptions-container {
 	animation: fadeIn 1s ease-out 0.5s both;
-  }
+}
   
-  .game-container {
+.game-container {
 	animation: slideIn 0.8s ease-out;
-  }
+}
   
-  footer {
+footer {
 	animation: fadeIn 1s ease-out 1s both;
-  }
-
-/* Media Queries */
-
-@media screen and (max-height: 800px) and (orientation: landscape) {
-	.game-container {
-		position: static;
-		top: unset;
-		left: unset;
-		transform: none;
-		padding: 2em 0;
-		width: 700px;
-		margin-right: auto;
-		margin-left: auto;
-	}
 }

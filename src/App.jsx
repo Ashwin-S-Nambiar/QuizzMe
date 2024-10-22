@@ -71,6 +71,7 @@ const App = () => {
 
 	const handleGameStart = () => {
 		toggleFooter();
+		document.getElementById("theme").style.display= "none";
 		setTimeout(() => {
 		  setGameStarted(prevState => !prevState);
 		}, 120);
@@ -96,7 +97,7 @@ const App = () => {
 
 	return (
 		<main>
-			<button className="theme-toggle" onClick={toggleTheme}>
+			<button aria-label="Theme Toggler" id="theme" className="theme-toggle" onClick={toggleTheme}>
         		{darkTheme ? <SunIcon /> : <MoonIcon />}
       		</button>
 			
