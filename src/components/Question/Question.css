@@ -15,6 +15,7 @@
 
 .question-text > span {
 	color: var(--ques-text);
+	transition: color 0.4s ease-in-out;
 }
 
 .question-btn {

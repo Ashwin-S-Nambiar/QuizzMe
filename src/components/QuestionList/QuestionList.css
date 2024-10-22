@@ -45,6 +45,15 @@
 		width: 80vw;
 		margin: 4em auto 2em auto;
 	}
+	.theme-toggle {
+		margin-top: 3em;
+	}
+}
+
+@media screen and (min-width: 625px) and (max-width: 641px) {
+	.theme-toggle {
+		margin-top: -3em;
+	}
 }
 
 @media screen and (max-width: 500px) {
@@ -55,6 +64,9 @@
 	.correct-answers-text {
 		font-size: 1em;
 		margin-right: 1em;
+	}
+	.theme-toggle {
+		margin-top: 3em;
 	}
 }
 
@@ -82,7 +94,7 @@
 	  transform: scale(1);
 	}
   }
-  
+
   .questionList-container {
 	animation: fadeInUp 0.8s ease-out;
   }
