@@ -1,9 +1,35 @@
+:root {
+	--url: url("./assets/images/nnnoise.svg");
+	--text-color: #293264;
+	--text-color-1: #293264;
+	--text-color-alt: #4D5B9E;
+	--border-color: #007bff;
+	--color-green: #4CBB17;
+	--ques-bottom-color: #DBDEF0;
+	--ques-text: indianred;
+	--ques-btn-bg-color: #F5F7FB;
+	--ques-btn-border-color: #4D5B9E;
+	--ques-btn-selected: #B6D0E2;
+	--ques-btn-correct: #94D7A2;
+	--ques-btn-incorrect: #f86e6e;
+	--scroll-thumb: #4682B4;
+	--scroll-track: #F5F7FB;
+}
+
+.dark {
+	--url: url("./assets/images/nnnoise-2.svg");
+	--text-color: #FFFF;
+	--text-color-alt: #BF40BF;
+	--ques-text: #c0b2f8;
+	--border-color: #c0b2f8;
+}
+
 body {
 	margin: 0;
 	min-width: 320px;
 	box-sizing: border-box;
-	background-image: url(./assets/images/nnnoise.svg);
-	color: #293264;
+	background-image: var(--url);
+	color: var(--text-color);
 	font-family: "Karla", sans-serif;
 	overflow-x: hidden;
 }
@@ -14,11 +40,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-	background: #F5F7FB;
+	background: var(--scroll-track);
 }
   
 ::-webkit-scrollbar-thumb {
-	background: #4682B4;
+	background: var(--scroll-thumb);
 }
 
 main {
@@ -35,7 +61,7 @@ img {
 }
 
 footer {
-	color: #293264;
+	color: var(--text-color);
 	text-align: center;
 	padding: 2em 0;
 	width: 200px;
@@ -46,9 +72,13 @@ footer {
 	user-select: none;
 }
 
+footer > a {
+	color: var(--ques-text);
+}
+
 .btn-primary {
-	background-color: #4D5B9E;
-	color: #F5F7FB;
+	background-color: var(--text-color-alt);
+	color: var(--ques-btn-bg-color);
 	font-family: "Inter", sans-serif;
 	font-weight: 600;
 	font-size: 1em;
@@ -61,7 +91,7 @@ footer {
 	user-select: none;
 	transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease-in-out;
 	&:hover {
-		background-color: #4682B4;
+		background-color: var(--border-color);
 		transform: translateY(-3px);
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	}
