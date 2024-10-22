@@ -109,7 +109,7 @@
   
 .theme-toggle svg {
 	fill: var(--text-color);
-	transition: fill 0.3s ease-in-out;
+	transition: fill 0.2s ease-in-out;
 	position: absolute;
 	transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -148,6 +148,12 @@
 }
 
 /* Media Queries */
+
+@media screen and (min-width: 600px) {
+	.theme-toggle {
+		position: fixed;
+	}
+}
 
 @media screen and (max-width: 625px) {
 	.game-container {
