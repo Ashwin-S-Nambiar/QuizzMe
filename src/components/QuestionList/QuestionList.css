@@ -13,7 +13,7 @@
 	opacity: 50%;
 	cursor: not-allowed;
 	&:hover {
-		background-color: #4D5B9E;
+		background-color: var(--text-color-alt);
 	}
 }
 
@@ -35,7 +35,7 @@
 }
 
 .correct-answers-text > span {
-	color: #4CBB17;
+	color: var(--color-green);
 }
 
 /* Media Queries */
@@ -44,6 +44,15 @@
 	.questionList-container {
 		width: 80vw;
 		margin: 4em auto 2em auto;
+	}
+	.theme-toggle {
+		margin-top: 3em;
+	}
+}
+
+@media screen and (min-width: 625px) and (max-width: 641px) {
+	.theme-toggle {
+		margin-top: -3em;
 	}
 }
 
@@ -55,6 +64,9 @@
 	.correct-answers-text {
 		font-size: 1em;
 		margin-right: 1em;
+	}
+	.theme-toggle {
+		margin-top: 3em;
 	}
 }
 
@@ -82,7 +94,7 @@
 	  transform: scale(1);
 	}
   }
-  
+
   .questionList-container {
 	animation: fadeInUp 0.8s ease-out;
   }
