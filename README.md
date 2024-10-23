@@ -57,7 +57,8 @@
 ![QuizzMe!-Questions-Page-Answers-Selected](https://github.com/user-attachments/assets/fd76e81b-88fb-4f55-98ff-0e212ff6d5fd)
 <div align="center">
   <h2>Score Reveal - Perfect Answers</h2>
-  <img src="https://github.com/user-attachments/assets/437852db-0308-4b42-822c-6c40fa1ae2df" />
+  
+  https://github.com/user-attachments/assets/91fb544e-4143-4b62-b823-b83ab8bb8411
 </div>
 
 <div align="center">
@@ -69,19 +70,19 @@
   <h2>💫Animations</h2>
   <h3>Landing Page</h3>
   
-  ![Landing-Animation](https://github.com/user-attachments/assets/b74c300d-9acf-4118-a769-148c6397bc16)
+  https://github.com/user-attachments/assets/305f3d04-637e-4fa2-b516-c299e83bf50f
   <h3>Theme Switching</h3>
 
-  ![Theme-Switching-1](https://github.com/user-attachments/assets/da456c87-0354-46ac-9bf5-e703cc8f83fb)
+  https://github.com/user-attachments/assets/72a4fa99-1771-4c9a-85cd-5e58a33fcc91
   
-  ![Theme-Switching-2](https://github.com/user-attachments/assets/abd664b6-f9d1-4bd9-a303-08f7ec0a69d6)
+  https://github.com/user-attachments/assets/3c16d8a6-290a-4e59-a909-abfea60f4e43
   <h3>Questions Page</h3>
 
-  ![Questions-Animation](https://github.com/user-attachments/assets/38763bbc-2dd5-4fa8-b4e4-215f685996ca)
+  https://github.com/user-attachments/assets/4b049b95-7365-490a-a179-0a7770a1947f
 
-  ![Questions-Hover-Animation](https://github.com/user-attachments/assets/84fda374-aa9e-4c20-9e94-a527c9cb07b3)
+  https://github.com/user-attachments/assets/a146fc9e-9ac5-4aa0-a59c-83adc645e663
 
-  ![Questions-Hover-Animation (1)](https://github.com/user-attachments/assets/8430a1af-9543-4f09-be28-ed688f56f5ce)
+  https://github.com/user-attachments/assets/ed5f5990-b43d-475e-a28b-1e82b891f6a1
 </div>
 
 ## 👷‍♂️ Author
