@@ -84,7 +84,7 @@
 	color: var(--text-color);
 	padding: 8px;
 	border-radius: 50%;
-	transition: transform 0.3s ease, background-color 0.3s ease;
+	transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease-in-out;
 	width: 40px;
 	height: 40px;
 	display: flex;
@@ -92,26 +92,28 @@
 	justify-content: center;
 	background-color: var(--box-shdow-toggle);
 	transition: transform 0.4s ease-in-out;
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.2);
+		transform: scale(1.1);
+		color: var(--text-clr-opt);
+	}
+	&:active {
+		transform:rotate(180deg);
+	}
 }
 
-.theme-toggle:hover {
-	background-color: rgba(255, 255, 255, 0.2);
-	transform: scale(1.1);
-}
-
-.theme-toggle:active {
-	transform:rotate(180deg);
-}
-  
 .dark .theme-toggle:hover {
 	background-color: transparent;
 }
   
 .theme-toggle svg {
 	fill: var(--text-color);
-	transition: fill 0.2s ease-in-out;
+	transition: fill 0.4s ease-in-out;
 	position: absolute;
 	transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+	&:hover {
+		fill: var(--text-clr-opt);
+	}
 }
   
 .dark .theme-toggle .feather-sun {
