@@ -91,7 +91,7 @@
 	align-items: center;
 	justify-content: center;
 	background-color: var(--box-shdow-toggle);
-	transition: transform 0.4s ease-in-out;
+	transition: transform 0.2s;
 	&:hover {
 		background-color: rgba(255, 255, 255, 0.2);
 		transform: scale(1.1);
@@ -107,13 +107,8 @@
 }
   
 .theme-toggle svg {
-	fill: var(--text-color);
-	transition: fill 0.4s ease-in-out;
 	position: absolute;
 	transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-	&:hover {
-		fill: var(--text-clr-opt);
-	}
 }
   
 .dark .theme-toggle .feather-sun {
