@@ -108,3 +108,44 @@ footer > a {
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	}
 }
+
+/* Media Queries */
+
+@media (max-width: 768px) {
+	body {
+		will-change: background-image, color;
+		transition: 
+			background-image 1s ease-in-out,
+			color 0.3s ease-in-out;
+		transform: none; 
+		backface-visibility: visible; 
+	}
+
+	.theme-toggle {
+		position: fixed;
+		top: 0;
+		right: 0;
+		transform: none !important;
+		transition: none !important; 
+		margin: 0;
+		z-index: 9999;
+		pointer-events: auto;
+	}
+
+	body.dark,
+	body:not(.dark) {
+		background-image: var(--url);
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+	}
+
+	footer, 
+	.btn-primary {
+		will-change: color, background-color, transform;
+		transition: 
+			color 0.3s ease-in-out,
+			background-color 0.3s ease-in-out,
+			transform 0.3s ease-in-out;
+	}
+}
