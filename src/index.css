@@ -32,8 +32,12 @@
 body {
 	margin: 0;
 	min-width: 320px;
+	min-height: 100vh;
 	box-sizing: border-box;
 	background-image: var(--url);
+	background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 	color: var(--text-color);
 	transition: background-image 0.3s ease-in, color 0.3s ease-in-out;
 	font-family: "Karla", sans-serif;
@@ -76,6 +80,7 @@ footer {
 	left: 50%;
 	margin-left: -100px;
 	user-select: none;
+	background-color: transparent;
 	transition: color 0.3s ease-in-out;
 }
 
