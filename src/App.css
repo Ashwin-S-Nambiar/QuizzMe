@@ -96,9 +96,6 @@
 		transform: scale(1.1);
 		color: var(--text-clr-opt);
 	}
-	&:active {
-		transform:rotate(180deg);
-	}
 }
 
 .dark .theme-toggle:hover {
@@ -148,6 +145,9 @@
 @media screen and (min-width: 600px) {
 	.theme-toggle {
 		position: fixed;
+		&:active {
+			transform:rotate(180deg);
+		}
 	}
 }
 
