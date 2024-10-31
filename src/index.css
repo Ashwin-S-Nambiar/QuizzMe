@@ -1,5 +1,5 @@
 :root {
-	--url: url("./assets/images/nnnoise.svg");
+	--url: url("./assets/images/nnnoise.svg",#ffffff);
 	--text-color: #293264;
 	--text-color-1: #293264;
 	--text-color-alt: #4D5B9E;
@@ -20,7 +20,7 @@
 }
 
 .dark {
-	--url: url("./assets/images/nnnoise-2.svg");
+	--url: url("./assets/images/nnnoise-2.svg", #191919);
 	--text-color: #ffed76;
 	--text-color-alt: #BF40BF;
 	--ques-text: #c0b2f8;
