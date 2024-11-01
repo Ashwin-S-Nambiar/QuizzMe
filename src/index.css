@@ -32,12 +32,12 @@
 body {
 	margin: 0;
 	min-width: 320px;
-	min-height: 100vh;
+	min-height: 100dvh;
 	box-sizing: border-box;
 	background-image: var(--url);
 	background-size: cover;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-attachment: scroll;
 	color: var(--text-color);
 	transition: background-image 0.3s ease-in, color 0.3s ease-in-out;
 	font-family: "Karla", sans-serif;
@@ -121,7 +121,7 @@ footer > a {
 			background-image 0.3s ease-in-out,
 			color 0.3s ease-in-out;
 		transform: none; 
-		backface-visibility: visible; 
+		backface-visibility: hidden; 
 	}
 
 	.theme-toggle {
@@ -140,7 +140,7 @@ footer > a {
 		background-image: var(--url);
 		background-size: cover;
 		background-repeat: no-repeat;
-		background-attachment: fixed;
+		background-attachment: scroll;
 	}
 
 	footer, 
