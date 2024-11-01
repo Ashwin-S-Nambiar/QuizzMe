@@ -59,6 +59,7 @@ body {
 
 main {
 	position: relative;
+	transform: translateZ(0);
 }
 
 p, h1, h2, h3 {
@@ -120,7 +121,6 @@ footer > a {
 		transition: 
 			background-image 0.3s ease-in-out,
 			color 0.3s ease-in-out;
-		transform: none; 
 		backface-visibility: hidden; 
 	}
 
@@ -128,8 +128,6 @@ footer > a {
 		position: fixed;
 		top: 0;
 		right: 0;
-		transform: none !important;
-		transition: none !important; 
 		margin: 0;
 		z-index: 9999;
 		pointer-events: auto;

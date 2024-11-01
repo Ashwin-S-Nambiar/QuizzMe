@@ -76,11 +76,12 @@
 
 .theme-toggle {
 	position: absolute;
-	top: 0px;
-	right: 0px;
+	top: 0;
+	right: 0;
 	margin: 1em;
 	border: none;
 	cursor: pointer;
+	z-index: 9999;
 	color: var(--text-color);
 	padding: 8px;
 	border-radius: 50%;
