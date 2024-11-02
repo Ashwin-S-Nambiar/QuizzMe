@@ -95,10 +95,11 @@ const App = () => {
 	  };
 
 	return (
-		<main>
+		<>
 			<button aria-label="Theme Toggler" className="theme-toggle" onClick={toggleTheme}>
         		{darkTheme ? <SunIcon /> : <MoonIcon />}
       		</button>
+		<main>
 			
 			{
 				gameStarted
@@ -223,6 +224,7 @@ const App = () => {
 				</footer>
 			)}	
 		</main>
+		</>
 	);
 }
 
