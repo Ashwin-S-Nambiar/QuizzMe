@@ -8,7 +8,9 @@
 ***Once you select the answers for all the questions, then the `Check answers` button will be enabled and on clicking it you will be shown your score and if you have a perfect score then a `Confetti Animation` from `React-Confetti` package will be displayed and the `Check answers` button will change to `Play again` in order to restart the game. There is also a `theme toggle` button available in the top right corner which changes the theme from `light to dark` and vice-versa. It uses `localStorage` to store the theme so that the website is able to remember which theme was set last and shows that theme when opened again.*** 
 
 > [!NOTE]
-> ***The website is also responsive, done using `media queries` so the users will have no issues while accessing it on devices with varying screen sizes.***
+> ***The website is also responsive, which is done with the help of `media queries` so the users will have no issues while accessing it on devices with varying screen sizes.***
+> 
+> ***The animations and transitions are smooth and fluid for `Questions Page` and page transitions.***
 
 ## 🛠️ Tech Stack
 - **HTML5**
