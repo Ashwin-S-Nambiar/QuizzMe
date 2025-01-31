@@ -23,6 +23,13 @@
 - **[React-Use](https://www.npmjs.com/package/react-use)**
 - **[React-Confetti](https://www.npmjs.com/package/react-confetti)**
 
+##  ✨ Installation / Running
+1. Clone the repo from Github.
+2. Open the extracted zip in VS Code.
+3. In the VS Code terminal run `npm i && npm run dev`.
+4. That's it! , Now you can add your modifications/changes accordingly.
+5. Do suggest any improvements, fixes via PR. 
+
 ## 📸 Screenshots
 <div align="center">
   <h2>Landing Page</h2>
