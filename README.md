@@ -53,7 +53,7 @@ A quiz-taking platform that fetches questions from [Open Trivia DB](https://open
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help improve the Color Scheme Generator:
+Contributions are welcome! Here's how you can help improve QuizzMe! :
 
 1. Fork the repository
 2. Create a feature branch:
