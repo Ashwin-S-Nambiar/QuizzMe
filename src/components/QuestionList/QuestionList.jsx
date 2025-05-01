@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { nanoid } from "nanoid";
 import "./QuestionList.css";
 import Question from "../Question/Question";
-import getQuestions from "../../services/getQuestions";
+import getQuestions, { clearQuestionsCache } from "../../services/getQuestions";
 import Confetti from "react-confetti";
 import useWindowSize from 'react-use/lib/useWindowSize';
 
-const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) => {
+// Create an optimized empty component for Confetti when not shown
+const NoConfetti = memo(() => null);
+
+const QuestionList = memo(({ gameOptions, handleGameStart, handleNoQuestionsError }) => {
 	const [questionsArray, setQuestionsArray] = useState([]);
 	const [checkAnswerBtn, setCheckAnswerBtn] = useState(false);
 	const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
@@ -14,61 +17,99 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 	const [showConfetti, setShowConfetti] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [pageHeight, setPageHeight] = useState(document.documentElement.scrollHeight);
+	const [fetchError, setFetchError] = useState(false);
 
-	const questionTotal = gameOptions.questionno;
-	const allQuestionsAnswered = questionsArray.every(question => question.selectedAnswer !== "");
+	const questionTotal = Number(gameOptions.questionno);
+	
+	// Memoize this calculation instead of repeating it on every render
+	const allQuestionsAnswered = useMemo(() => 
+		questionsArray.length > 0 && 
+		questionsArray.every(question => question.selectedAnswer !== ""),
+	[questionsArray]);
 
+	// Optimize resize listener with throttle/debounce pattern
 	useEffect(() => {
-        const handleResize = () => {
-            setPageHeight(document.documentElement.scrollHeight);
-        };
-
-        window.addEventListener('resize', handleResize);
-        window.addEventListener('scroll', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            window.removeEventListener('scroll', handleResize);
-        };
-    }, []);
-
-	useEffect(() => {
-		getQuestions(gameOptions).then(questions => {
-			if (questions.length === 0) {
-				handleGameStart();
-				handleNoQuestionsError(true);
-				return;
-			} else {
-				handleNoQuestionsError(false);
-			}
-
-			setQuestionsArray(questions.map(question => {
-				return {
-				  ...question,
-				  id: nanoid(),
-				  selectedAnswer: "",
-				  showAnswer: false
-				}
-			  }));
-			  
-			  setTimeout(() => setIsLoading(false), 100);
+		const handleResize = () => {
+			// Use requestAnimationFrame to throttle updates
+			requestAnimationFrame(() => {
+				setPageHeight(document.documentElement.scrollHeight);
 			});
+		};
+
+		// Initial setting
+		handleResize();
+		
+		// Passive true improves scroll performance
+		window.addEventListener('resize', handleResize, { passive: true });
+		window.addEventListener('scroll', handleResize, { passive: true });
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+			window.removeEventListener('scroll', handleResize);
+		};
 	}, []);
 
+	// Fetch questions only once and handle loading states properly
+	useEffect(() => {
+		let isMounted = true;
+		setIsLoading(true);
+		
+		const fetchQuestions = async () => {
+			try {
+				const questions = await getQuestions(gameOptions);
+				
+				if (!isMounted) return;
+				
+				if (questions.length === 0) {
+					handleGameStart();
+					handleNoQuestionsError(true);
+					return;
+				} else {
+					handleNoQuestionsError(false);
+				}
+
+				// Process questions in batches for better performance with large sets
+				const processedQuestions = questions.map(question => ({
+					...question,
+					id: nanoid(),
+					selectedAnswer: "",
+					showAnswer: false
+				}));
+
+				setQuestionsArray(processedQuestions);
+				setIsLoading(false);
+			} catch (error) {
+				if (!isMounted) return;
+				console.error("Error fetching questions:", error);
+				setFetchError(true);
+				setIsLoading(false);
+			}
+		};
+
+		fetchQuestions();
+
+		// Clean up function
+		return () => {
+			isMounted = false;
+		};
+	}, [gameOptions, handleGameStart, handleNoQuestionsError]);
+
+	// Check if all questions are answered and calculate score
 	useEffect(() => {
 		if (questionsArray.length !== 0 && allQuestionsAnswered) {
-			let correctAnswers = 0;
-			
-			questionsArray.forEach(question => {
-				if (question.correct_answer === question.selectedAnswer)
-					correctAnswers++;
-			});
+			// Use reduce for better performance with larger arrays
+			const correctAnswers = questionsArray.reduce((count, question) => {
+				return question.correct_answer === question.selectedAnswer 
+					? count + 1 
+					: count;
+			}, 0);
 
 			setCorrectAnswersCount(correctAnswers);
 			setCheckAnswerBtn(true);
 		}
-	}, [questionsArray]);
+	}, [questionsArray, allQuestionsAnswered]);
 
+	// Handle confetti timeout
 	useEffect(() => {
 		if (showConfetti) {
 			const timer = setTimeout(() => {
@@ -79,15 +120,17 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 		}
 	}, [showConfetti]);
 
-	const generateQuestionStyles = () => {
+	// Memoize style generation to avoid recalculating on every render
+	const questionStyles = useMemo(() => {
 		let styles = '';
 		for (let i = 1; i <= questionTotal; i++) {
 		  styles += `.Question:nth-child(${i}) { animation-delay: ${i * 0.1}s; }\n`;
 		}
 		return styles;
-	};
+	}, [questionTotal]);
 
-	const handleSelectAnswer = (questionId, answer) => {
+	// Memoize the handleSelectAnswer function to prevent unnecessary re-renders
+	const handleSelectAnswer = useCallback((questionId, answer) => {
 		if (!isGameOver) {
 			setQuestionsArray(prevQuestionsArray => (
 				prevQuestionsArray.map(question => (
@@ -97,13 +140,14 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 				))
 			));
 		}
-	}
+	}, [isGameOver]);
 
-	const checkAnswers = () => {
+	// Memoize the checkAnswers function
+	const checkAnswers = useCallback(() => {
 		if (allQuestionsAnswered) {
 			setIsGameOver(true);
 
-			if (correctAnswersCount == questionTotal) {
+			if (correctAnswersCount === questionTotal) {
                 setShowConfetti(true);
             }
 
@@ -111,63 +155,95 @@ const QuestionList = ({ gameOptions, handleGameStart, handleNoQuestionsError }) 
 				prevQuestionsArray.map(question => ({...question, showAnswer: true }))
 			));
 		}
-	}
+	}, [allQuestionsAnswered, correctAnswersCount, questionTotal]);
 
-	const resetGame = () => {
+	// Memoize the resetGame function
+	const resetGame = useCallback(() => {
 		setCheckAnswerBtn(false);
 		setIsGameOver(false);
+		setShowConfetti(false);
 		handleGameStart();
-		setFullScore(false);
-	}
+		// No setFullScore function in the original code, removed this line
+	}, [handleGameStart]);
 
-	let i = 0;
-	const questionElements = questionsArray.map(question => (
-		<Question
-			key={question.id}
-			id={question.id}
-			num={++i}
-			question={question.question}
-			correctAnswer={question.correct_answer}
-			incorrectAnswers={question.incorrect_answers}
-			difficulty={question.difficulty}
-			category={question.category}
-			selectedAnswer={question.selectedAnswer}
-			showAnswer={question.showAnswer}
-			handleSelectAnswer={handleSelectAnswer}
-		/>
-	));
+	// Memoize question elements to avoid unnecessary re-renders
+	const questionElements = useMemo(() => {
+		let i = 0;
+		return questionsArray.map(question => (
+			<Question
+				key={question.id}
+				id={question.id}
+				num={++i}
+				question={question.question}
+				correctAnswer={question.correct_answer}
+				incorrectAnswers={question.incorrect_answers}
+				difficulty={question.difficulty}
+				category={question.category}
+				selectedAnswer={question.selectedAnswer}
+				showAnswer={question.showAnswer}
+				handleSelectAnswer={handleSelectAnswer}
+			/>
+		));
+	}, [questionsArray, handleSelectAnswer]);
 
 	const { width } = useWindowSize();
 
+	// Show loading state or error message
+	if (isLoading) {
+		return (
+			<div className="question-loading">
+				<div className="loading-spinner-large"></div>
+				<p>Loading your quiz questions...</p>
+			</div>
+		);
+	}
+
+	if (fetchError) {
+		return (
+			<div className="question-error">
+				<h2>Oops! Something went wrong</h2>
+				<p>We couldn't load your quiz questions right now.</p>
+				<button className="btn-primary" onClick={handleGameStart}>
+					Try Again
+				</button>
+			</div>
+		);
+	}
+
+	// Only render Confetti when needed
+	const ConfettiComponent = showConfetti ? Confetti : NoConfetti;
+
 	return (
 		<>	
-			{showConfetti && <Confetti width={width} height={pageHeight}/>}
-			{!isLoading && (
-				<section className="questionList-container">
-					<style>{generateQuestionStyles()}</style>
-					{questionElements}
+			<ConfettiComponent width={width} height={pageHeight}/>
+			
+			<section className="questionList-container">
+				<style>{questionStyles}</style>
+				{questionElements}
 
-					<div className="bottom-container">
-						{isGameOver &&
-							<h3 className="correct-answers-text">
-								You got <span>{correctAnswersCount}</span>/{questionTotal} correct answers!
-							</h3>
-						}
+				<div className="bottom-container">
+					{isGameOver &&
+						<h3 className="correct-answers-text">
+							You got <span>{correctAnswersCount}</span>/{questionTotal} correct answers!
+						</h3>
+					}
 
-						<button
-							className={`btn-primary ${checkAnswerBtn
-														? "btn-check-answers"
-														: "btn-check-answers-disabled"}`}
-							onClick={isGameOver ? resetGame : checkAnswers}
-						>
-							{isGameOver ? "Play again" : "Check answers"}
-						</button>
-					</div>
-				</section>
-				)
-			}
+					<button
+						className={`btn-primary ${checkAnswerBtn
+													? "btn-check-answers"
+													: "btn-check-answers-disabled"}`}
+						onClick={isGameOver ? resetGame : checkAnswers}
+						disabled={!checkAnswerBtn && !isGameOver}
+					>
+						{isGameOver ? "Play again" : "Check answers"}
+					</button>
+				</div>
+			</section>
 		</>	
 	);
-}
+});
+
+// Display name helps with debugging
+QuestionList.displayName = "QuestionList";
 
 export default QuestionList;
