@@ -257,6 +257,36 @@
 	}
 }
 
+/* API Error Message Styles */
+.api-error-message {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0.8rem 1.2rem;
+	margin-top: 2rem;
+	border-radius: 8px;
+	background-color: rgba(255, 59, 48, 0.15);
+	border: 1px solid var(--ques-btn-incorrect);
+	animation: scaleIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+	will-change: transform, opacity;
+	max-width: 550px;
+	width: 90%;
+}
+
+.api-error-message p {
+	color: var(--ques-btn-incorrect);
+	font-family: "Inter", sans-serif;
+	font-weight: 600;
+	font-size: 0.95rem;
+	text-align: center;
+	margin: 0;
+	line-height: 1.5;
+}
+
+.dark .api-error-message {
+	background-color: rgba(255, 59, 48, 0.1);
+}
+
 /* Dark theme overrides */
 .dark .api-status {
 	background-color: var(--bg-dark-secondary);
@@ -269,6 +299,16 @@
 		padding: 0.4rem 0.8rem;
 		margin-bottom: 1.2rem;
 		width: 90%;
+	}
+
+	.api-error-message {
+		width: 90%;
+		padding: 0.7rem 1rem;
+		margin-top: 1.5rem;
+	}
+	
+	.api-error-message p {
+		font-size: 0.85rem;
 	}
 }
 

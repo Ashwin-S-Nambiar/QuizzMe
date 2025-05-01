@@ -78,6 +78,15 @@ const ApiStatusIndicator = memo(({ status, message }) => {
 
 ApiStatusIndicator.displayName = 'ApiStatusIndicator';
 
+// API Error Message component
+const ApiErrorMessage = memo(() => (
+  <div className="api-error-message">
+    <p>Unable to fetch questions. The Open Trivia DB API appears to be down. Please try again later.</p>
+  </div>
+));
+
+ApiErrorMessage.displayName = 'ApiErrorMessage';
+
 // Category options for select menu
 const CATEGORY_OPTIONS = [
   { value: "", label: "Any Category" },
@@ -316,6 +325,9 @@ const App = () => {
 						</div>
 
 						<button className="btn-primary" onClick={handleGameStart}>Start Quiz</button>
+						
+						{/* API Error Message */}
+						{apiStatus.status === "offline" && <ApiErrorMessage />}
 					</section>
 				)}
 				{showFooter && <Footer />}	
