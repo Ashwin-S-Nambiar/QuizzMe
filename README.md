@@ -21,6 +21,7 @@ A quiz-taking platform that fetches questions from [Open Trivia DB](https://open
 - 🌗 **Dark/Light Mode** - Toggle between themes, with preferences stored in `localStorage`.
 - 📱 **Fully Responsive** - Adapts to different screen sizes seamlessly.
 - 🎨 **Smooth Animations** - Enhanced user experience with fluid animations.
+- 🚨 **TriviaDB API Status** - Checks if TriviaDB API is up/down before starting the quiz.
 
 ## 🛠 Tech Stack
 
