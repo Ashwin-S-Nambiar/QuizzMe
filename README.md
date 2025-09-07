@@ -204,7 +204,7 @@ https://github.com/user-attachments/assets/ed5f5990-b43d-475e-a28b-1e82b891f6a1
 ## 👤 Author
 
 ### Ashwin S Nambiar
-- Portfolio: [ashwin-s-nambiar.is-a.dev](https://ashwin-s-nambiar.is-a.dev/)
+- Portfolio: [ashwin.co.in](https://ashwin.co.in)
 - GitHub: [@Ashwin-S-Nambiar](https://github.com/Ashwin-S-Nambiar)
 
 ---
