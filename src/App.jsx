@@ -60,7 +60,7 @@ const LoadingSpinner = memo(() => (
 const Footer = memo(() => (
   <footer>
     Developed by&nbsp;
-    <a href="https://ashwin-s-nambiar.is-a.dev/" target="_blank" rel="noopener noreferrer">
+    <a href="https://ashwin.co.in" target="_blank" rel="noopener noreferrer">
       Ashwin
     </a>
   </footer>
