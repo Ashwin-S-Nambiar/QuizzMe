@@ -1,4 +1,4 @@
-# QuizzMe! 💬
+# QuizzMe!
 
 <div align="center">
 
@@ -13,17 +13,17 @@ A quiz-taking platform that fetches questions from [Open Trivia DB](https://open
 
 </div>
 
-## ✨ Features
+## Features
 
-- 🏆 **Customizable Quiz Settings** - Select category, difficulty, type, and number of questions.
-- ✅ **Answer Validation** - Check answers and receive an instant score.
-- 🎉 **Confetti Animation** - Celebrate perfect scores with a visual effect.
-- 🌗 **Dark/Light Mode** - Toggle between themes, with preferences stored in `localStorage`.
-- 📱 **Fully Responsive** - Adapts to different screen sizes seamlessly.
-- 🎨 **Smooth Animations** - Enhanced user experience with fluid animations.
-- 🚨 **TriviaDB API Status** - Checks if TriviaDB API is up/down before starting the quiz.
+- **Customizable Quiz Settings** - Select category, difficulty, type, and number of questions.
+- **Answer Validation** - Check answers and receive an instant score.
+- **Confetti Animation** - Celebrate perfect scores with a visual effect.
+- **Dark/Light Mode** - Toggle between themes, with preferences stored in `localStorage`.
+- **Fully Responsive** - Adapts to different screen sizes seamlessly.
+- **Smooth Animations** - Enhanced user experience with fluid animations.
+- **TriviaDB API Status** - Checks if TriviaDB API is up/down before starting the quiz.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 - **[React](https://reactjs.org/)** - UI component development
@@ -33,7 +33,7 @@ A quiz-taking platform that fetches questions from [Open Trivia DB](https://open
 - **[React-Use](https://www.npmjs.com/package/react-use)** - Custom React hooks
 - **[React-Confetti](https://www.npmjs.com/package/react-confetti)** - Celebration animation
 
-## 🚀 Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
@@ -52,7 +52,7 @@ A quiz-taking platform that fetches questions from [Open Trivia DB](https://open
    ```
    **The application will be accessible at `http://localhost:5173`.**
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Here's how you can help improve QuizzMe!:
 
@@ -77,7 +77,7 @@ Contributions are welcome! Here's how you can help improve QuizzMe!:
 
 5. Open a Pull Request
 
-## 📸 Screenshots
+## Screenshots
 
 <div align="center">
 
@@ -193,7 +193,7 @@ https://github.com/user-attachments/assets/ed5f5990-b43d-475e-a28b-1e82b891f6a1
 
 </div>
 
-## 🌍 Live
+## Live
 
 <div align="center">
 
@@ -201,7 +201,7 @@ https://github.com/user-attachments/assets/ed5f5990-b43d-475e-a28b-1e82b891f6a1
 
 </div>
 
-## 👤 Author
+## Author
 
 ### Ashwin S Nambiar
 - Portfolio: [ashwin.co.in](https://ashwin.co.in)
