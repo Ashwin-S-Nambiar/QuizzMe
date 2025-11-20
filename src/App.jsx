@@ -30,7 +30,8 @@ const SunIcon = memo(() => (
 	  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
 	</svg>
 ));
-  
+SunIcon.displayName = 'SunIcon';
+
 const MoonIcon = memo(() => (
 	<svg
 	  xmlns="http://www.w3.org/2000/svg"
@@ -47,6 +48,7 @@ const MoonIcon = memo(() => (
 	  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
 	</svg>
 ));
+MoonIcon.displayName = 'MoonIcon';
 
 // Loading spinner component
 const LoadingSpinner = memo(() => (
@@ -55,6 +57,7 @@ const LoadingSpinner = memo(() => (
     <p>Loading quiz...</p>
   </div>
 ));
+LoadingSpinner.displayName = 'LoadingSpinner';
 
 // Footer component
 const Footer = memo(() => (
@@ -65,6 +68,7 @@ const Footer = memo(() => (
     </a>
   </footer>
 ));
+Footer.displayName = 'Footer';
 
 // API Status indicator component
 const ApiStatusIndicator = memo(({ status, message }) => {
@@ -78,10 +82,17 @@ const ApiStatusIndicator = memo(({ status, message }) => {
 
 ApiStatusIndicator.displayName = 'ApiStatusIndicator';
 
-// API Error Message component
-const ApiErrorMessage = memo(() => (
+// API Error Message component with close button
+const ApiErrorMessage = memo(({ onClose }) => (
   <div className="api-error-message">
     <p>Unable to fetch questions. The Open Trivia DB API appears to be down. Please try again later.</p>
+    <button 
+      className="toast-close-btn" 
+      onClick={onClose}
+      aria-label="Close message"
+    >
+      ×
+    </button>
   </div>
 ));
 
@@ -130,15 +141,29 @@ const App = () => {
 	const [showFooter, setShowFooter] = useState(true);
 	const [darkTheme, setDarkTheme] = useLocalStorage("isDark", false);
 	const [apiStatus, setApiStatus] = useState({ status: "checking", message: "Checking Open Trivia DB..." });
+	const [showApiError, setShowApiError] = useState(true);
 
-	// Check API status on load
+	// Check API status on load - with rate limiting protection
 	useEffect(() => {
+		let lastCheckTime = 0;
+		const MIN_CHECK_INTERVAL = 30000; // Minimum 30 seconds between checks
+		
 		const checkApiStatus = async () => {
+			const now = Date.now();
+			// Prevent checks within 30 seconds of last check
+			if (now - lastCheckTime < MIN_CHECK_INTERVAL) {
+				console.log('Skipping API status check (rate limit protection)');
+				return;
+			}
+			
+			lastCheckTime = now;
+			
 			try {
 				const controller = new AbortController();
 				const timeoutId = setTimeout(() => controller.abort(), 5000);
 				
-				const response = await fetch('https://opentdb.com/api.php?amount=1', { 
+				// Use a lightweight endpoint call - just check connectivity
+				const response = await fetch('https://opentdb.com/api_category.php', { 
 					signal: controller.signal 
 				});
 				clearTimeout(timeoutId);
@@ -148,6 +173,11 @@ const App = () => {
 						status: "online", 
 						message: "Open Trivia DB is Up" 
 					});
+				} else if (response.status === 429) {
+					setApiStatus({ 
+						status: "rate-limited", 
+						message: "Open Trivia DB - Rate Limited. Please wait..." 
+					});
 				} else {
 					setApiStatus({ 
 						status: "offline", 
@@ -155,20 +185,41 @@ const App = () => {
 					});
 				}
 			} catch (error) {
-				setApiStatus({ 
-					status: "offline", 
-					message: "Open Trivia DB is Down" 
-				});
+				if (error.name === 'AbortError') {
+					setApiStatus({ 
+						status: "timeout", 
+						message: "Connection timeout" 
+					});
+				} else {
+					setApiStatus({ 
+						status: "offline", 
+						message: "Open Trivia DB is Down" 
+					});
+				}
 			}
 		};
 
 		if (!gameStarted) {
+			// Only check once when landing on home screen
 			checkApiStatus();
-			// Recheck status every 60 seconds while on home screen
-			const intervalId = setInterval(checkApiStatus, 60000);
+			// Reduced frequency: check every 5 minutes instead of 1 minute
+			const intervalId = setInterval(checkApiStatus, 300000);
 			return () => clearInterval(intervalId);
 		}
 	}, [gameStarted]);
+
+	// Auto-dismiss error toast after 10 seconds & reset when API is back online
+	useEffect(() => {
+		if (apiStatus.status === "offline" && showApiError) {
+			const timer = setTimeout(() => {
+				setShowApiError(false);
+			}, 10000);
+			return () => clearTimeout(timer);
+		} else if (apiStatus.status === "online") {
+			// Reset the error visibility when API comes back online
+			setShowApiError(true);
+		}
+	}, [apiStatus.status, showApiError]);
 
 	// Apply theme on initial render and when theme changes
 	useEffect(() => {
@@ -218,6 +269,10 @@ const App = () => {
 		setDarkTheme(prev => !prev);
 	}, [setDarkTheme]);
 
+	const closeApiError = useCallback(() => {
+		setShowApiError(false);
+	}, []);
+
 	// Memoize select options rendering for performance
 	const renderSelectOptions = useCallback((options) => {
 		return options.map(option => (
@@ -236,6 +291,12 @@ const App = () => {
 			>
         		{darkTheme ? <SunIcon /> : <MoonIcon />}
       		</button>
+			
+			{/* API Error Toast - Fixed positioned at top */}
+			{apiStatus.status === "offline" && showApiError && (
+				<ApiErrorMessage onClose={closeApiError} />
+			)}
+			
 			<main>
 				{gameStarted ? (
 					<section className="game-container">
@@ -257,7 +318,7 @@ const App = () => {
 
 						{showNoQuestionsError && (
 							<h2 className="noQuestions-text">
-								Oops! couldn't find any questions with these options!
+								Oops! couldn&apos;t find any questions with these options!
 							</h2>
 						)}
 
@@ -292,7 +353,7 @@ const App = () => {
 							</div>
 							
 							<div className="select-container">
-								<label className="custom-label" htmlFor="type">Type of questions:</label>
+								<label className="custom-label" htmlFor="type">Question Type:</label>
 								<select
 									name="type"
 									id="type"
@@ -325,9 +386,6 @@ const App = () => {
 						</div>
 
 						<button className="btn-primary" onClick={handleGameStart}>Start Quiz</button>
-						
-						{/* API Error Message */}
-						{apiStatus.status === "offline" && <ApiErrorMessage />}
 					</section>
 				)}
 				{showFooter && <Footer />}	
