@@ -1,3 +1,9 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
 :root {
 	--url: url("./assets/images/nnnoise.svg");
 	--text-color: #293264;
@@ -19,6 +25,13 @@
 	--text-clr-opt: #7F00FF;
 }
 
+html {
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 100%;
+	height: 100%;
+}
+
 .dark {
 	--url: url("./assets/images/nnnoise-2.svg");
 	--text-color: #ffed76;
@@ -32,8 +45,10 @@
 body {
 	margin: 0;
 	min-width: 320px;
-	min-height: 100dvh;
-	box-sizing: border-box;
+	width: 100%;
+	max-width: 100vw;
+	min-height: 100vh;
+	height: 100%;
 	background-image: var(--url);
 	background-size: cover;
     background-repeat: no-repeat;
@@ -42,6 +57,8 @@ body {
 	transition: background-image 0.3s ease-in, color 0.3s ease-in-out;
 	font-family: "Karla", sans-serif;
 	overflow-x: hidden;
+	overflow-y: auto;
+	position: relative;
 }
 
 ::-webkit-scrollbar {
@@ -60,10 +77,12 @@ body {
 main {
 	position: relative;
 	transform: translateZ(0);
-}
-
-p, h1, h2, h3 {
-	margin: 0;
+	width: 100%;
+	max-width: 100vw;
+	overflow-x: hidden;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
 }
 
 img {
@@ -73,14 +92,13 @@ img {
 footer {
 	color: var(--text-color);
 	text-align: center;
-	padding: 2em 0;
-	width: 200px;
-	position: absolute;
-	bottom: 0;
-	left: 50%;
-	margin-left: -100px;
+	padding: 1.5em 0;
+	width: 100%;
+	max-width: 200px;
+	margin: 0 auto;
 	user-select: none;
 	transition: color 0.3s ease-in-out;
+	flex-shrink: 0;
 }
 
 footer > a {
@@ -93,10 +111,12 @@ footer > a {
 	color: var(--ques-btn-bg-color);
 	font-family: "Inter", sans-serif;
 	font-weight: 600;
-	font-size: 1em;
+	font-size: clamp(0.9rem, 2vw, 1rem);
 	border-radius: 8px;
-	width: 190px;
+	width: min(190px, 80vw);
+	max-width: 100%;
 	height: 50px;
+	padding: 0 1rem;
 	border: none;
 	cursor: pointer;
 	z-index: 100;
@@ -122,13 +142,14 @@ footer > a {
 			background-image 0.3s ease-in-out,
 			color 0.3s ease-in-out;
 		backface-visibility: hidden;
+		background-attachment: scroll;
 	}
 
 	.theme-toggle {
 		position: fixed;
 		top: 0;
 		right: 0;
-		margin: 0;
+		margin: 1rem;
 		z-index: 9999;
 		pointer-events: auto;
 	}
@@ -139,6 +160,7 @@ footer > a {
 		background-size: cover;
 		background-repeat: no-repeat;
 		background-attachment: scroll;
+		background-position: center;
 	}
 
 	footer, 
@@ -148,5 +170,23 @@ footer > a {
 			color 0.3s ease-in-out,
 			background-color 0.3s ease-in-out,
 			transform 0.3s ease-in-out;
+	}
+}
+
+@media (max-width: 690px) {
+	footer {
+		padding: 1em 0;
+	}
+}
+
+@media (max-width: 480px) {
+	footer {
+		padding: 0.85em 0;
+	}
+}
+
+@media (max-width: 380px) {
+	footer {
+		padding: 0.75em 0;
 	}
 }
