@@ -9,7 +9,7 @@
 
 A quiz-taking platform that fetches questions from [Open Trivia DB](https://opentdb.com/api_config.php) and allows users to customize their quiz experience.
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [Contributing](#-contributing) • [Screenshots](#-screenshots) • [Live](#-live) • [Author](#-author)
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [Contributing](#-contributing) • [Screenshots](#-screenshots)
 
 </div>
 
@@ -197,7 +197,7 @@ https://github.com/user-attachments/assets/ed5f5990-b43d-475e-a28b-1e82b891f6a1
 
 <div align="center">
 
-[![Visit](https://img.shields.io/badge/Visit_Site-000?style=for-the-badge&logo=vercel&logoColor=white)](https://quizz-me.vercel.app/)
+[![Visit](https://img.shields.io/badge/Visit_Site-000?style=for-the-badge&logo=vercel&logoColor=white)](https://quizzme.ashwin.co.in)
 
 </div>
 
