@@ -2,55 +2,57 @@
 
 <div align="center">
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-0F172A?style=for-the-badge&logo=tailwindcss&logoColor=38BDF8)
+![Motion](https://img.shields.io/badge/Motion-000000?style=for-the-badge&logo=framer&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 
-A quiz-taking platform that fetches questions from [Open Trivia DB](https://opentdb.com/api_config.php) and allows users to customize their quiz experience.
+Quick trivia rounds on 24 topics, with questions pulled live from [Open Trivia DB](https://opentdb.com/api_config.php).
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [Contributing](#-contributing) • [Screenshots](#-screenshots)
+[Features](#features) • [Tech Stack](#tech-stack) • [Installation](#installation) • [Contributing](#contributing) • [Screenshots](#screenshots)
 
 </div>
 
 ## Features
 
-- **Customizable Quiz Settings** - Select category, difficulty, type, and number of questions.
-- **Answer Validation** - Check answers and receive an instant score.
-- **Confetti Animation** - Celebrate perfect scores with a visual effect.
-- **Dark/Light Mode** - Toggle between themes, with preferences stored in `localStorage`.
-- **Fully Responsive** - Adapts to different screen sizes seamlessly.
-- **Smooth Animations** - Enhanced user experience with fluid animations.
-- **TriviaDB API Status** - Checks if TriviaDB API is up/down before starting the quiz.
+- **Live topics and counts**: categories come from `api_category.php`, and every topic shows how many checked questions it has, from one `api_count_global.php` call. Picking a topic loads its per difficulty counts, and the question amounts cap at what actually exists, so a round never asks for more than the API can give. Counts roll into place like an odometer when they load or change.
+- **No repeats**: a session token is kept for its six hours, so back to back rounds don't serve the same questions. When a mix runs dry you get the option to start it over.
+- **Honest about the rate limit**: Open Trivia DB allows one question request every 5 seconds per IP. Requests are queued, a 429 or code 5 is retried, and the loading screen tells you how long the wait is.
+- **One screen to start**: pick a topic from a sheet, set the difficulty and amount, and go. Everything else folds into More options, and Surprise me picks a random topic for you.
+- **Two ways to play**: see each answer as you go, with streaks, or answer everything and reveal at the end, with free navigation between questions.
+- **Optional timer**: 15 or 30 seconds per question.
+- **Results worth reading**: animated score ring, best streak, average time, a split by difficulty, and a review of every answer.
+- **Practice what you missed**: replay only the questions you got wrong, reshuffled, without another API call.
+- **Share**: a result grid through the native share sheet on phones, or the clipboard elsewhere, with a link that opens the same setup.
+- **Stats on this device**: rounds, accuracy, best streak, and accuracy by topic, kept in `localStorage`.
+- **Keyboard**: `1` to `4` or `A` to `D` to answer, `Enter` for next, arrows to move in reveal at end mode, `Esc` to leave.
+- **Feels native on phones**: bottom action bars clear the home indicator, the quit and stats sheets drag to dismiss, the back button asks before throwing a round away, light haptics on Android, and it installs as a PWA.
+- **Sounds**: small synthesized clicks, a chime that climbs with your streak, a buzz for wrong answers and a timer tick, all made with the Web Audio API. Audio only starts after your first interaction, respects the iOS silent switch, and mutes in one tap.
+- **A 404 that is also a question**, and every screen sets its own page title.
+- **No layout shift**: fonts are self-hosted and preloaded with metric-matched fallbacks, and the landing fits one screen from an iPhone SE up to desktop.
+- **Light and dark**: follows the system until you choose, and switches with a crossfade.
+- **Reduced motion**: movement is swapped for fades when the system asks for it.
 
 ## Tech Stack
 
-### Frontend
-- **[React](https://reactjs.org/)** - UI component development
-- **[Vite](https://vitejs.dev/)** - Fast build tool and development server
-- **[Nano ID](https://www.npmjs.com/package/nanoid)** - Unique ID generation
-- **[HTML-Entities](https://www.npmjs.com/package/html-entities)** - Decode HTML entities in questions
-- **[React-Use](https://www.npmjs.com/package/react-use)** - Custom React hooks
-- **[React-Confetti](https://www.npmjs.com/package/react-confetti)** - Celebration animation
+- **[React 19](https://react.dev/)** with **[Vite 8](https://vite.dev/)**
+- **[Tailwind CSS 4](https://tailwindcss.com/)** with OKLCH theme tokens
+- **[Motion](https://motion.dev/)** for question transitions, sheets, layout and springs
+- **[Phosphor Icons](https://phosphoricons.com)** (duotone), with unused weights stripped at build time
+- **[canvas-confetti](https://www.npmjs.com/package/canvas-confetti)** for the good rounds
+- **Geist**, **Geist Mono** and **Bricolage Grotesque**, self-hosted and preloaded with metric-matched fallbacks so nothing shifts when they load
+- **[Biome](https://biomejs.dev/)** for linting and formatting, and `node --test` for the quiz logic
 
 ## Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/quizzme.git
-   cd quizzme
-   ```
+```bash
+git clone https://github.com/Ashwin-S-Nambiar/QuizzMe.git
+cd QuizzMe
+npm install
+npm run dev
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-   **The application will be accessible at `http://localhost:5173`.**
+`npm test` runs the logic tests, `npm run check` runs Biome, and `npm run build` makes a production build.
 
 ## Contributing
 
@@ -79,130 +81,23 @@ Contributions are welcome! Here's how you can help improve QuizzMe!:
 
 ## Screenshots
 
-<div align="center">
-
-### **Landing Page**
-![Landing Page](https://github.com/user-attachments/assets/46b8d8c9-8b40-4c20-9668-057ec5d7abc9)
-
-![Landing Page Dark](https://github.com/user-attachments/assets/2e0fa692-1295-4915-84f2-45b47228e29e)
-
-### **Question Selection**
-![Options-1](https://github.com/user-attachments/assets/a0056cd4-0a90-43c6-850d-eeaed031eb5b)
-
-![Options-2](https://github.com/user-attachments/assets/09208ccd-8749-4c3f-b653-ba9b0f5e9790)
-
-![Options-3](https://github.com/user-attachments/assets/33992cda-229e-4b52-b683-e0b822331422)
-
-![Options-4](https://github.com/user-attachments/assets/0c7c7222-38f9-43d4-ac50-ce84aaa735fe)
-
-### **Quiz Questions**
-![QuizzMe!-Questions-Page](https://github.com/user-attachments/assets/7d5bf1b9-809a-4d6d-81ac-8d0bff18f728)
-
-![QuizzMe!-Questions-Page-Dark](https://github.com/user-attachments/assets/9f7f7783-bd27-488c-ae79-026a2e4e4032)
-
-### **Score Reveal**
-
-https://github.com/user-attachments/assets/91fb544e-4143-4b62-b823-b83ab8bb8411
-
-![QuizzMe!-Questions-Page_Wrong-Answers](https://github.com/user-attachments/assets/3d4080bc-e72e-4bed-b7d9-bdaffacdc20e)
-
-### **Animations**
-
-https://github.com/user-attachments/assets/305f3d04-637e-4fa2-b516-c299e83bf50f
-
-https://github.com/user-attachments/assets/72a4fa99-1771-4c9a-85cd-5e58a33fcc91
-
-https://github.com/user-attachments/assets/3c16d8a6-290a-4e59-a909-abfea60f4e43
-
-https://github.com/user-attachments/assets/4b049b95-7365-490a-a179-0a7770a1947f
-
-https://github.com/user-attachments/assets/a146fc9e-9ac5-4aa0-a59c-83adc645e663
-
-https://github.com/user-attachments/assets/ed5f5990-b43d-475e-a28b-1e82b891f6a1
-
-### **Responsiveness**
-#### Mobile S - 320px & Mobile M - 375px
+<img src="./docs/screenshots/QuizzMe.webp" width="100%" alt="the landing page on desktop: draggable stickers, the line settle a bet, or start one, and the round card with the topic picker, difficulty counts, question amounts, more options, start quiz and surprise me">
 
 <table>
-<tr>
-<td width="50%">
-  <img src="https://github.com/user-attachments/assets/15a0dd40-f0de-4fdb-839b-6c0d1a0ea2ee" alt="Quiz Setup Screen"/>
-</td>
-<td width="50%">
-  <img src="https://github.com/user-attachments/assets/32c72a61-9770-4e64-836e-fcb5dfb126c0" alt="Quiz Questions Screen"/>
-</td>
-</tr>
+  <tr>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-8.webp" alt="the landing page on a phone, everything above the fold"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-9.webp" alt="the topic sheet on a phone: every open trivia db topic as a card with its own colour, icon and question count"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-2.webp" alt="a hard geography question answered right in dark mode, with a four in a row streak chip"></td>
+  </tr>
+  <tr>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-3.webp" alt="a wrong answer: yellow marked in red, red marked in green, and the bar saying it was red"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-6.webp" alt="results on a phone: 7 out of 10, with play again, topics and share pinned to the bottom"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-7.webp" alt="the stats sheet: rounds, accuracy, best streak, accuracy by topic and recent rounds"></td>
+  </tr>
 </table>
 
-<table>
-<tr>
-<td width="50%">
-  <img src="https://github.com/user-attachments/assets/ba6e6945-4cda-44db-9ffb-2d21e20bacbb" alt="Quiz Setup Screen" />
-</td>
-<td width="50%">
-  <img src="https://github.com/user-attachments/assets/c5bb1416-c487-4272-b24a-b4a319f90c16" alt="Quiz Questions Screen" />
-</td>
-</tr>
-</table>
+![the results page in dark mode: 8 out of 10 on a green ring, best streak, average time, a split by difficulty, and the answer review with one missed question opened](./docs/screenshots/QuizzMe-4.webp)
 
-#### Mobile L - 425px
+![reveal at the end mode: answers stay hidden, the chosen one is outlined in indigo, and the progress segments double as a way to jump between questions](./docs/screenshots/QuizzMe-5.webp)
 
-<table>
-<tr>
-<td width="50%">
-  <img src="https://github.com/user-attachments/assets/651a50f2-b511-4988-8767-6aada3c58dbb" alt="Quiz Questions Screen" />
-</td>
-<td width="50%">
-  <img src="https://github.com/user-attachments/assets/a13e2b8f-3c1d-4f9e-a570-f2e4e6588757" alt="Quiz Setup Screen" />
-</td>
-</tr>
-</table>
-
-#### Tablet - 768px
-![quizz-me vercel app_(iPad Mini) (1)](https://github.com/user-attachments/assets/1722e06f-9da3-4f4f-aef3-12d53ca381d5)
-
-![quizz-me vercel app_(iPad Mini)](https://github.com/user-attachments/assets/21f20961-1b09-462c-814d-790839a8cadf)
-
-![quizz-me vercel app_(Tablet)](https://github.com/user-attachments/assets/6789267e-2548-4b93-b744-eb91292f1fec)
-
-![quizz-me vercel app_(Tablet) (1)](https://github.com/user-attachments/assets/543daf52-d62d-4b5a-8fe9-08895c9bc266)
-
-
-#### Laptop - 1024px
-![quizz-me vercel app_(Laptop)](https://github.com/user-attachments/assets/93965029-f9e5-4272-9816-7f61d9196801)
-
-![quizz-me vercel app_(Laptop) (1)](https://github.com/user-attachments/assets/854e7293-1860-4edc-9f78-948c72f744d0)
-
-![quizz-me vercel app_ (Laptop) (2)](https://github.com/user-attachments/assets/a02de169-85c0-451b-bfbd-ffd15fddfce5)
-
-![quizz-me vercel app_ (Laptop) (3)](https://github.com/user-attachments/assets/4b162ccb-12fb-4754-b4a2-9c1308356c74)
-
-#### Laptop L - 1440px
-![quizz-me vercel app_](https://github.com/user-attachments/assets/f6297572-4308-47db-9360-f3aa8190c0b4)
-
-![quizz-me vercel app_ (1)](https://github.com/user-attachments/assets/dbd3073e-9b58-4cb7-bb42-c46a20c8f92a)
-
-![quizz-me vercel app_ (Laptop Large)](https://github.com/user-attachments/assets/3b5d649c-9b9b-4b2b-9b5e-88f59901ee6f)
-
-![quizz-me vercel app_ (Laptop Large)(1)](https://github.com/user-attachments/assets/ecc51a7f-ba9b-4759-9cee-98774901010f)
-
-#### 4k - 2560px
-![quizz-me vercel app_ (4k)](https://github.com/user-attachments/assets/4c8c6c06-3bf3-4882-812a-10ff1b5c0645)
-
-![quizz-me vercel app_ (4k) (1)](https://github.com/user-attachments/assets/2a73f0c8-c46b-426b-b86c-c8d6eba94b01)
-
-</div>
-
-## Live
-
-<div align="center">
-
-[![Visit](https://img.shields.io/badge/Visit_Site-000?style=for-the-badge&logo=vercel&logoColor=white)](https://quizzme.ashwin.co.in)
-
-</div>
-
----
-
-<div align="center">
-Made with ❤️ by Ashwin S Nambiar
-</div>
+<img src="./docs/screenshots/QuizzMe-10.webp" width="33%" alt="the 404 page, asked as a question: where did this page go, with one wrong answer already marked">

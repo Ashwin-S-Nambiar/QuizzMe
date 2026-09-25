@@ -1,397 +1,287 @@
-import { useEffect, useState, useCallback, lazy, Suspense, memo } from "react";
-import "./App.css";
-import useLocalStorage from "use-local-storage";
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import Loading from './components/Loading.jsx';
+import Setup from './components/Setup.jsx';
+import Toaster from './components/Toaster.jsx';
+import Topbar from './components/Topbar.jsx';
+import { useTheme, useTrivia } from './hooks/index.js';
+import { topicLabel } from './lib/categories.js';
+import { fetchQuestions, resetToken } from './lib/opentdb.js';
+import { shuffle, summarize } from './lib/quiz.js';
+import { sfx } from './lib/sound.js';
+import { prefsStore, recordRun, toast } from './lib/store.js';
 
-// Lazy load the QuestionList component
-const QuestionList = lazy(() => import("./components/QuestionList/QuestionList"));
+const loadPlay = () => import('./components/Play.jsx');
+const loadResults = () => import('./components/Results.jsx');
+const Play = lazy(loadPlay);
+const Results = lazy(loadResults);
+const StatsSheet = lazy(() => import('./components/StatsSheet.jsx'));
+const NotFound = lazy(() => import('./components/NotFound.jsx'));
 
-// Memoize static components
-const SunIcon = memo(() => (
-	<svg
-	  xmlns="http://www.w3.org/2000/svg"
-	  viewBox="0 0 24 24"
-	  fill="none"
-	  stroke="currentColor"
-	  strokeWidth="2"
-	  strokeLinecap="round"
-	  strokeLinejoin="round"
-	  className="feather feather-sun"
-	  width="24"
-	  height="24"
-	>
-	  <circle cx="12" cy="12" r="5"></circle>
-	  <line x1="12" y1="1" x2="12" y2="3"></line>
-	  <line x1="12" y1="21" x2="12" y2="23"></line>
-	  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-	  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-	  <line x1="1" y1="12" x2="3" y2="12"></line>
-	  <line x1="21" y1="12" x2="23" y2="12"></line>
-	  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-	  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-	</svg>
-));
-SunIcon.displayName = 'SunIcon';
+const SITE = 'https://quizzme.ashwin.co.in';
 
-const MoonIcon = memo(() => (
-	<svg
-	  xmlns="http://www.w3.org/2000/svg"
-	  viewBox="0 0 24 24"
-	  fill="none"
-	  stroke="currentColor"
-	  strokeWidth="2"
-	  strokeLinecap="round"
-	  strokeLinejoin="round"
-	  className="feather feather-moon"
-	  width="24"
-	  height="24"
-	>
-	  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
-	</svg>
-));
-MoonIcon.displayName = 'MoonIcon';
+function readLink() {
+  const p = new URLSearchParams(location.search);
+  if (![...p.keys()].length) return;
+  const next = {};
+  if (/^\d+$/.test(p.get('category') ?? '')) next.category = p.get('category');
+  if (['easy', 'medium', 'hard'].includes(p.get('difficulty')))
+    next.difficulty = p.get('difficulty');
+  if (['multiple', 'boolean'].includes(p.get('type')))
+    next.type = p.get('type');
+  const amount = Number(p.get('amount'));
+  if (amount >= 1 && amount <= 50) next.amount = amount;
+  prefsStore.set((prefs) => ({ ...prefs, ...next }));
+  history.replaceState(null, '', location.pathname);
+}
 
-// Loading spinner component
-const LoadingSpinner = memo(() => (
-  <div className="loading-spinner">
-    <div className="spinner"></div>
-    <p>Loading quiz...</p>
-  </div>
-));
-LoadingSpinner.displayName = 'LoadingSpinner';
+readLink();
 
-// Footer component
-const Footer = memo(() => (
-  <footer>
-    Developed by&nbsp;
-    <a href="https://ashwin.co.in" target="_blank" rel="noopener noreferrer">
-      Ashwin
-    </a>
-  </footer>
-));
-Footer.displayName = 'Footer';
+function linkFor({ category, difficulty, type, amount }) {
+  const p = new URLSearchParams();
+  if (category) p.set('category', category);
+  if (difficulty) p.set('difficulty', difficulty);
+  if (type) p.set('type', type);
+  p.set('amount', String(amount));
+  return `${SITE}/?${p}`;
+}
 
-// API Status indicator component
-const ApiStatusIndicator = memo(({ status, message }) => {
-  return (
-    <div className={`api-status ${status}`}>
-      <div className={`status-light ${status}`}></div>
-      <span className="status-message">{message}</span>
-    </div>
-  );
-});
-
-ApiStatusIndicator.displayName = 'ApiStatusIndicator';
-
-// API Error Message component with close button
-const ApiErrorMessage = memo(({ onClose }) => (
-  <div className="api-error-message">
-    <p>Unable to fetch questions. The Open Trivia DB API appears to be down. Please try again later.</p>
-    <button 
-      className="toast-close-btn" 
-      onClick={onClose}
-      aria-label="Close message"
-    >
-      ×
-    </button>
-  </div>
-));
-
-ApiErrorMessage.displayName = 'ApiErrorMessage';
-
-// Category options for select menu
-const CATEGORY_OPTIONS = [
-  { value: "", label: "Any Category" },
-  { value: "9", label: "General Knowledge" },
-  { value: "10", label: "Entertainment: Books" },
-  { value: "11", label: "Entertainment: Film" },
-  { value: "12", label: "Entertainment: Music" },
-  { value: "13", label: "Entertainment: Musicals & Theatres" },
-  { value: "14", label: "Entertainment: Television" },
-  { value: "15", label: "Entertainment: Video Games" },
-  { value: "16", label: "Entertainment: Board Games" },
-  { value: "17", label: "Science & Nature" },
-  { value: "18", label: "Science: Computers" },
-  { value: "19", label: "Science: Mathematics" },
-  { value: "20", label: "Mythology" },
-  { value: "21", label: "Sports" },
-  { value: "22", label: "Geography" },
-  { value: "23", label: "History" },
-  { value: "24", label: "Politics" },
-  { value: "25", label: "Art" },
-  { value: "26", label: "Celebrities" },
-  { value: "27", label: "Animals" },
-  { value: "28", label: "Vehicles" },
-  { value: "29", label: "Entertainment: Comics" },
-  { value: "30", label: "Science: Gadgets" },
-  { value: "31", label: "Entertainment: Japanese Anime & Manga" },
-  { value: "32", label: "Entertainment: Cartoon & Animations" }
-];
-
-const App = () => {
-	const [gameStarted, setGameStarted] = useState(false);
-	const [showNoQuestionsError, setShowNoQuestionsError] = useState(false);
-	const [gameOptions, setGameOptions] = useState(
-		{
-			category: "",
-			difficulty: "",
-			type: "",
-			questionno: 1
-		}
-	);
-	const [showFooter, setShowFooter] = useState(true);
-	const [darkTheme, setDarkTheme] = useLocalStorage("isDark", false);
-	const [apiStatus, setApiStatus] = useState({ status: "checking", message: "Checking Open Trivia DB..." });
-	const [showApiError, setShowApiError] = useState(true);
-
-	// Check API status on load - with rate limiting protection
-	useEffect(() => {
-		let lastCheckTime = 0;
-		const MIN_CHECK_INTERVAL = 30000; // Minimum 30 seconds between checks
-		
-		const checkApiStatus = async () => {
-			const now = Date.now();
-			// Prevent checks within 30 seconds of last check
-			if (now - lastCheckTime < MIN_CHECK_INTERVAL) {
-				console.log('Skipping API status check (rate limit protection)');
-				return;
-			}
-			
-			lastCheckTime = now;
-			
-			try {
-				const controller = new AbortController();
-				const timeoutId = setTimeout(() => controller.abort(), 5000);
-				
-				// Use a lightweight endpoint call - just check connectivity
-				const response = await fetch('https://opentdb.com/api_category.php', { 
-					signal: controller.signal 
-				});
-				clearTimeout(timeoutId);
-				
-				if (response.ok) {
-					setApiStatus({ 
-						status: "online", 
-						message: "Open Trivia DB is Up" 
-					});
-				} else if (response.status === 429) {
-					setApiStatus({ 
-						status: "rate-limited", 
-						message: "Open Trivia DB - Rate Limited. Please wait..." 
-					});
-				} else {
-					setApiStatus({ 
-						status: "offline", 
-						message: "Open Trivia DB is Down" 
-					});
-				}
-			} catch (error) {
-				if (error.name === 'AbortError') {
-					setApiStatus({ 
-						status: "timeout", 
-						message: "Connection timeout" 
-					});
-				} else {
-					setApiStatus({ 
-						status: "offline", 
-						message: "Open Trivia DB is Down" 
-					});
-				}
-			}
-		};
-
-		if (!gameStarted) {
-			// Only check once when landing on home screen
-			checkApiStatus();
-			// Reduced frequency: check every 5 minutes instead of 1 minute
-			const intervalId = setInterval(checkApiStatus, 300000);
-			return () => clearInterval(intervalId);
-		}
-	}, [gameStarted]);
-
-	// Auto-dismiss error toast after 10 seconds & reset when API is back online
-	useEffect(() => {
-		if (apiStatus.status === "offline" && showApiError) {
-			const timer = setTimeout(() => {
-				setShowApiError(false);
-			}, 10000);
-			return () => clearTimeout(timer);
-		} else if (apiStatus.status === "online") {
-			// Reset the error visibility when API comes back online
-			setShowApiError(true);
-		}
-	}, [apiStatus.status, showApiError]);
-
-	// Apply theme on initial render and when theme changes
-	useEffect(() => {
-		// Preload the question list component
-		const preload = () => {
-			import("./components/QuestionList/QuestionList");
-		};
-		
-		// Only run if the user is in light mode on initial load
-		if(!darkTheme) {
-			document.body.classList.remove("dark");
-		} else {
-			document.body.classList.add("dark");
-		}
-		
-		// Preload the component after initial render
-		const timer = setTimeout(preload, 1000);
-		
-		return () => clearTimeout(timer);
-	}, [darkTheme]);
-
-	// Memoize callbacks to prevent unnecessary renders
-	const toggleFooter = useCallback(() => {
-	  setShowFooter(prev => !prev);
-	}, []);
-
-	const handleGameStart = useCallback(() => {
-		toggleFooter();
-		// Removing setTimeout improves performance as it's an unnecessary delay
-		setGameStarted(prevState => !prevState);
-	}, [toggleFooter]);
-
-	const handleNoQuestionsError = useCallback(boolean => {
-		setShowNoQuestionsError(boolean);
-	}, []);
-	
-	const handleChange = useCallback(event => {
-		const { name, value } = event.target;
-		setGameOptions(prevGameOptions => ({
-			...prevGameOptions,
-			[name]: value
-		}));
-	}, []);
-
-	const toggleTheme = useCallback(() => {
-		document.body.classList.toggle("dark");
-		setDarkTheme(prev => !prev);
-	}, [setDarkTheme]);
-
-	const closeApiError = useCallback(() => {
-		setShowApiError(false);
-	}, []);
-
-	// Memoize select options rendering for performance
-	const renderSelectOptions = useCallback((options) => {
-		return options.map(option => (
-			<option key={option.value} value={option.value}>
-				{option.label}
-			</option>
-		));
-	}, []);
-
-	return (
-		<>
-			<button 
-				aria-label="Theme Toggler" 
-				className="theme-toggle" 
-				onClick={toggleTheme}
-			>
-        		{darkTheme ? <SunIcon /> : <MoonIcon />}
-      		</button>
-			
-			{/* API Error Toast - Fixed positioned at top */}
-			{apiStatus.status === "offline" && showApiError && (
-				<ApiErrorMessage onClose={closeApiError} />
-			)}
-			
-			<main>
-				{gameStarted ? (
-					<section className="game-container">
-						<Suspense fallback={<LoadingSpinner />}>
-							<QuestionList
-								gameOptions={gameOptions}
-								handleGameStart={handleGameStart}
-								handleNoQuestionsError={handleNoQuestionsError}
-							/>
-						</Suspense>
-					</section>
-				) : (
-					<section className="game-intro">
-						<h1 className="game-title">QuizzMe!</h1>
-						<p className="game-text">Answer the questions and test your knowledge!</p>
-
-						{/* API Status Indicator */}
-						<ApiStatusIndicator status={apiStatus.status} message={apiStatus.message} />
-
-						{showNoQuestionsError && (
-							<h2 className="noQuestions-text">
-								Oops! couldn&apos;t find any questions with these options!
-							</h2>
-						)}
-
-						<div className="gameOptions-container">
-							<div className="select-container">
-								<label className="custom-label" htmlFor="category">Category:</label>
-								<select
-									name="category"
-									id="category"
-									className="custom-select"
-									value={gameOptions.category}
-									onChange={handleChange}
-								>
-									{renderSelectOptions(CATEGORY_OPTIONS)}
-								</select>
-							</div>
-							
-							<div className="select-container">
-								<label className="custom-label" htmlFor="difficulty">Difficulty:</label>
-								<select
-									name="difficulty"
-									id="difficulty"
-									className="custom-select"
-									value={gameOptions.difficulty}
-									onChange={handleChange}
-								>
-									<option value="">Any Difficulty</option>
-									<option value="easy">Easy</option>
-									<option value="medium">Medium</option>
-									<option value="hard">Hard</option>
-								</select>
-							</div>
-							
-							<div className="select-container">
-								<label className="custom-label" htmlFor="type">Question Type:</label>
-								<select
-									name="type"
-									id="type"
-									className="custom-select"
-									value={gameOptions.type}
-									onChange={handleChange}
-								>
-									<option value="">Any Type</option>
-									<option value="multiple">Multiple Choice</option>
-									<option value="boolean">True / False</option>
-								</select>
-							</div>
-							<div className="select-container">
-								<label className="custom-label" htmlFor="questionno">No. of questions:</label>
-								<select
-									name="questionno"
-									id="questionno"
-									className="custom-select"
-									value={gameOptions.questionno}
-									onChange={handleChange}
-								>
-									<option value="1">1</option>
-									<option value="5">5</option>
-									<option value="10">10</option>
-									<option value="15">15</option>
-									<option value="20">20</option>
-									<option value="25">25</option>
-								</select>
-							</div>
-						</div>
-
-						<button className="btn-primary" onClick={handleGameStart}>Start Quiz</button>
-					</section>
-				)}
-				{showFooter && <Footer />}	
-			</main>
-		</>
-	);
+const screenMotion = {
+  initial: { opacity: 0, transform: 'translateY(6px)', filter: 'blur(2px)' },
+  animate: { opacity: 1, transform: 'translateY(0px)', filter: 'blur(0px)' },
+  exit: {
+    opacity: 0,
+    transform: 'translateY(-4px)',
+    filter: 'blur(2px)',
+    transition: { duration: 0.12, ease: [0.23, 1, 0.32, 1] },
+  },
+  transition: { duration: 0.2, ease: [0.23, 1, 0.32, 1] },
 };
 
-export default App;
+export default function App() {
+  const [theme, toggleTheme] = useTheme();
+  const { categories, counts, status } = useTrivia();
+  const [screen, setScreen] = useState('setup');
+  const [quiz, setQuiz] = useState(null);
+  const [result, setResult] = useState(null);
+  const [waitUntil, setWaitUntil] = useState(0);
+  const [statsOpen, setStatsOpen] = useState(null);
+  const [round, setRound] = useState(0);
+  const loader = useRef(null);
+  const screenRef = useRef(screen);
+  screenRef.current = screen;
+
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb) => setTimeout(cb, 1200));
+    idle(() => {
+      loadPlay();
+      loadResults();
+    });
+  }, []);
+
+  const lost = location.pathname !== '/' && location.pathname !== '/index.html';
+
+  useEffect(() => {
+    const onDown = (e) => {
+      if (e.button !== 0 || e.target.closest('[data-sfx="none"]')) return;
+      const hit = e.target.closest(
+        'button:not(:disabled), a[href], label.choice',
+      );
+      if (hit) sfx.tap();
+    };
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
+  }, []);
+
+  const toSetup = useCallback(() => {
+    loader.current?.abort();
+    setScreen('setup');
+  }, []);
+
+  useEffect(() => {
+    if (screen === 'setup') return;
+    if (history.state?.qz !== true) history.pushState({ qz: true }, '');
+  }, [screen]);
+
+  useEffect(() => {
+    const onPop = () => {
+      if (screenRef.current === 'play') {
+        history.pushState({ qz: true }, '');
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      } else if (screenRef.current !== 'setup') {
+        toSetup();
+      }
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [toSetup]);
+
+  const start = useCallback((options) => {
+    loader.current?.abort();
+    const ctrl = new AbortController();
+    loader.current = ctrl;
+    setWaitUntil(0);
+    setScreen('loading');
+    fetchQuestions(options, { signal: ctrl.signal, onWait: setWaitUntil })
+      .then((questions) => {
+        if (ctrl.signal.aborted) return;
+        setQuiz({ questions, options, practice: false });
+        setRound((r) => r + 1);
+        setScreen('play');
+      })
+      .catch((error) => {
+        if (error.name === 'AbortError') return;
+        setScreen('setup');
+        if (error.kind === 'empty') {
+          toast(
+            'Not enough questions for that mix. Try fewer, or set the type to Mixed.',
+          );
+        } else if (error.kind === 'exhausted') {
+          toast(error.message, {
+            duration: 8000,
+            action: {
+              label: 'Start over',
+              onClick: () => resetToken().then(() => start(options)),
+            },
+          });
+        } else {
+          toast(error.message, {
+            duration: 6000,
+            action: { label: 'Retry', onClick: () => start(options) },
+          });
+        }
+      });
+  }, []);
+
+  const practice = useCallback(() => {
+    const missed = result.questions
+      .filter((q, i) => result.answers[i].choice !== q.correct)
+      .map((q) => ({
+        ...q,
+        id: `${q.id}-p${Date.now()}`,
+        answers: q.type === 'boolean' ? q.answers : shuffle(q.answers),
+      }));
+    setQuiz((prev) => ({
+      questions: shuffle(missed),
+      options: prev.options,
+      practice: true,
+    }));
+    setRound((r) => r + 1);
+    setScreen('play');
+  }, [result]);
+
+  const finish = useCallback(
+    (answers, partial) => {
+      let questions = quiz.questions;
+      let list = answers;
+      if (partial) {
+        const keep = answers
+          .map((a, i) => (a.skipped ? -1 : i))
+          .filter((i) => i !== -1);
+        questions = keep.map((i) => quiz.questions[i]);
+        list = keep.map((i) => answers[i]);
+      }
+      const s = summarize(questions, list);
+      const { options } = quiz;
+      recordRun({
+        at: Date.now(),
+        topic: topicLabel(categories, options.category),
+        category: options.category,
+        difficulty: options.difficulty,
+        type: options.type,
+        mode: options.mode,
+        score: s.score,
+        total: s.total,
+        bestStreak: s.bestStreak,
+        avgMs: s.avgMs,
+        practice: quiz.practice,
+      });
+      setResult({ questions, answers: list });
+      setScreen('results');
+    },
+    [quiz, categories],
+  );
+
+  const options = quiz?.options;
+
+  return (
+    <MotionConfig reducedMotion="user">
+      {screen !== 'play' && (
+        <Topbar
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onOpenStats={() => setStatsOpen(true)}
+          onHome={lost ? () => location.assign('/') : toSetup}
+        />
+      )}
+
+      <Suspense fallback={null}>
+        {lost ? (
+          <NotFound />
+        ) : (
+          <AnimatePresence
+            mode="wait"
+            initial={false}
+            onExitComplete={() => window.scrollTo({ top: 0 })}
+          >
+            {screen === 'setup' && (
+              <motion.div key="setup" {...screenMotion}>
+                <Setup
+                  categories={categories}
+                  counts={counts}
+                  status={status}
+                  onStart={start}
+                />
+              </motion.div>
+            )}
+            {screen === 'loading' && (
+              <motion.div key="loading" {...screenMotion}>
+                <Loading waitUntil={waitUntil} onCancel={toSetup} />
+              </motion.div>
+            )}
+            {screen === 'play' && quiz && (
+              <motion.div key={`play-${round}`} {...screenMotion}>
+                <Play
+                  questions={quiz.questions}
+                  mode={options.mode}
+                  timer={options.timer}
+                  onFinish={finish}
+                  onQuit={toSetup}
+                />
+              </motion.div>
+            )}
+            {screen === 'results' && result && (
+              <motion.div key={`results-${round}`} {...screenMotion}>
+                <Results
+                  questions={result.questions}
+                  answers={result.answers}
+                  topic={
+                    quiz.practice
+                      ? 'Practice round'
+                      : topicLabel(categories, options.category)
+                  }
+                  shareUrl={linkFor(options)}
+                  onPlayAgain={() => start(options)}
+                  onPractice={practice}
+                  onNew={toSetup}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
+
+        {statsOpen !== null && (
+          <StatsSheet open={statsOpen} onClose={() => setStatsOpen(false)} />
+        )}
+      </Suspense>
+      <Toaster />
+    </MotionConfig>
+  );
+}
