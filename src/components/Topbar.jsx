@@ -47,7 +47,7 @@ export default function Topbar({ theme, onToggleTheme, onOpenStats, onHome }) {
     <header
       className={`sticky top-0 z-30 pt-(--safe-t) transition-[background-color,box-shadow] duration-200 ${
         scrolled
-          ? 'bg-bg/85 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150'
+          ? 'bg-bg/92 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150'
           : ''
       }`}
     >

@@ -219,7 +219,7 @@ export default function Setup({ categories, counts, status, onStart }) {
 
   return (
     <div className="mx-auto flex min-h-[calc(100dvh-4rem-var(--safe-t))] max-w-6xl flex-col px-(--gutter)">
-      <div className="grid flex-1 items-center gap-x-16 gap-y-6 pt-2 pb-5 [@media(max-height:700px)]:gap-y-4 lg:grid-cols-[minmax(0,1fr)_25rem]">
+      <div className="grid flex-1 grid-cols-[minmax(0,1fr)] items-center gap-x-16 gap-y-6 pt-2 pb-5 [@media(max-height:700px)]:gap-y-4 lg:grid-cols-[minmax(0,1fr)_25rem]">
         <section className="min-w-0">
           <div className="[@media(max-height:700px)]:hidden">
             <Stickers />

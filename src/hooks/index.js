@@ -18,7 +18,11 @@ export function useMediaQuery(query) {
   );
 }
 
-function applyTheme(theme) {
+const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+
+// Theme changes animate with a view transition: a circle grows out of the
+// toggle for a manual switch, and the page cross-fades when the OS flips it.
+function applyTheme(theme, origin) {
   const root = document.documentElement;
   const swap = () => {
     root.dataset.theme = theme;
@@ -26,13 +30,47 @@ function applyTheme(theme) {
       theme === 'dark' ? '#0a0a0b' : '#fafaf9';
   };
   if (
-    document.startViewTransition &&
-    !matchMedia('(prefers-reduced-motion: reduce)').matches
+    !document.startViewTransition ||
+    document.hidden ||
+    matchMedia('(prefers-reduced-motion: reduce)').matches
   ) {
-    document.startViewTransition(swap);
-  } else {
     swap();
+    return;
   }
+  const transition = document.startViewTransition(swap);
+  transition.ready
+    .then(() => {
+      if (!origin) {
+        root.animate(
+          { opacity: [0, 1] },
+          {
+            duration: 420,
+            easing: 'ease-out',
+            pseudoElement: '::view-transition-new(root)',
+          },
+        );
+        return;
+      }
+      const { x, y } = origin;
+      const r = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      );
+      root.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${r}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 560,
+          easing: EASE,
+          pseudoElement: '::view-transition-new(root)',
+        },
+      );
+    })
+    .catch(() => {});
 }
 
 export function useTheme() {
@@ -40,10 +78,13 @@ export function useTheme() {
     () => document.documentElement.dataset.theme ?? 'light',
   );
 
+  // Follow the system until the person picks a theme themselves.
   useEffect(() => {
     const m = matchMedia('(prefers-color-scheme: dark)');
     const onChange = () => {
-      if (localStorage.getItem('qz:theme')) return;
+      try {
+        if (localStorage.getItem('qz:theme')) return;
+      } catch {}
       const next = m.matches ? 'dark' : 'light';
       applyTheme(next);
       setTheme(next);
@@ -52,18 +93,24 @@ export function useTheme() {
     return () => m.removeEventListener('change', onChange);
   }, []);
 
-  const toggle = useCallback(() => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    const system = matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
-    try {
-      if (next === system) localStorage.removeItem('qz:theme');
-      else localStorage.setItem('qz:theme', next);
-    } catch {}
-    applyTheme(next);
-    setTheme(next);
-  }, [theme]);
+  const toggle = useCallback(
+    (e) => {
+      const next = theme === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('qz:theme', next);
+      } catch {}
+      const rect = e?.currentTarget?.getBoundingClientRect();
+      applyTheme(
+        next,
+        rect && {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
+        },
+      );
+      setTheme(next);
+    },
+    [theme],
+  );
 
   return [theme, toggle];
 }

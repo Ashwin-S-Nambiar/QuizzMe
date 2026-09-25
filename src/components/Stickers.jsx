@@ -86,7 +86,7 @@ export default function Stickers() {
         </span>
       </Sticker>
       <Sticker
-        at="top-9 left-[11.5rem] sm:top-14 sm:left-[7rem]"
+        at="top-9 left-[min(11.5rem,calc(100%-6.25rem))] sm:top-14 sm:left-[7rem]"
         rotate={-4}
         order={2}
         float={5}
