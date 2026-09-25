@@ -1,23 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="/icon.svg" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#000000" />
-		<meta
-			name="description"
-			content="QuizzMe! | A Quiz Platform"
-		/>
-		<meta property="og:image" content= "https://github.com/user-attachments/assets/cf777159-2c2a-4e0c-b940-1b7500edb856" />
-		<title>QuizzMe! | A Quiz Platform</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Karla:wght@300;400;700&display=swap" rel="stylesheet">
-	</head>
-	<body>
-		<noscript>You need to enable JavaScript to run this app.</noscript>
-        <script type="module" src="/src/index.jsx"></script>
-		<div id="root"></div>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fafaf9" />
+    <title>QuizzMe! · Quick trivia rounds</title>
+    <meta name="description" content="Quick trivia rounds on 24 topics from Open Trivia DB. Pick a topic, set the difficulty, and see how you do." />
+    <meta property="og:site_name" content="QuizzMe!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="QuizzMe! · Quick trivia rounds" />
+    <meta property="og:description" content="Quick trivia rounds on 24 topics. Pick a topic, set the difficulty, and see how you do." />
+    <meta property="og:url" content="https://quizzme.ashwin.co.in/" />
+    <meta property="og:image" content="https://quizzme.ashwin.co.in/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="QuizzMe!: quick trivia rounds on 24 topics, pulled live from Open Trivia DB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="QuizzMe! · Quick trivia rounds" />
+    <meta name="twitter:description" content="Quick trivia rounds on 24 topics. Pick a topic, set the difficulty, and see how you do." />
+    <meta name="twitter:image" content="https://quizzme.ashwin.co.in/og.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="QuizzMe!" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://opentdb.com" crossorigin />
+    <script>
+      (() => {
+        let t = null;
+        try {
+          t = localStorage.getItem('qz:theme');
+        } catch {}
+        const dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.querySelector('meta[name="theme-color"]').content = dark ? '#0a0a0b' : '#fafaf9';
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>QuizzMe! needs JavaScript to fetch questions.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
