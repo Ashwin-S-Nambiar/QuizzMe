@@ -2,12 +2,25 @@ import { ArrowLeft, ArrowRight, Check, Fire, X } from '@phosphor-icons/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useScrolled, useTitle } from '../hooks/index.js';
-import { currentStreak, splitCategory } from '../lib/quiz.js';
+import { categoryLabel } from '../lib/categories.js';
+import { currentStreak } from '../lib/quiz.js';
 import { sfx } from '../lib/sound.js';
 import { haptic } from '../lib/store.js';
 import Sheet from './Sheet.jsx';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
+
+// Long questions step down in size so the answers stay near the fold on
+// phones. Tiers follow OpenTDB: median ~65 characters, longest ~140.
+function questionSize(text) {
+  if (text.length > 110) {
+    return 'text-[clamp(1.2rem,3.6vw,1.75rem)] leading-[1.2]';
+  }
+  if (text.length > 70) {
+    return 'text-[clamp(1.35rem,4.1vw,2rem)] leading-[1.15]';
+  }
+  return 'text-[clamp(1.55rem,4.6vw,2.3rem)] leading-[1.12]';
+}
 
 export const DIFFICULTY_STYLE = {
   easy: 'bg-good-tint text-good-ink',
@@ -183,7 +196,9 @@ function AnswerButton({ label, index, state, onClick, disabled, big }) {
       }
       transition={{ duration: 0.36, ease: 'easeOut' }}
       className={`press flex w-full items-center gap-3.5 rounded-2xl p-2.5 pr-4 text-left disabled:cursor-default ${tone} ${
-        big ? 'min-h-24 justify-center sm:min-h-32' : 'min-h-15'
+        big
+          ? 'min-h-24 justify-center sm:min-h-32'
+          : 'min-h-15 short:min-h-13 short:py-2'
       }`}
     >
       {!big && (
@@ -223,7 +238,7 @@ function AnswerButton({ label, index, state, onClick, disabled, big }) {
         </span>
       )}
       <span
-        className={`min-w-0 text-pretty ${big ? 'font-display text-2xl font-semibold sm:text-3xl' : 'text-[1.02rem] leading-snug font-medium'}`}
+        className={`min-w-0 text-pretty wrap-break-word ${big ? 'font-display text-2xl font-semibold sm:text-3xl' : 'text-[1.02rem] leading-snug font-medium'}`}
       >
         {label}
       </span>
@@ -286,6 +301,26 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
     [answers, onFinish],
   );
 
+  // On short screens the right answer can sit under the bottom bar; bring it
+  // into view once answered so the feedback never points at something hidden.
+  const list = useRef(null);
+  const bar = useRef(null);
+  const revealCorrect = useCallback(
+    (i) => {
+      requestAnimationFrame(() => {
+        const el = list.current?.children[i];
+        const barTop = bar.current?.getBoundingClientRect().top;
+        if (!el || barTop == null) return;
+        const { top, bottom } = el.getBoundingClientRect();
+        const by =
+          bottom > barTop - 12 ? bottom - barTop + 12 : Math.min(top - 80, 0);
+        if (by)
+          window.scrollBy({ top: by, behavior: reduce ? 'auto' : 'smooth' });
+      });
+    },
+    [reduce],
+  );
+
   const choose = useCallback(
     (choice, timedOut = false) => {
       if (locked) return;
@@ -297,6 +332,7 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
 
       if (instant) {
         const right = choice === q.correct;
+        revealCorrect(q.answers.indexOf(q.correct));
         haptic(right ? 10 : [14, 70, 14]);
         if (right) sfx.right(currentStreak(questions, next, index));
         else sfx.wrong();
@@ -311,7 +347,7 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
           advance.current = setTimeout(() => go(target), timedOut ? 500 : 260);
       }
     },
-    [locked, current, answers, index, instant, q, go, questions],
+    [locked, current, answers, index, instant, q, go, questions, revealCorrect],
   );
 
   const next = useCallback(() => {
@@ -367,7 +403,6 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
 
   const streak =
     instant && current ? currentStreak(questions, answers, index) : 0;
-  const cat = splitCategory(q.category);
   const answeredCount = answers.filter(Boolean).length;
 
   let status = null;
@@ -408,7 +443,7 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
       <header
         className={`sticky top-0 z-20 pt-(--safe-t) transition-[background-color,box-shadow] duration-200 ${
           scrolled
-            ? 'bg-bg/85 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150'
+            ? 'bg-bg/92 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl backdrop-saturate-150'
             : ''
         }`}
       >
@@ -434,7 +469,7 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
         </div>
       </header>
 
-      <main className="relative mx-auto w-full max-w-2xl flex-1 px-(--gutter) pt-6 pb-8 sm:pt-10">
+      <main className="relative mx-auto w-full max-w-2xl flex-1 px-(--gutter) pt-6 pb-8 short:pt-3 sm:pt-10">
         <AnimatePresence mode="popLayout" initial={false} custom={dir}>
           <motion.section
             key={q.id}
@@ -450,7 +485,7 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
             <div className="flex items-start justify-between gap-4">
               <div className="flex flex-wrap items-center gap-1.5 text-xs font-medium">
                 <span className="rounded-full bg-surface px-2.5 py-1 text-ink-2">
-                  {cat.label}
+                  {categoryLabel(q.category)}
                 </span>
                 <span
                   className={`rounded-full px-2.5 py-1 capitalize ${DIFFICULTY_STYLE[q.difficulty]}`}
@@ -469,12 +504,13 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
             </div>
             <h2
               id={`${q.id}-text`}
-              className="mt-4 font-display text-[clamp(1.55rem,4.6vw,2.3rem)] leading-[1.12] font-semibold tracking-[-0.02em]"
+              className={`mt-4 font-display font-semibold tracking-[-0.02em] text-pretty wrap-break-word short:mt-3 ${questionSize(q.question)}`}
             >
               {q.question}
             </h2>
             <div
-              className={`mt-8 grid gap-2.5 ${q.type === 'boolean' ? 'grid-cols-2' : ''}`}
+              ref={list}
+              className={`mt-8 grid gap-2.5 short:mt-5 short:gap-2 ${q.type === 'boolean' ? 'grid-cols-2' : ''}`}
             >
               {q.answers.map((a, i) => (
                 <AnswerButton
@@ -492,7 +528,10 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
         </AnimatePresence>
       </main>
 
-      <footer className="bottom-bar sticky bottom-0 z-20 border-t border-line bg-bg/80 pt-3 backdrop-blur-xl">
+      <footer
+        ref={bar}
+        className="bottom-bar sticky bottom-0 z-20 border-t border-line bg-bg/92 pt-3 backdrop-blur-xl"
+      >
         <div className="mx-auto flex w-full max-w-2xl items-center gap-3 px-(--gutter)">
           {!instant && (
             <button
@@ -529,7 +568,7 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
                   <span className="font-medium text-good-ink">Correct.</span>
                 )}
                 {(status === 'wrong' || status === 'timeout') && (
-                  <span className="truncate text-bad-ink">
+                  <span className="line-clamp-2 leading-snug text-bad-ink">
                     {status === 'timeout' ? 'Out of time. ' : ''}It was{' '}
                     <strong className="font-semibold">{q.correct}</strong>.
                   </span>

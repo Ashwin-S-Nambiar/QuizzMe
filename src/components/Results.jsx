@@ -15,13 +15,8 @@ import {
 } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTitle } from '../hooks/index.js';
-import {
-  formatSeconds,
-  shareText,
-  splitCategory,
-  summarize,
-  verdict,
-} from '../lib/quiz.js';
+import { categoryLabel } from '../lib/categories.js';
+import { formatSeconds, shareText, summarize, verdict } from '../lib/quiz.js';
 import { sfx } from '../lib/sound.js';
 import { haptic, toast } from '../lib/store.js';
 import BottomBar from './BottomBar.jsx';
@@ -119,7 +114,7 @@ function ReviewRow({ q, a, n }) {
         </span>
         <span className="min-w-0 flex-1">
           <span className="block font-mono text-[0.7rem] text-muted tabular-nums">
-            Q{n} · {splitCategory(q.category).label} · {formatSeconds(a.ms)}
+            Q{n} · {categoryLabel(q.category)} · {formatSeconds(a.ms)}
           </span>
           <span
             className={`mt-0.5 block text-[0.95rem] leading-snug ${open ? '' : 'line-clamp-2'}`}

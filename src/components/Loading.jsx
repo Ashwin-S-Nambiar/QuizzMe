@@ -33,22 +33,24 @@ export default function Loading({ waitUntil, onCancel }) {
           />
         ))}
       </div>
-      <div
-        className="mt-auto flex flex-col items-center gap-3 pt-10 text-center"
-        role="status"
-      >
-        <p className="text-sm text-muted">
-          {left > 0
-            ? `Open Trivia DB takes one request every 5 seconds. Yours goes in ${left}s.`
-            : 'Shuffling questions…'}
-        </p>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="btn press glass h-10 text-sm"
+      <div className="pointer-events-none fixed inset-0 z-10 grid place-items-center px-(--gutter)">
+        <div
+          className="glass pointer-events-auto flex max-w-sm backdrop-blur-xl flex-col items-center gap-3 rounded-3xl p-5 text-center"
+          role="status"
         >
-          Cancel
-        </button>
+          <p className="text-sm text-balance text-ink-2">
+            {left > 0
+              ? `Open Trivia DB takes one request every 5 seconds. Yours goes in ${left}s.`
+              : 'Shuffling questions…'}
+          </p>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="btn press glass h-10 text-sm"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );

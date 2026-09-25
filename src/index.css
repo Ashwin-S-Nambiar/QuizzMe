@@ -88,6 +88,7 @@
 }
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant short (@media (max-height: 700px));
 @custom-variant hover-fine {
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -219,10 +220,12 @@
   color-scheme: dark;
 }
 
+/* Theme switches drive these from JS (useTheme); the old frame holds still
+   underneath while the new one is revealed on top. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 260ms;
-  animation-timing-function: var(--ease-out);
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 @layer base {

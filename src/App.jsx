@@ -89,15 +89,40 @@ export default function App() {
   const lost = location.pathname !== '/' && location.pathname !== '/index.html';
 
   useEffect(() => {
+    // Play on release, not press: a touch that turns into a scroll fires
+    // pointercancel (or drifts), so swiping through the page stays silent.
+    let press = null;
+    const target = (e) =>
+      e.target.closest?.('button:not(:disabled), a[href], label.choice');
     const onDown = (e) => {
+      press = null;
       if (e.button !== 0 || e.target.closest('[data-sfx="none"]')) return;
-      const hit = e.target.closest(
-        'button:not(:disabled), a[href], label.choice',
-      );
-      if (hit) sfx.tap();
+      const hit = target(e);
+      if (hit) press = { hit, x: e.clientX, y: e.clientY };
+    };
+    const onUp = (e) => {
+      const p = press;
+      press = null;
+      if (!p || target(e) !== p.hit) return;
+      if (Math.hypot(e.clientX - p.x, e.clientY - p.y) > 10) return;
+      sfx.tap();
+    };
+    const onCancel = () => {
+      press = null;
     };
     document.addEventListener('pointerdown', onDown);
-    return () => document.removeEventListener('pointerdown', onDown);
+    document.addEventListener('pointerup', onUp);
+    document.addEventListener('pointercancel', onCancel);
+    window.addEventListener('scroll', onCancel, {
+      capture: true,
+      passive: true,
+    });
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('pointerup', onUp);
+      document.removeEventListener('pointercancel', onCancel);
+      window.removeEventListener('scroll', onCancel, { capture: true });
+    };
   }, []);
 
   const toSetup = useCallback(() => {
