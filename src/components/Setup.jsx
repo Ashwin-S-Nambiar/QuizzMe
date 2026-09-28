@@ -17,6 +17,7 @@ import { haptic, prefsStore, setPref, useStore } from '../lib/store.js';
 import RollingNumber from './RollingNumber.jsx';
 import Segmented, { Choice } from './Segmented.jsx';
 import Sheet from './Sheet.jsx';
+import SiteFooter from './SiteFooter.jsx';
 import Stickers from './Stickers.jsx';
 
 const AMOUNTS = [5, 10, 15, 20, 30, 50];
@@ -408,27 +409,7 @@ export default function Setup({ categories, counts, status, onStart }) {
         </section>
       </div>
 
-      <footer className="bottom-bar flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-line pt-4 text-xs text-muted">
-        <span>
-          Questions from{' '}
-          <a
-            className="text-ink-2 underline decoration-line-2 underline-offset-4 hover-fine:decoration-ink-2"
-            href="https://opentdb.com"
-          >
-            Open Trivia DB
-          </a>
-          , CC BY-SA 4.0
-        </span>
-        <span>
-          Made by{' '}
-          <a
-            className="text-ink-2 underline decoration-line-2 underline-offset-4 hover-fine:decoration-ink-2"
-            href="https://ashwin.co.in"
-          >
-            Ashwin
-          </a>
-        </span>
-      </footer>
+      <SiteFooter />
 
       <TopicSheet
         open={topicsOpen}
