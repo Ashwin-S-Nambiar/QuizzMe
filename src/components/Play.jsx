@@ -453,6 +453,7 @@ export default function Play({ questions, mode, timer, onFinish, onQuit }) {
             onClick={() => setQuitting(true)}
             className="icon-btn press glass shrink-0"
             aria-label="Leave quiz"
+            data-tip="Leave quiz"
           >
             <X weight="bold" size={18} />
           </button>
