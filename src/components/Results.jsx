@@ -411,6 +411,7 @@ export default function Results({
           onClick={share}
           className="icon-btn press glass size-12!"
           aria-label="Share result"
+          data-tip="Share result"
         >
           <Export weight="bold" size={18} />
         </button>

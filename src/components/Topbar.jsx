@@ -72,6 +72,7 @@ export default function Topbar({ theme, onToggleTheme, onOpenStats, onHome }) {
             }}
             className="icon-btn press size-9! overflow-hidden hover-fine:bg-surface"
             aria-label={sound ? 'Mute sounds' : 'Turn sounds on'}
+            data-tip={sound ? 'Mute' : 'Sound on'}
             aria-pressed={sound}
           >
             <Swap
@@ -85,6 +86,7 @@ export default function Topbar({ theme, onToggleTheme, onOpenStats, onHome }) {
             onClick={onOpenStats}
             className="icon-btn press size-9! hover-fine:bg-surface"
             aria-label="Your stats"
+            data-tip="Your stats"
           >
             <ChartBar size={18} weight="duotone" />
           </button>
@@ -93,6 +95,7 @@ export default function Topbar({ theme, onToggleTheme, onOpenStats, onHome }) {
             onClick={onToggleTheme}
             className="icon-btn press size-9! overflow-hidden hover-fine:bg-surface"
             aria-label={theme === 'dark' ? 'Use light theme' : 'Use dark theme'}
+            data-tip={theme === 'dark' ? 'Light theme' : 'Dark theme'}
           >
             <Swap
               on={theme === 'dark'}
