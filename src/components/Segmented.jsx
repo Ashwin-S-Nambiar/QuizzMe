@@ -27,12 +27,18 @@ export function Choice({
   );
 }
 
-export default function Segmented({ label, value, options, onChange }) {
+export default function Segmented({
+  label,
+  value,
+  options,
+  onChange,
+  hideLabel = false,
+}) {
   const id = useId();
   return (
     <fieldset className="min-w-0">
-      <legend className="eyebrow mb-2">{label}</legend>
-      <div className="relative grid auto-cols-fr grid-flow-col gap-1 rounded-2xl bg-surface p-1">
+      <legend className={hideLabel ? 'sr-only' : 'caps mb-2'}>{label}</legend>
+      <div className="relative grid auto-cols-fr grid-flow-col gap-1 rounded-[11px] bg-bg-2 p-1">
         {options.map((o) => {
           const active = o.value === value;
           return (
@@ -42,20 +48,20 @@ export default function Segmented({ label, value, options, onChange }) {
               checked={active}
               disabled={o.disabled}
               onSelect={() => onChange(o.value)}
-              className={`relative flex min-h-11 flex-col items-center justify-center rounded-xl px-2 py-1.5 text-sm font-medium outline-offset-0 disabled:opacity-35 ${
-                active ? 'text-ink' : 'text-muted hover-fine:text-ink-2'
+              className={`relative flex min-h-11 flex-col items-center justify-center rounded-[8px] px-2 py-1.5 text-sm font-semibold outline-offset-0 ${
+                active ? 'text-ink' : 'text-muted hover-fine:text-ink'
               }`}
             >
               {active && (
                 <motion.span
                   layoutId={id}
                   transition={{ type: 'spring', duration: 0.32, bounce: 0.12 }}
-                  className="glass absolute inset-0 rounded-xl"
+                  className="absolute inset-0 rounded-[8px] bg-card shadow-(--shadow-card)"
                 />
               )}
               <span className="relative leading-tight">{o.label}</span>
               {o.hint != null && (
-                <span className="relative font-mono text-[0.68rem] leading-tight text-muted tabular-nums">
+                <span className="relative text-[0.7rem] leading-tight font-medium text-muted tabular-nums">
                   {o.hint}
                 </span>
               )}

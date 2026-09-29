@@ -27,77 +27,78 @@ import {
 } from '@phosphor-icons/react';
 import { splitCategory } from './quiz.js';
 
-export const TONE = {
-  butter: 'bg-butter text-butter-ink',
-  sky: 'bg-sky text-sky-ink',
-  mint: 'bg-mint text-mint-ink',
-  lilac: 'bg-lilac text-lilac-ink',
-  peach: 'bg-peach text-peach-ink',
-};
+// Flat printed colours, one per topic. Read them as a CSS colour with
+// flat(tone); the text on them is always --color-on-flat.
+export const flat = (tone) => `var(--color-${tone})`;
 
 // Labels stay short (one word where possible) so they never overflow a tile.
 const META = {
-  9: { icon: Lightbulb, tone: 'butter', group: 'World', label: 'General' },
+  9: { icon: Lightbulb, tone: 'yellow', group: 'World', label: 'General' },
   10: {
     icon: BookOpenText,
-    tone: 'peach',
+    tone: 'orange',
     group: 'Entertainment',
     label: 'Books',
   },
-  11: { icon: FilmSlate, tone: 'lilac', group: 'Entertainment', label: 'Film' },
-  12: { icon: MusicNotes, tone: 'sky', group: 'Entertainment', label: 'Music' },
+  11: { icon: FilmSlate, tone: 'pink', group: 'Entertainment', label: 'Film' },
+  12: {
+    icon: MusicNotes,
+    tone: 'blue',
+    group: 'Entertainment',
+    label: 'Music',
+  },
   13: {
     icon: MaskHappy,
-    tone: 'peach',
+    tone: 'orange',
     group: 'Entertainment',
     label: 'Theatre',
   },
-  14: { icon: Television, tone: 'mint', group: 'Entertainment', label: 'TV' },
+  14: { icon: Television, tone: 'green', group: 'Entertainment', label: 'TV' },
   15: {
     icon: GameController,
-    tone: 'lilac',
+    tone: 'pink',
     group: 'Entertainment',
     label: 'Gaming',
   },
   16: {
     icon: PuzzlePiece,
-    tone: 'butter',
+    tone: 'yellow',
     group: 'Entertainment',
     label: 'Tabletop',
   },
-  17: { icon: Leaf, tone: 'mint', group: 'Science', label: 'Nature' },
-  18: { icon: Cpu, tone: 'sky', group: 'Science', label: 'Computers' },
+  17: { icon: Leaf, tone: 'green', group: 'Science', label: 'Nature' },
+  18: { icon: Cpu, tone: 'blue', group: 'Science', label: 'Computers' },
   19: {
     icon: MathOperations,
-    tone: 'butter',
+    tone: 'yellow',
     group: 'Science',
     label: 'Maths',
   },
-  20: { icon: Lightning, tone: 'lilac', group: 'World', label: 'Mythology' },
-  21: { icon: SoccerBall, tone: 'mint', group: 'World', label: 'Sports' },
+  20: { icon: Lightning, tone: 'pink', group: 'World', label: 'Mythology' },
+  21: { icon: SoccerBall, tone: 'green', group: 'World', label: 'Sports' },
   22: {
     icon: GlobeHemisphereWest,
-    tone: 'sky',
+    tone: 'blue',
     group: 'World',
     label: 'Geography',
   },
-  23: { icon: Scroll, tone: 'peach', group: 'World', label: 'History' },
-  24: { icon: Bank, tone: 'sky', group: 'World', label: 'Politics' },
-  25: { icon: Palette, tone: 'peach', group: 'World', label: 'Art' },
-  26: { icon: Star, tone: 'butter', group: 'World', label: 'Celebrities' },
-  27: { icon: PawPrint, tone: 'peach', group: 'Science', label: 'Animals' },
-  28: { icon: Car, tone: 'lilac', group: 'World', label: 'Vehicles' },
+  23: { icon: Scroll, tone: 'orange', group: 'World', label: 'History' },
+  24: { icon: Bank, tone: 'blue', group: 'World', label: 'Politics' },
+  25: { icon: Palette, tone: 'orange', group: 'World', label: 'Art' },
+  26: { icon: Star, tone: 'yellow', group: 'World', label: 'Celebrities' },
+  27: { icon: PawPrint, tone: 'orange', group: 'Science', label: 'Animals' },
+  28: { icon: Car, tone: 'pink', group: 'World', label: 'Vehicles' },
   29: {
     icon: ChatCircleText,
-    tone: 'butter',
+    tone: 'yellow',
     group: 'Entertainment',
     label: 'Comics',
   },
-  30: { icon: Devices, tone: 'lilac', group: 'Science', label: 'Gadgets' },
-  31: { icon: Sparkle, tone: 'lilac', group: 'Entertainment', label: 'Anime' },
+  30: { icon: Devices, tone: 'pink', group: 'Science', label: 'Gadgets' },
+  31: { icon: Sparkle, tone: 'pink', group: 'Entertainment', label: 'Anime' },
   32: {
     icon: Smiley,
-    tone: 'butter',
+    tone: 'yellow',
     group: 'Entertainment',
     label: 'Cartoons',
   },
@@ -136,7 +137,7 @@ export const ANY = {
   id: '',
   label: 'Anything goes',
   icon: Shuffle,
-  tone: 'butter',
+  tone: 'yellow',
   group: null,
 };
 
@@ -149,7 +150,7 @@ export function describe({ id, name }) {
     label: meta.label ?? split.label,
     group: meta.group ?? split.group ?? 'World',
     icon: meta.icon ?? Lightbulb,
-    tone: meta.tone ?? 'sky',
+    tone: meta.tone ?? 'blue',
   };
 }
 
@@ -162,4 +163,8 @@ export function categoryLabel(name) {
 export function topicLabel(categories, id) {
   if (!id) return 'Anything';
   return categories.find((c) => c.id === String(id))?.label ?? 'Trivia';
+}
+
+export function categoryTone(name) {
+  return META[ID_BY_NAME.get(name)]?.tone ?? 'blue';
 }

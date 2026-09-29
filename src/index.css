@@ -1,90 +1,34 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Geist";
+  font-family: "Archivo";
   font-style: normal;
   font-weight: 100 900;
+  font-stretch: 62% 125%;
   font-display: swap;
-  src: url("/fonts/geist-latin.woff2") format("woff2");
+  src: url("/fonts/archivo-latin.woff2") format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: "Geist";
+  font-family: "Archivo";
   font-style: normal;
   font-weight: 100 900;
+  font-stretch: 62% 125%;
   font-display: swap;
-  src: url("/fonts/geist-latin-ext.woff2") format("woff2");
+  src: url("/fonts/archivo-latin-ext.woff2") format("woff2");
   unicode-range:
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
-  font-family: "Geist Mono";
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url("/fonts/geist-mono-latin.woff2") format("woff2");
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Geist Mono";
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url("/fonts/geist-mono-latin-ext.woff2") format("woff2");
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "Bricolage Grotesque";
-  font-style: normal;
-  font-weight: 200 800;
-  font-display: swap;
-  src: url("/fonts/bricolage-grotesque-latin.woff2") format("woff2");
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Bricolage Grotesque";
-  font-style: normal;
-  font-weight: 200 800;
-  font-display: swap;
-  src: url("/fonts/bricolage-grotesque-latin-ext.woff2") format("woff2");
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-  font-family: "Geist Fallback";
+  font-family: "Archivo Fallback";
   src: local("Arial"), local("ArialMT");
-  ascent-override: 95.9379%;
-  descent-override: 28.1609%;
+  ascent-override: 84.5%;
+  descent-override: 20.2%;
   line-gap-override: 0%;
-  size-adjust: 104.7553%;
-}
-
-@font-face {
-  font-family: "Geist Mono Fallback";
-  src: local("Arial"), local("ArialMT");
-  ascent-override: 74.6716%;
-  descent-override: 21.9185%;
-  line-gap-override: 0%;
-  size-adjust: 134.5893%;
-}
-
-@font-face {
-  font-family: "Bricolage Grotesque Fallback";
-  src: local("Arial"), local("ArialMT");
-  ascent-override: 88.2116%;
-  descent-override: 25.6098%;
-  line-gap-override: 0%;
-  size-adjust: 105.4283%;
+  size-adjust: 103.9%;
 }
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
@@ -97,126 +41,94 @@
   }
 }
 
-@theme {
-  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
-  --font-display:
-    "Bricolage Grotesque", "Bricolage Grotesque Fallback", ui-sans-serif,
-    sans-serif;
+/* One family. The width axis does the work a second typeface would: the
+   condensed cut is the printing on the cards (numbers, topics, headlines),
+   the normal cut is everything you read. */
+@theme static {
+  --font-sans:
+    "Archivo", "Archivo Fallback", ui-sans-serif, system-ui, sans-serif;
 
-  --color-bg: oklch(0.985 0.002 90);
-  --color-raised: oklch(1 0 0);
-  --color-surface: oklch(0.962 0.003 90);
-  --color-surface-2: oklch(0.925 0.004 90);
-  --color-ink: oklch(0.18 0.004 90);
-  --color-ink-2: oklch(0.37 0.005 90);
-  --color-muted: oklch(0.54 0.008 90);
-  --color-faint: oklch(0.72 0.006 90);
-  --color-line: oklch(0.2 0.004 90 / 0.08);
-  --color-line-2: oklch(0.2 0.004 90 / 0.15);
-  --color-accent: oklch(0.47 0.16 272);
-  --color-accent-press: oklch(0.41 0.15 272);
-  --color-on-accent: oklch(0.99 0.005 280);
-  --color-tint: oklch(0.945 0.03 283);
-  --color-tint-ink: oklch(0.4 0.13 275);
-  --color-good: oklch(0.6 0.14 152);
-  --color-good-tint: oklch(0.945 0.045 152);
-  --color-good-ink: oklch(0.4 0.1 152);
-  --color-bad: oklch(0.59 0.19 25);
-  --color-bad-tint: oklch(0.945 0.03 25);
-  --color-bad-ink: oklch(0.46 0.16 25);
-  --color-butter: oklch(0.95 0.083 96);
-  --color-butter-ink: oklch(0.42 0.08 80);
-  --color-sky: oklch(0.919 0.039 257);
-  --color-sky-ink: oklch(0.42 0.1 257);
-  --color-mint: oklch(0.931 0.037 154);
-  --color-mint-ink: oklch(0.4 0.08 154);
-  --color-lilac: oklch(0.918 0.042 302);
-  --color-lilac-ink: oklch(0.42 0.12 302);
-  --color-peach: oklch(0.924 0.034 48);
-  --color-peach-ink: oklch(0.46 0.11 48);
+  /* The table the cards sit on, and the card stock itself. */
+  --color-bg: oklch(0.935 0.011 84);
+  --color-bg-2: oklch(0.905 0.013 84);
+  --color-card: oklch(0.99 0.004 90);
+  --color-card-2: oklch(0.965 0.006 88);
+  --color-ink: oklch(0.2 0.012 70);
+  --color-ink-2: oklch(0.38 0.012 70);
+  --color-muted: oklch(0.52 0.012 70);
+  --color-faint: oklch(0.7 0.01 75);
+  --color-line: oklch(0.25 0.02 70 / 0.12);
+  --color-line-2: oklch(0.25 0.02 70 / 0.22);
+
+  /* Marker ink for grading. */
+  --color-good: oklch(0.56 0.14 150);
+  --color-good-ink: oklch(0.42 0.11 150);
+  --color-good-tint: oklch(0.94 0.045 150);
+  --color-bad: oklch(0.56 0.19 27);
+  --color-bad-ink: oklch(0.47 0.17 27);
+  --color-bad-tint: oklch(0.94 0.035 27);
+
+  /* Flat printed topic colours. Always read with --color-on-flat. */
+  --color-yellow: oklch(0.87 0.14 92);
+  --color-blue: oklch(0.72 0.11 240);
+  --color-green: oklch(0.77 0.13 150);
+  --color-pink: oklch(0.75 0.14 355);
+  --color-orange: oklch(0.76 0.14 58);
+  --color-on-flat: oklch(0.2 0.012 70);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-
-  --animate-shimmer: shimmer 1.4s linear infinite;
-  --animate-spin-fast: spin 0.7s linear infinite;
-
-  @keyframes shimmer {
-    from {
-      background-position: 150% 0;
-    }
-    to {
-      background-position: -50% 0;
-    }
-  }
 }
 
 :root {
-  --glass-top: oklch(1 0 0);
-  --glass-bottom: oklch(0.975 0.002 90);
-  --glass-edge:
-    inset 0 1px 0 oklch(1 0 0 / 0.6), inset 0 0 0 1px oklch(1 0 0 / 0.2);
-  --shadow-sm: 0 1px 2px oklch(0.2 0.004 90 / 0.06);
-  --shadow-md:
-    0 1px 2px oklch(0.2 0.004 90 / 0.04),
-    0 8px 24px -8px oklch(0.2 0.004 90 / 0.16);
-  --shadow-lg:
-    0 2px 6px oklch(0.2 0.004 90 / 0.05),
-    0 28px 56px -20px oklch(0.2 0.004 90 / 0.3);
-  --scrim: oklch(0.18 0.004 90 / 0.32);
-  --glow: oklch(0.88 0.06 283 / 0.55);
+  --shadow-sm: 0 1px 0 oklch(0.25 0.02 70 / 0.08);
+  /* A card lying on a table: a tight contact shadow plus a soft one. */
+  --shadow-card:
+    0 0 0 1px var(--color-line), 0 1px 1px oklch(0.25 0.02 70 / 0.06),
+    0 14px 28px -18px oklch(0.25 0.03 70 / 0.35);
+  --shadow-lift:
+    0 0 0 1px var(--color-line), 0 2px 4px oklch(0.25 0.02 70 / 0.08),
+    0 28px 48px -24px oklch(0.25 0.03 70 / 0.45);
+  --scrim: oklch(0.2 0.012 70 / 0.36);
+  --grain-opacity: 0.05;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
   --gutter: clamp(16px, 4vw, 40px);
-  --grain-opacity: 0.045;
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --color-bg: oklch(0.145 0.003 286);
-  --color-raised: oklch(0.19 0.004 286);
-  --color-surface: oklch(0.205 0.004 286);
-  --color-surface-2: oklch(0.255 0.005 286);
-  --color-ink: oklch(0.955 0.003 90);
-  --color-ink-2: oklch(0.84 0.004 90);
-  --color-muted: oklch(0.66 0.006 90);
-  --color-faint: oklch(0.48 0.005 90);
-  --color-line: oklch(1 0 0 / 0.08);
-  --color-line-2: oklch(1 0 0 / 0.15);
-  --color-accent: oklch(0.79 0.1 290);
-  --color-accent-press: oklch(0.72 0.11 290);
-  --color-on-accent: oklch(0.2 0.05 280);
-  --color-tint: oklch(0.27 0.05 282);
-  --color-tint-ink: oklch(0.87 0.07 288);
-  --color-good: oklch(0.75 0.14 152);
-  --color-good-tint: oklch(0.29 0.055 152);
-  --color-good-ink: oklch(0.87 0.1 152);
-  --color-bad: oklch(0.71 0.15 25);
-  --color-bad-tint: oklch(0.29 0.065 25);
-  --color-bad-ink: oklch(0.87 0.08 25);
-  --color-butter: oklch(0.4 0.07 96);
-  --color-butter-ink: oklch(0.92 0.08 96);
-  --color-sky: oklch(0.34 0.055 257);
-  --color-sky-ink: oklch(0.9 0.05 257);
-  --color-mint: oklch(0.34 0.05 154);
-  --color-mint-ink: oklch(0.9 0.06 154);
-  --color-lilac: oklch(0.34 0.06 302);
-  --color-lilac-ink: oklch(0.9 0.06 302);
-  --color-peach: oklch(0.36 0.05 48);
-  --color-peach-ink: oklch(0.9 0.05 48);
-  --grain-opacity: 0.07;
-  --glass-top: oklch(0.25 0.004 286);
-  --glass-bottom: oklch(0.215 0.004 286);
-  --glass-edge:
-    inset 0 1px 0 oklch(1 0 0 / 0.09), inset 0 0 0 1px oklch(1 0 0 / 0.045);
-  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.35);
-  --shadow-md: 0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px -8px oklch(0 0 0 / 0.6);
-  --shadow-lg:
-    0 2px 6px oklch(0 0 0 / 0.3), 0 28px 56px -20px oklch(0 0 0 / 0.7);
+  --color-bg: oklch(0.175 0.008 65);
+  --color-bg-2: oklch(0.21 0.009 65);
+  --color-card: oklch(0.245 0.009 68);
+  --color-card-2: oklch(0.285 0.01 68);
+  --color-ink: oklch(0.95 0.012 85);
+  --color-ink-2: oklch(0.84 0.012 85);
+  --color-muted: oklch(0.68 0.012 80);
+  --color-faint: oklch(0.5 0.01 75);
+  --color-line: oklch(0.95 0.02 85 / 0.1);
+  --color-line-2: oklch(0.95 0.02 85 / 0.2);
+  --color-good: oklch(0.74 0.14 150);
+  --color-good-ink: oklch(0.84 0.12 150);
+  --color-good-tint: oklch(0.3 0.05 150);
+  --color-bad: oklch(0.7 0.16 27);
+  --color-bad-ink: oklch(0.82 0.11 27);
+  --color-bad-tint: oklch(0.31 0.06 27);
+  --color-yellow: oklch(0.82 0.13 90);
+  --color-blue: oklch(0.7 0.1 240);
+  --color-green: oklch(0.74 0.12 150);
+  --color-pink: oklch(0.72 0.12 355);
+  --color-orange: oklch(0.74 0.12 58);
+  --shadow-sm: 0 1px 0 oklch(0 0 0 / 0.3);
+  --shadow-card:
+    0 0 0 1px var(--color-line), 0 1px 1px oklch(0 0 0 / 0.3),
+    0 14px 28px -16px oklch(0 0 0 / 0.7);
+  --shadow-lift:
+    0 0 0 1px var(--color-line), 0 2px 4px oklch(0 0 0 / 0.3),
+    0 28px 48px -22px oklch(0 0 0 / 0.8);
   --scrim: oklch(0 0 0 / 0.55);
-  --glow: oklch(0.35 0.08 285 / 0.45);
+  --grain-opacity: 0.07;
   color-scheme: dark;
 }
 
@@ -228,11 +140,35 @@
   mix-blend-mode: normal;
 }
 
+@utility cond {
+  font-stretch: 72%;
+}
+
+@utility semi-cond {
+  font-stretch: 86%;
+}
+
+/* The printing on a card: condensed, heavy, tight. */
+@utility printed {
+  font-stretch: 72%;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  line-height: 0.92;
+}
+
+@utility caps {
+  font-stretch: 80%;
+  font-size: 0.74rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
-    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scrollbar-gutter: stable;
@@ -241,16 +177,12 @@
   body {
     min-height: 100dvh;
     background-color: var(--color-bg);
-    background-image: radial-gradient(
-      60rem 28rem at 50% -8rem,
-      var(--glow),
-      transparent 70%
-    );
-    background-repeat: no-repeat;
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    font-variant-numeric: tabular-nums;
     overscroll-behavior-y: none;
+    /* Thrown cards leave the viewport; they must not widen the page. */
+    overflow-x: clip;
   }
 
   body::before {
@@ -277,13 +209,13 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
 
   ::selection {
-    background: var(--color-tint);
-    color: var(--color-tint-ink);
+    background: var(--color-yellow);
+    color: var(--color-on-flat);
   }
 
   h1,
@@ -300,12 +232,12 @@
 @layer components {
   .press {
     transition:
-      transform 160ms var(--ease-out),
-      background-color 150ms ease,
-      border-color 150ms ease,
-      color 150ms ease,
-      opacity 150ms ease,
-      box-shadow 150ms ease;
+      transform 140ms var(--ease-out),
+      translate 200ms var(--ease-out),
+      background-color 160ms var(--ease-out),
+      box-shadow 160ms var(--ease-out),
+      color 160ms var(--ease-out),
+      opacity 160ms var(--ease-out);
   }
 
   .press:active:not(:disabled) {
@@ -313,7 +245,7 @@
   }
 
   .choice:has(:focus-visible) {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
 
@@ -322,12 +254,10 @@
     cursor: not-allowed;
   }
 
-  .glass {
-    background: linear-gradient(180deg, var(--glass-top), var(--glass-bottom));
-    box-shadow:
-      var(--glass-edge),
-      var(--shadow-sm),
-      0 0 0 1px var(--color-line);
+  .card {
+    background: var(--color-card);
+    border-radius: 14px;
+    box-shadow: var(--shadow-card);
   }
 
   .btn {
@@ -337,27 +267,27 @@
     gap: 0.5rem;
     height: 3rem;
     padding-inline: 1.25rem;
-    border-radius: 999px;
-    font-weight: 560;
+    border-radius: 10px;
     font-size: 0.975rem;
+    font-weight: 650;
     white-space: nowrap;
   }
 
-  .btn-primary {
-    background: var(--color-accent);
-    color: var(--color-on-accent);
+  .btn-ink {
+    background: var(--color-ink);
+    color: var(--color-card);
+  }
+
+  .btn-ink:disabled {
+    opacity: 0.4;
+  }
+
+  .btn-plain {
+    background: var(--color-card);
+    color: var(--color-ink);
     box-shadow:
-      inset 0 1px 0 oklch(1 0 0 / 0.18),
-      0 1px 2px oklch(0.2 0.1 272 / 0.2),
-      0 8px 20px -8px oklch(0.4 0.16 272 / 0.55);
-  }
-
-  .btn-primary:active:not(:disabled) {
-    background: var(--color-accent-press);
-  }
-
-  .btn-primary:disabled {
-    opacity: 0.45;
+      0 0 0 1px var(--color-line-2),
+      var(--shadow-sm);
   }
 
   .icon-btn {
@@ -365,83 +295,55 @@
     place-items: center;
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 999px;
+    border-radius: 10px;
     color: var(--color-ink-2);
   }
 
-  .card {
-    background: var(--color-raised);
-    border-radius: 1.5rem;
-    box-shadow:
-      var(--shadow-md),
-      0 0 0 1px var(--color-line);
+  @media (hover: hover) and (pointer: fine) {
+    .btn-ink:hover:not(:disabled) {
+      background: color-mix(in oklch, var(--color-ink) 86%, var(--color-bg));
+    }
+
+    .btn-plain:hover:not(:disabled) {
+      background: var(--color-card-2);
+    }
+
+    .icon-btn:hover:not(:disabled) {
+      background: var(--color-bg-2);
+      color: var(--color-ink);
+    }
   }
 
-  .eyebrow {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-muted);
+  /* The back of a card: ink stock with a printed diamond lattice. */
+  .card-back {
+    background-color: var(--color-ink);
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent 0 7px,
+        color-mix(in oklch, var(--color-bg) 16%, transparent) 7px 8px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0 7px,
+        color-mix(in oklch, var(--color-bg) 16%, transparent) 7px 8px
+      );
+    border-radius: 14px;
+    box-shadow: var(--shadow-card);
   }
 
-  .skeleton {
-    background-color: var(--color-surface);
-    background-image: linear-gradient(
-      90deg,
-      transparent 40%,
-      oklch(1 0 0 / 0.5) 50%,
-      transparent 60%
-    );
-    background-size: 200% 100%;
-    animation: var(--animate-shimmer);
+  /* A reserved line for status copy that swaps in place without shifting
+     what's around it. */
+  .slot {
+    display: grid;
   }
 
-  :root[data-theme="dark"] .skeleton {
-    background-image: linear-gradient(
-      90deg,
-      transparent 40%,
-      oklch(1 0 0 / 0.05) 50%,
-      transparent 60%
-    );
+  .slot > * {
+    grid-area: 1 / 1;
   }
 
   .bottom-bar {
     padding-bottom: max(1rem, calc(var(--safe-b) + 0.5rem));
-  }
-
-  .tile-badge {
-    position: relative;
-  }
-
-  .tile-badge::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 1.5px solid currentColor;
-    opacity: 0;
-    transition: opacity 180ms ease;
-    pointer-events: none;
-  }
-
-  .tile-badge svg,
-  .tile-caret {
-    transition: transform 200ms var(--ease-out);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .tile:hover .tile-badge::after {
-      opacity: 0.3;
-    }
-
-    .tile:hover .tile-badge svg {
-      transform: translateY(-1.5px);
-    }
-
-    .tile:hover .tile-caret {
-      transform: translateX(3px);
-    }
   }
 
   .roll {
@@ -477,16 +379,31 @@
     height: 1.2em;
   }
 
-  .timer-ring {
-    animation: drain linear forwards;
+  .fuse {
+    transform-origin: left;
+    animation: fuse linear forwards;
   }
 
-  @keyframes drain {
+  @keyframes fuse {
     from {
-      stroke-dashoffset: 0;
+      transform: scaleX(1);
     }
     to {
-      stroke-dashoffset: var(--len);
+      transform: scaleX(0);
+    }
+  }
+
+  .dealing {
+    animation: dealing 900ms var(--ease-in-out) infinite;
+  }
+
+  @keyframes dealing {
+    0%,
+    100% {
+      transform: translateX(0) rotate(0);
+    }
+    50% {
+      transform: translateX(var(--dx, 6px)) rotate(var(--dr, 4deg));
     }
   }
 }
@@ -496,21 +413,11 @@
     transform: none;
   }
 
-  .skeleton {
-    animation: none;
-  }
-
-  .tile:hover .tile-badge svg,
-  .tile:hover .tile-caret {
-    transform: none;
-  }
-
   .roll-strip {
     transition: none;
   }
 
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
+  .dealing {
     animation: none;
   }
 }
@@ -520,13 +427,13 @@
   z-index: 70;
   left: 0;
   top: 0;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 6px 9px;
+  border-radius: 7px;
   background: var(--color-ink);
-  color: var(--color-bg);
+  color: var(--color-card);
   font-family: var(--font-sans);
   font-size: 12.5px;
-  font-weight: 500;
+  font-weight: 550;
   line-height: 1.2;
   white-space: nowrap;
   pointer-events: none;

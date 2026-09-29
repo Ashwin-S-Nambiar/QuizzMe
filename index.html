@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#fafaf9" />
+    <meta name="theme-color" content="#ede9e1" />
     <title>QuizzMe! · Quick trivia rounds</title>
     <meta name="description" content="Quick trivia rounds on 24 topics from Open Trivia DB. Pick a topic, set the difficulty, and see how you do." />
     <meta property="og:site_name" content="QuizzMe!" />
@@ -26,8 +26,7 @@
     <meta name="apple-mobile-web-app-title" content="QuizzMe!" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://opentdb.com" crossorigin />
     <script>
       (() => {
@@ -37,7 +36,7 @@
         } catch {}
         const dark = t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-        document.querySelector('meta[name="theme-color"]').content = dark ? '#0a0a0b' : '#fafaf9';
+        document.querySelector('meta[name="theme-color"]').content = dark ? '#13100d' : '#ede9e1';
       })();
     </script>
   </head>

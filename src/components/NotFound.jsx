@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { useTitle } from '../hooks/index.js';
 import { sfx } from '../lib/sound.js';
+import { Pips } from './Pips.jsx';
 import SiteFooter from './SiteFooter.jsx';
 
 const OPTIONS = [
@@ -51,84 +52,90 @@ export default function NotFound() {
 
   return (
     <div className="mx-auto flex min-h-[calc(100dvh-4rem-var(--safe-t))] max-w-6xl flex-col px-(--gutter)">
-      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center pb-16">
-        <div className="flex flex-wrap items-center gap-1.5 text-xs font-medium">
-          <span className="rounded-full bg-surface px-2.5 py-1 text-ink-2">
-            Error 404
-          </span>
-          <span className="rounded-full bg-bad-tint px-2.5 py-1 text-bad-ink">
-            Hard
-          </span>
-        </div>
-        <h1 className="mt-4 font-display text-[clamp(2rem,6vw,3.2rem)] leading-[1.02] font-semibold tracking-[-0.03em]">
-          Where did this page go?
-        </h1>
-        <p className="mt-3 text-muted">
-          <span className="font-mono text-sm">{location.pathname}</span> isn't a
-          page here.
-        </p>
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center pt-3 pb-16">
+        <section className="card overflow-hidden">
+          <div className="flex h-12 items-center justify-between gap-3 bg-pink px-4 text-on-flat sm:px-6">
+            <span className="printed text-[1.3rem] uppercase">Error 404</span>
+            <Pips level="hard" />
+          </div>
+          <div className="p-4 pt-5 sm:p-6 sm:pt-7">
+            <h1 className="text-[clamp(1.6rem,5vw,2.3rem)] leading-[1.1] font-semibold tracking-[-0.015em]">
+              Where did this page go?
+            </h1>
+            <p className="mt-2 text-muted">
+              <span className="font-medium text-ink-2">
+                {location.pathname}
+              </span>{' '}
+              isn't a page here.
+            </p>
 
-        <div className="mt-8 grid gap-2.5">
-          {OPTIONS.map((o, i) => {
-            const done = picked.includes(i);
-            const tone = done
-              ? o.right
-                ? 'bg-good-tint text-good-ink shadow-[inset_0_0_0_1.5px_var(--color-good)]'
-                : 'bg-bad-tint text-bad-ink opacity-70 shadow-[inset_0_0_0_1.5px_var(--color-bad)]'
-              : 'bg-raised shadow-[inset_0_0_0_1px_var(--color-line)] hover-fine:bg-surface';
-            return (
-              <motion.button
-                key={o.label}
-                type="button"
-                data-sfx="none"
-                onClick={() => choose(i)}
-                animate={
-                  done && !o.right && !reduce
-                    ? {
-                        transform: [
-                          'translateX(0px)',
-                          'translateX(-7px)',
-                          'translateX(6px)',
-                          'translateX(-3px)',
-                          'translateX(0px)',
-                        ],
-                      }
-                    : undefined
-                }
-                transition={{ duration: 0.34, ease: 'easeOut' }}
-                className={`press flex min-h-15 items-center gap-3.5 rounded-2xl p-2.5 pr-4 text-left ${tone}`}
-              >
-                <span
-                  className={`grid size-9 shrink-0 place-items-center rounded-xl font-mono text-sm ${
-                    done
-                      ? o.right
-                        ? 'bg-good text-raised'
-                        : 'bg-bad text-raised'
-                      : 'bg-surface text-muted'
-                  }`}
-                >
-                  {done ? (
-                    o.right ? (
-                      <Check size={17} weight="bold" />
-                    ) : (
-                      <X size={17} weight="bold" />
-                    )
-                  ) : (
-                    'ABCD'[i]
-                  )}
-                </span>
-                <span className="flex-1 font-medium">{o.label}</span>
-                {o.right && !done && (
-                  <ArrowRight size={17} weight="bold" className="text-muted" />
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+            <div className="mt-6 grid gap-2 sm:mt-8">
+              {OPTIONS.map((o, i) => {
+                const done = picked.includes(i);
+                const tone = done
+                  ? o.right
+                    ? 'bg-good-tint text-good-ink shadow-[inset_0_0_0_1.5px_var(--color-good)]'
+                    : 'bg-bad-tint text-bad-ink opacity-70 shadow-[inset_0_0_0_1.5px_var(--color-bad)]'
+                  : 'shadow-[inset_0_0_0_1px_var(--color-line-2)] hover-fine:bg-bg-2/70 hover-fine:shadow-[inset_0_0_0_1px_var(--color-ink)]';
+                return (
+                  <motion.button
+                    key={o.label}
+                    type="button"
+                    data-sfx="none"
+                    onClick={() => choose(i)}
+                    animate={
+                      done && !o.right && !reduce
+                        ? {
+                            transform: [
+                              'translateX(0px)',
+                              'translateX(-6px)',
+                              'translateX(5px)',
+                              'translateX(-3px)',
+                              'translateX(0px)',
+                            ],
+                          }
+                        : undefined
+                    }
+                    transition={{ duration: 0.34, ease: 'easeOut' }}
+                    className={`press flex min-h-14 items-center gap-3 rounded-[10px] p-2 pr-3.5 text-left ${tone}`}
+                  >
+                    <span
+                      className={`printed grid size-9 shrink-0 place-items-center rounded-[7px] text-lg ${
+                        done
+                          ? o.right
+                            ? 'bg-good text-card'
+                            : 'bg-bad text-card'
+                          : 'bg-bg-2 text-ink-2'
+                      }`}
+                    >
+                      {done ? (
+                        o.right ? (
+                          <Check size={17} weight="bold" />
+                        ) : (
+                          <X size={17} weight="bold" />
+                        )
+                      ) : (
+                        'ABCD'[i]
+                      )}
+                    </span>
+                    <span className="flex-1 font-medium">{o.label}</span>
+                    {o.right && !done && (
+                      <ArrowRight
+                        size={17}
+                        weight="bold"
+                        className="text-muted"
+                      />
+                    )}
+                  </motion.button>
+                );
+              })}
+            </div>
 
-        <p className="mt-5 min-h-6 text-sm text-muted" aria-live="polite">
-          {last?.note}
-        </p>
+            <p className="mt-5 min-h-6 text-sm text-muted" aria-live="polite">
+              {last?.note}
+            </p>
+          </div>
+        </section>
       </main>
       <SiteFooter />
     </div>

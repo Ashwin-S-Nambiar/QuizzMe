@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
-    "canvas-confetti": "^1.9.4",
     "motion": "^13.4.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

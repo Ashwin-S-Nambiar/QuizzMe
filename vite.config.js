@@ -38,6 +38,6 @@ export default defineConfig({
     react(),
     tailwindcss(),
     notFoundPage(),
-    iconWeights(['bold', 'duotone', 'fill']),
+    iconWeights(['bold', 'fill']),
   ],
 });

@@ -99,24 +99,22 @@ export default function Sheet({
             onDragEnd={(_, info) => {
               if (info.offset.y > 110 || info.velocity.y > 550) onClose();
             }}
-            className={`relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[1.75rem] bg-raised shadow-(--shadow-lg) outline-none sm:rounded-[1.75rem] ${wide ? 'sm:max-w-2xl' : 'sm:max-w-md'}`}
+            className={`relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[18px] bg-card shadow-(--shadow-lift) outline-none sm:rounded-[16px] ${wide ? 'sm:max-w-2xl' : 'sm:max-w-md'}`}
           >
             {mobile && (
               <div
                 className="flex justify-center pt-2.5 pb-1"
                 aria-hidden="true"
               >
-                <span className="h-1.5 w-10 rounded-full bg-surface-2" />
+                <span className="h-1 w-9 rounded-full bg-line-2" />
               </div>
             )}
             <header className="flex items-center justify-between gap-4 px-5 pt-2 pb-3 sm:pt-5">
-              <h2 className="font-display text-xl font-semibold tracking-tight">
-                {title}
-              </h2>
+              <h2 className="printed text-[1.7rem] uppercase">{title}</h2>
               <button
                 type="button"
                 onClick={onClose}
-                className="icon-btn press glass"
+                className="icon-btn press -mr-2"
                 aria-label="Close"
               >
                 <X weight="bold" size={18} />
@@ -126,7 +124,7 @@ export default function Sheet({
               {children}
             </div>
             {footer && (
-              <div className="bottom-bar border-t border-line px-5 pt-3">
+              <div className="bottom-bar border-t border-dashed border-line-2 px-5 pt-3">
                 {footer}
               </div>
             )}
