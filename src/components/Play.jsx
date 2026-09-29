@@ -638,7 +638,7 @@ export default function Play({
             type="button"
             onClick={next}
             disabled={nextDisabled}
-            className="btn btn-ink press min-w-36 shrink-0"
+            className="btn btn-brand press min-w-36 shrink-0"
           >
             {nextLabel}
             <ArrowRight weight="bold" size={17} />

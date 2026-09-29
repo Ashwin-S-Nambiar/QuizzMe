@@ -1,34 +1,63 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Archivo";
+  font-family: "Instrument Sans";
   font-style: normal;
-  font-weight: 100 900;
-  font-stretch: 62% 125%;
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
   font-display: swap;
-  src: url("/fonts/archivo-latin.woff2") format("woff2");
+  src: url("/fonts/instrument-sans-latin.woff2") format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: "Archivo";
+  font-family: "Instrument Sans";
   font-style: normal;
-  font-weight: 100 900;
-  font-stretch: 62% 125%;
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
   font-display: swap;
-  src: url("/fonts/archivo-latin-ext.woff2") format("woff2");
+  src: url("/fonts/instrument-sans-latin-ext.woff2") format("woff2");
   unicode-range:
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
-  font-family: "Archivo Fallback";
+  font-family: "Young Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/young-serif-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Young Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/young-serif-latin-ext.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Instrument Sans Fallback";
   src: local("Arial"), local("ArialMT");
-  ascent-override: 84.5%;
-  descent-override: 20.2%;
+  ascent-override: 92.55%;
+  descent-override: 23.85%;
   line-gap-override: 0%;
-  size-adjust: 103.9%;
+  size-adjust: 104.8%;
+}
+
+@font-face {
+  font-family: "Young Serif Fallback";
+  src: local("Arial"), local("ArialMT");
+  ascent-override: 90.56%;
+  descent-override: 31.69%;
+  line-gap-override: 0%;
+  size-adjust: 115.5%;
 }
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
@@ -41,40 +70,53 @@
   }
 }
 
-/* One family. The width axis does the work a second typeface would: the
-   condensed cut is the printing on the cards (numbers, topics, headlines),
-   the normal cut is everything you read. */
+/* Two families. Young Serif is the printing on the cards: topics, scores,
+   headlines, the letters on the answers. Instrument Sans is everything you
+   read. Nothing is set in capitals. */
 @theme static {
   --font-sans:
-    "Archivo", "Archivo Fallback", ui-sans-serif, system-ui, sans-serif;
+    "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-display:
+    "Young Serif", "Young Serif Fallback", ui-serif, Georgia, serif;
 
-  /* The table the cards sit on, and the card stock itself. */
-  --color-bg: oklch(0.935 0.011 84);
-  --color-bg-2: oklch(0.905 0.013 84);
-  --color-card: oklch(0.99 0.004 90);
-  --color-card-2: oklch(0.965 0.006 88);
-  --color-ink: oklch(0.2 0.012 70);
-  --color-ink-2: oklch(0.38 0.012 70);
-  --color-muted: oklch(0.52 0.012 70);
-  --color-faint: oklch(0.7 0.01 75);
-  --color-line: oklch(0.25 0.02 70 / 0.12);
-  --color-line-2: oklch(0.25 0.02 70 / 0.22);
+  /* Warm paper for the table, brighter stock for the cards, and ink with
+     the icon's indigo in it. */
+  --color-bg: oklch(0.955 0.012 85);
+  --color-bg-2: oklch(0.925 0.014 85);
+  --color-card: oklch(0.993 0.005 90);
+  --color-card-2: oklch(0.972 0.008 88);
+  --color-ink: oklch(0.25 0.045 272);
+  --color-ink-2: oklch(0.4 0.04 272);
+  --color-muted: oklch(0.53 0.03 272);
+  --color-faint: oklch(0.72 0.02 272);
+  --color-line: oklch(0.3 0.05 272 / 0.11);
+  --color-line-2: oklch(0.3 0.05 272 / 0.2);
+
+  /* The icon's indigo and lilac: the deck's back, the main action, what's
+     selected. */
+  --color-brand: oklch(0.46 0.15 272);
+  --color-brand-2: oklch(0.4 0.14 272);
+  --color-on-brand: oklch(0.99 0.005 285);
+  --color-lilac: oklch(0.82 0.09 295);
+  --color-lilac-soft: oklch(0.93 0.04 295);
+  --color-back: oklch(0.46 0.15 272);
 
   /* Marker ink for grading. */
-  --color-good: oklch(0.56 0.14 150);
-  --color-good-ink: oklch(0.42 0.11 150);
-  --color-good-tint: oklch(0.94 0.045 150);
-  --color-bad: oklch(0.56 0.19 27);
-  --color-bad-ink: oklch(0.47 0.17 27);
-  --color-bad-tint: oklch(0.94 0.035 27);
+  --color-good: oklch(0.58 0.13 155);
+  --color-good-ink: oklch(0.43 0.1 155);
+  --color-good-tint: oklch(0.95 0.04 155);
+  --color-bad: oklch(0.58 0.18 25);
+  --color-bad-ink: oklch(0.48 0.16 25);
+  --color-bad-tint: oklch(0.95 0.03 25);
 
-  /* Flat printed topic colours. Always read with --color-on-flat. */
-  --color-yellow: oklch(0.87 0.14 92);
-  --color-blue: oklch(0.72 0.11 240);
-  --color-green: oklch(0.77 0.13 150);
-  --color-pink: oklch(0.75 0.14 355);
-  --color-orange: oklch(0.76 0.14 58);
-  --color-on-flat: oklch(0.2 0.012 70);
+  /* Printed topic colours, one per topic. Read them with --color-on-flat. */
+  --color-yellow: oklch(0.89 0.11 90);
+  --color-blue: oklch(0.8 0.09 245);
+  --color-green: oklch(0.83 0.1 160);
+  --color-pink: oklch(0.83 0.09 350);
+  --color-orange: oklch(0.83 0.1 55);
+  --color-on-flat: oklch(0.25 0.045 272);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -82,53 +124,61 @@
 }
 
 :root {
-  --shadow-sm: 0 1px 0 oklch(0.25 0.02 70 / 0.08);
+  --shadow-sm: 0 1px 1px oklch(0.3 0.05 272 / 0.06);
   /* A card lying on a table: a tight contact shadow plus a soft one. */
   --shadow-card:
-    0 0 0 1px var(--color-line), 0 1px 1px oklch(0.25 0.02 70 / 0.06),
-    0 14px 28px -18px oklch(0.25 0.03 70 / 0.35);
+    0 0 0 1px var(--color-line), 0 1px 2px oklch(0.3 0.05 272 / 0.06),
+    0 16px 32px -20px oklch(0.3 0.08 272 / 0.3);
   --shadow-lift:
-    0 0 0 1px var(--color-line), 0 2px 4px oklch(0.25 0.02 70 / 0.08),
-    0 28px 48px -24px oklch(0.25 0.03 70 / 0.45);
-  --scrim: oklch(0.2 0.012 70 / 0.36);
-  --grain-opacity: 0.05;
+    0 0 0 1px var(--color-line), 0 2px 6px oklch(0.3 0.05 272 / 0.08),
+    0 32px 56px -28px oklch(0.3 0.08 272 / 0.4);
+  --scrim: oklch(0.25 0.045 272 / 0.4);
+  --grain-opacity: 0.04;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
   --gutter: clamp(16px, 4vw, 40px);
   color-scheme: light;
 }
 
+/* Night: a deep indigo table, cards a step lighter, cream ink. */
 :root[data-theme="dark"] {
-  --color-bg: oklch(0.175 0.008 65);
-  --color-bg-2: oklch(0.21 0.009 65);
-  --color-card: oklch(0.245 0.009 68);
-  --color-card-2: oklch(0.285 0.01 68);
-  --color-ink: oklch(0.95 0.012 85);
-  --color-ink-2: oklch(0.84 0.012 85);
-  --color-muted: oklch(0.68 0.012 80);
-  --color-faint: oklch(0.5 0.01 75);
-  --color-line: oklch(0.95 0.02 85 / 0.1);
-  --color-line-2: oklch(0.95 0.02 85 / 0.2);
-  --color-good: oklch(0.74 0.14 150);
-  --color-good-ink: oklch(0.84 0.12 150);
-  --color-good-tint: oklch(0.3 0.05 150);
-  --color-bad: oklch(0.7 0.16 27);
-  --color-bad-ink: oklch(0.82 0.11 27);
-  --color-bad-tint: oklch(0.31 0.06 27);
-  --color-yellow: oklch(0.82 0.13 90);
-  --color-blue: oklch(0.7 0.1 240);
-  --color-green: oklch(0.74 0.12 150);
-  --color-pink: oklch(0.72 0.12 355);
-  --color-orange: oklch(0.74 0.12 58);
-  --shadow-sm: 0 1px 0 oklch(0 0 0 / 0.3);
+  --color-bg: oklch(0.2 0.035 275);
+  --color-bg-2: oklch(0.245 0.04 275);
+  --color-card: oklch(0.26 0.04 275);
+  --color-card-2: oklch(0.3 0.045 275);
+  --color-ink: oklch(0.96 0.012 88);
+  --color-ink-2: oklch(0.86 0.018 280);
+  --color-muted: oklch(0.7 0.03 280);
+  --color-faint: oklch(0.52 0.035 280);
+  --color-line: oklch(0.9 0.04 280 / 0.1);
+  --color-line-2: oklch(0.9 0.04 280 / 0.18);
+  --color-brand: oklch(0.76 0.11 285);
+  --color-brand-2: oklch(0.7 0.12 285);
+  --color-on-brand: oklch(0.22 0.06 275);
+  --color-lilac: oklch(0.76 0.11 295);
+  --color-lilac-soft: oklch(0.34 0.07 290);
+  --color-back: oklch(0.42 0.14 275);
+  --color-good: oklch(0.76 0.13 155);
+  --color-good-ink: oklch(0.86 0.1 155);
+  --color-good-tint: oklch(0.33 0.06 160);
+  --color-bad: oklch(0.72 0.15 25);
+  --color-bad-ink: oklch(0.85 0.09 25);
+  --color-bad-tint: oklch(0.34 0.07 25);
+  --color-yellow: oklch(0.86 0.11 90);
+  --color-blue: oklch(0.79 0.09 245);
+  --color-green: oklch(0.81 0.1 160);
+  --color-pink: oklch(0.81 0.09 350);
+  --color-orange: oklch(0.81 0.1 55);
+  --color-on-flat: oklch(0.25 0.045 272);
+  --shadow-sm: 0 1px 1px oklch(0.1 0.03 275 / 0.4);
   --shadow-card:
-    0 0 0 1px var(--color-line), 0 1px 1px oklch(0 0 0 / 0.3),
-    0 14px 28px -16px oklch(0 0 0 / 0.7);
+    0 0 0 1px var(--color-line), 0 1px 2px oklch(0.1 0.03 275 / 0.4),
+    0 16px 32px -18px oklch(0.08 0.03 275 / 0.8);
   --shadow-lift:
-    0 0 0 1px var(--color-line), 0 2px 4px oklch(0 0 0 / 0.3),
-    0 28px 48px -22px oklch(0 0 0 / 0.8);
-  --scrim: oklch(0 0 0 / 0.55);
-  --grain-opacity: 0.07;
+    0 0 0 1px var(--color-line), 0 2px 6px oklch(0.1 0.03 275 / 0.4),
+    0 32px 56px -24px oklch(0.08 0.03 275 / 0.9);
+  --scrim: oklch(0.1 0.03 275 / 0.6);
+  --grain-opacity: 0.06;
   color-scheme: dark;
 }
 
@@ -140,28 +190,18 @@
   mix-blend-mode: normal;
 }
 
-@utility cond {
-  font-stretch: 72%;
-}
-
-@utility semi-cond {
-  font-stretch: 86%;
-}
-
-/* The printing on a card: condensed, heavy, tight. */
+/* The printing on a card. */
 @utility printed {
-  font-stretch: 72%;
-  font-weight: 800;
-  letter-spacing: -0.005em;
-  line-height: 0.92;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
 }
 
+/* A small field label, in sentence case. */
 @utility caps {
-  font-stretch: 80%;
-  font-size: 0.74rem;
-  font-weight: 650;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 550;
   color: var(--color-muted);
 }
 
@@ -209,12 +249,12 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 2px solid var(--color-brand);
     outline-offset: 2px;
   }
 
   ::selection {
-    background: var(--color-yellow);
+    background: var(--color-lilac);
     color: var(--color-on-flat);
   }
 
@@ -245,7 +285,7 @@
   }
 
   .choice:has(:focus-visible) {
-    outline: 2px solid var(--color-ink);
+    outline: 2px solid var(--color-brand);
     outline-offset: 2px;
   }
 
@@ -256,7 +296,7 @@
 
   .card {
     background: var(--color-card);
-    border-radius: 14px;
+    border-radius: 16px;
     box-shadow: var(--shadow-card);
   }
 
@@ -267,19 +307,28 @@
     gap: 0.5rem;
     height: 3rem;
     padding-inline: 1.25rem;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 0.975rem;
-    font-weight: 650;
+    font-weight: 600;
     white-space: nowrap;
   }
 
-  .btn-ink {
-    background: var(--color-ink);
-    color: var(--color-card);
+  .btn-brand {
+    background: var(--color-brand);
+    color: var(--color-on-brand);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.16),
+      0 1px 2px oklch(0.3 0.1 272 / 0.2),
+      0 8px 18px -10px oklch(0.4 0.15 272 / 0.6);
   }
 
-  .btn-ink:disabled {
+  .btn-brand:active:not(:disabled) {
+    background: var(--color-brand-2);
+  }
+
+  .btn-brand:disabled {
     opacity: 0.4;
+    box-shadow: none;
   }
 
   .btn-plain {
@@ -295,13 +344,13 @@
     place-items: center;
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 10px;
+    border-radius: 12px;
     color: var(--color-ink-2);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .btn-ink:hover:not(:disabled) {
-      background: color-mix(in oklch, var(--color-ink) 86%, var(--color-bg));
+    .btn-brand:hover:not(:disabled) {
+      background: var(--color-brand-2);
     }
 
     .btn-plain:hover:not(:disabled) {
@@ -314,22 +363,27 @@
     }
   }
 
-  /* The back of a card: ink stock with a printed diamond lattice. */
+  /* The back of a card: the icon's indigo with a printed lattice and a
+     thin inset frame, the same in both themes. */
   .card-back {
-    background-color: var(--color-ink);
+    background-color: var(--color-back);
     background-image:
       repeating-linear-gradient(
         45deg,
         transparent 0 7px,
-        color-mix(in oklch, var(--color-bg) 16%, transparent) 7px 8px
+        oklch(1 0 0 / 0.13) 7px 8px
       ),
       repeating-linear-gradient(
         -45deg,
         transparent 0 7px,
-        color-mix(in oklch, var(--color-bg) 16%, transparent) 7px 8px
+        oklch(1 0 0 / 0.13) 7px 8px
       );
-    border-radius: 14px;
-    box-shadow: var(--shadow-card);
+    color: oklch(0.99 0.005 285);
+    border-radius: 16px;
+    box-shadow:
+      inset 0 0 0 5px var(--color-back),
+      inset 0 0 0 6px oklch(1 0 0 / 0.22),
+      var(--shadow-card);
   }
 
   /* A reserved line for status copy that swaps in place without shifting

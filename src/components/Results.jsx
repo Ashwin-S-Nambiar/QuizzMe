@@ -248,7 +248,7 @@ export default function Results({
       type="button"
       onClick={playAgain}
       aria-busy={deal.busy}
-      className="btn btn-ink press flex-1"
+      className="btn btn-brand press flex-1"
     >
       {deal.busy ? (
         <DeckGlyph busy />

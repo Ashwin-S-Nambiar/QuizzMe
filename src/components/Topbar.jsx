@@ -31,17 +31,21 @@ function Swap({ on, a, b }) {
 
 export function Logo({ className = '' }) {
   return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
-      <span
-        className="card-back relative grid h-7 w-5.5 place-items-center rounded-[5px] shadow-none"
-        aria-hidden="true"
-      >
-        <span className="printed grid size-4 place-items-center rounded-full bg-yellow text-[0.7rem] text-on-flat">
-          ?
-        </span>
-      </span>
-      <span className="printed text-[1.55rem] tracking-[-0.01em] uppercase">
-        QuizzMe!
+    <span className={`inline-flex items-center gap-2.5 ${className}`}>
+      <svg viewBox="0 0 100 100" className="size-7" aria-hidden="true">
+        <rect width="100" height="100" rx="24" fill="var(--color-back)" />
+        <path
+          d="M36.5 38.5C36.5 30.5 42.5 25 50.5 25S64 30.5 64 37.5c0 6.5-4.5 9.5-8.5 12-3.5 2.2-5 4.2-5 8v2.5"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="9"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="50.5" cy="74" r="5.8" fill="#c0b2f8" />
+      </svg>
+      <span className="printed text-[1.45rem]">
+        QuizzMe<span className="text-brand">!</span>
       </span>
     </span>
   );
