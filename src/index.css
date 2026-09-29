@@ -23,21 +23,21 @@
 }
 
 @font-face {
-  font-family: "Young Serif";
+  font-family: "Gabarito";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 400 900;
   font-display: swap;
-  src: url("/fonts/young-serif-latin.woff2") format("woff2");
+  src: url("/fonts/gabarito-latin.woff2") format("woff2");
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: "Young Serif";
+  font-family: "Gabarito";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 400 900;
   font-display: swap;
-  src: url("/fonts/young-serif-latin-ext.woff2") format("woff2");
+  src: url("/fonts/gabarito-latin-ext.woff2") format("woff2");
   unicode-range:
     U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
@@ -52,12 +52,12 @@
 }
 
 @font-face {
-  font-family: "Young Serif Fallback";
+  font-family: "Gabarito Fallback";
   src: local("Arial"), local("ArialMT");
-  ascent-override: 90.56%;
-  descent-override: 31.69%;
+  ascent-override: 92.21%;
+  descent-override: 25.51%;
   line-gap-override: 0%;
-  size-adjust: 115.5%;
+  size-adjust: 101.94%;
 }
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
@@ -70,53 +70,57 @@
   }
 }
 
-/* Two families. Young Serif is the printing on the cards: topics, scores,
-   headlines, the letters on the answers. Instrument Sans is everything you
-   read. Nothing is set in capitals. */
+/* Game night. Gabarito is the printing on the cards and buttons, Instrument
+   Sans is everything you read. Nothing is set in capitals. Every control is
+   a tactile tile: a 2px border and a solid bottom edge that it presses down
+   into, so a press moves the control and never the layout. */
 @theme static {
   --font-sans:
     "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui,
     sans-serif;
   --font-display:
-    "Young Serif", "Young Serif Fallback", ui-serif, Georgia, serif;
+    "Gabarito", "Gabarito Fallback", ui-sans-serif, system-ui, sans-serif;
 
-  /* Warm paper for the table, brighter stock for the cards, and ink with
-     the icon's indigo in it. */
-  --color-bg: oklch(0.955 0.012 85);
-  --color-bg-2: oklch(0.925 0.014 85);
-  --color-card: oklch(0.993 0.005 90);
-  --color-card-2: oklch(0.972 0.008 88);
-  --color-ink: oklch(0.25 0.045 272);
-  --color-ink-2: oklch(0.4 0.04 272);
-  --color-muted: oklch(0.53 0.03 272);
-  --color-faint: oklch(0.72 0.02 272);
-  --color-line: oklch(0.3 0.05 272 / 0.11);
-  --color-line-2: oklch(0.3 0.05 272 / 0.2);
+  --color-bg: #f6f2ea;
+  --color-bg-2: #eee8dd;
+  --color-card: #ffffff;
+  --color-card-2: #fbf9f5;
+  --color-line: #e7e1d6;
+  --color-edge: #ddd5c7;
+  --color-ink: #1f2340;
+  --color-ink-2: #4a4f6e;
+  --color-muted: #6f7390;
+  --color-faint: #a5a8bb;
 
-  /* The icon's indigo and lilac: the deck's back, the main action, what's
-     selected. */
-  --color-brand: oklch(0.46 0.15 272);
-  --color-brand-2: oklch(0.4 0.14 272);
-  --color-on-brand: oklch(0.99 0.005 285);
-  --color-lilac: oklch(0.82 0.09 295);
-  --color-lilac-soft: oklch(0.93 0.04 295);
-  --color-back: oklch(0.46 0.15 272);
+  /* The icon's indigo and lilac. */
+  --color-brand: #3e4eb3;
+  --color-brand-edge: #2c3a8f;
+  --color-on-brand: #ffffff;
+  --color-brand-ink: #2c3a8f;
+  --color-lilac: #c0b2f8;
+  --color-lilac-soft: #eeeafe;
+  --color-back: #3e4eb3;
+  --color-back-edge: #2c3a8f;
 
-  /* Marker ink for grading. */
-  --color-good: oklch(0.58 0.13 155);
-  --color-good-ink: oklch(0.43 0.1 155);
-  --color-good-tint: oklch(0.95 0.04 155);
-  --color-bad: oklch(0.58 0.18 25);
-  --color-bad-ink: oklch(0.48 0.16 25);
-  --color-bad-tint: oklch(0.95 0.03 25);
+  --color-good: #2fa35a;
+  --color-good-edge: #23844a;
+  --color-good-tint: #e3f6e9;
+  --color-good-line: #b9e6c8;
+  --color-good-ink: #1c6e3c;
+  --color-bad: #e5484d;
+  --color-bad-edge: #c23237;
+  --color-bad-tint: #fde8e8;
+  --color-bad-line: #f6c9ca;
+  --color-bad-ink: #a3262b;
 
-  /* Printed topic colours, one per topic. Read them with --color-on-flat. */
-  --color-yellow: oklch(0.89 0.11 90);
-  --color-blue: oklch(0.8 0.09 245);
-  --color-green: oklch(0.83 0.1 160);
-  --color-pink: oklch(0.83 0.09 350);
-  --color-orange: oklch(0.83 0.1 55);
-  --color-on-flat: oklch(0.25 0.045 272);
+  /* Printed topic colours. Read them with --color-on-flat. */
+  --color-yellow: #ffd66b;
+  --color-yellow-edge: #d8a622;
+  --color-blue: #8ec5ff;
+  --color-green: #8fe0a9;
+  --color-pink: #ffb3cf;
+  --color-orange: #ffb877;
+  --color-on-flat: #1f2340;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
@@ -124,61 +128,53 @@
 }
 
 :root {
-  --shadow-sm: 0 1px 1px oklch(0.3 0.05 272 / 0.06);
-  /* A card lying on a table: a tight contact shadow plus a soft one. */
-  --shadow-card:
-    0 0 0 1px var(--color-line), 0 1px 2px oklch(0.3 0.05 272 / 0.06),
-    0 16px 32px -20px oklch(0.3 0.08 272 / 0.3);
   --shadow-lift:
-    0 0 0 1px var(--color-line), 0 2px 6px oklch(0.3 0.05 272 / 0.08),
-    0 32px 56px -28px oklch(0.3 0.08 272 / 0.4);
-  --scrim: oklch(0.25 0.045 272 / 0.4);
-  --grain-opacity: 0.04;
+    0 2px 6px rgb(31 35 64 / 0.08), 0 32px 56px -28px rgb(31 35 64 / 0.4);
+  --scrim: rgb(31 35 64 / 0.42);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
   --gutter: clamp(16px, 4vw, 40px);
   color-scheme: light;
 }
 
-/* Night: a deep indigo table, cards a step lighter, cream ink. */
+/* Night: a deep indigo table with cards a step lighter. */
 :root[data-theme="dark"] {
-  --color-bg: oklch(0.2 0.035 275);
-  --color-bg-2: oklch(0.245 0.04 275);
-  --color-card: oklch(0.26 0.04 275);
-  --color-card-2: oklch(0.3 0.045 275);
-  --color-ink: oklch(0.96 0.012 88);
-  --color-ink-2: oklch(0.86 0.018 280);
-  --color-muted: oklch(0.7 0.03 280);
-  --color-faint: oklch(0.52 0.035 280);
-  --color-line: oklch(0.9 0.04 280 / 0.1);
-  --color-line-2: oklch(0.9 0.04 280 / 0.18);
-  --color-brand: oklch(0.76 0.11 285);
-  --color-brand-2: oklch(0.7 0.12 285);
-  --color-on-brand: oklch(0.22 0.06 275);
-  --color-lilac: oklch(0.76 0.11 295);
-  --color-lilac-soft: oklch(0.34 0.07 290);
-  --color-back: oklch(0.42 0.14 275);
-  --color-good: oklch(0.76 0.13 155);
-  --color-good-ink: oklch(0.86 0.1 155);
-  --color-good-tint: oklch(0.33 0.06 160);
-  --color-bad: oklch(0.72 0.15 25);
-  --color-bad-ink: oklch(0.85 0.09 25);
-  --color-bad-tint: oklch(0.34 0.07 25);
-  --color-yellow: oklch(0.86 0.11 90);
-  --color-blue: oklch(0.79 0.09 245);
-  --color-green: oklch(0.81 0.1 160);
-  --color-pink: oklch(0.81 0.09 350);
-  --color-orange: oklch(0.81 0.1 55);
-  --color-on-flat: oklch(0.25 0.045 272);
-  --shadow-sm: 0 1px 1px oklch(0.1 0.03 275 / 0.4);
-  --shadow-card:
-    0 0 0 1px var(--color-line), 0 1px 2px oklch(0.1 0.03 275 / 0.4),
-    0 16px 32px -18px oklch(0.08 0.03 275 / 0.8);
-  --shadow-lift:
-    0 0 0 1px var(--color-line), 0 2px 6px oklch(0.1 0.03 275 / 0.4),
-    0 32px 56px -24px oklch(0.08 0.03 275 / 0.9);
-  --scrim: oklch(0.1 0.03 275 / 0.6);
-  --grain-opacity: 0.06;
+  --color-bg: #171a33;
+  --color-bg-2: #1d2142;
+  --color-card: #22264a;
+  --color-card-2: #292e57;
+  --color-line: #343a6b;
+  --color-edge: #10132a;
+  --color-ink: #f3f1ea;
+  --color-ink-2: #c9ccdf;
+  --color-muted: #a3a7c7;
+  --color-faint: #6a6f99;
+  --color-brand: #8f9bff;
+  --color-brand-edge: #5d68d6;
+  --color-on-brand: #14173a;
+  --color-brand-ink: #c9cfff;
+  --color-lilac: #b3a4f5;
+  --color-lilac-soft: #2c2f63;
+  --color-back: #4553c4;
+  --color-back-edge: #2c3689;
+  --color-good: #4cc27a;
+  --color-good-edge: #2c8a52;
+  --color-good-tint: #173a2a;
+  --color-good-line: #22573d;
+  --color-good-ink: #9ff0bb;
+  --color-bad: #ff6b6f;
+  --color-bad-edge: #c23237;
+  --color-bad-tint: #3d1d2a;
+  --color-bad-line: #62293a;
+  --color-bad-ink: #ffb8ba;
+  --color-yellow: #f7d06a;
+  --color-yellow-edge: #b98d1c;
+  --color-blue: #8ec5ff;
+  --color-green: #8fe0a9;
+  --color-pink: #ffb3cf;
+  --color-orange: #ffb877;
+  --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.3), 0 32px 56px -24px rgb(0 0 0 / 0.7);
+  --scrim: rgb(8 10 26 / 0.6);
   color-scheme: dark;
 }
 
@@ -190,18 +186,16 @@
   mix-blend-mode: normal;
 }
 
-/* The printing on a card. */
-@utility printed {
+/* The printing on cards and buttons. */
+@utility display {
   font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1;
+  letter-spacing: -0.015em;
 }
 
 /* A small field label, in sentence case. */
 @utility caps {
-  font-size: 0.8rem;
-  font-weight: 550;
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--color-muted);
 }
 
@@ -216,6 +210,7 @@
 
   body {
     min-height: 100dvh;
+    overflow-wrap: break-word;
     background-color: var(--color-bg);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -225,15 +220,6 @@
     overflow-x: clip;
   }
 
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    opacity: var(--grain-opacity);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
 
   button,
   [role="button"],
@@ -272,10 +258,11 @@
 @layer components {
   .press {
     transition:
-      transform 140ms var(--ease-out),
+      transform 120ms var(--ease-out),
       translate 200ms var(--ease-out),
       background-color 160ms var(--ease-out),
-      box-shadow 160ms var(--ease-out),
+      border-color 160ms var(--ease-out),
+      box-shadow 120ms var(--ease-out),
       color 160ms var(--ease-out),
       opacity 160ms var(--ease-out);
   }
@@ -284,77 +271,136 @@
     transform: scale(0.97);
   }
 
+  /* A tactile tile. --edge is the depth of its bottom edge; pressing sinks
+     it into that edge with a transform, so nothing around it moves. */
+  .tact {
+    --edge: 4px;
+    --edge-color: var(--color-edge);
+    background: var(--color-card);
+    border: 2px solid var(--color-line);
+    border-radius: 16px;
+    box-shadow: 0 var(--edge) 0 var(--edge-color);
+  }
+
+  .tact.press:active:not(:disabled),
+  .choice.tact:active:not([data-disabled]) {
+    transform: translateY(calc(var(--edge) - 1px));
+    box-shadow: 0 1px 0 var(--edge-color);
+  }
+
   .choice:has(:focus-visible) {
     outline: 2px solid var(--color-brand);
     outline-offset: 2px;
   }
 
   .choice[data-disabled] {
-    opacity: 0.35;
+    opacity: 0.4;
     cursor: not-allowed;
+  }
+
+  .chip {
+    --edge: 3px;
+    border-radius: 12px;
+    color: var(--color-ink-2);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  .chip[data-on] {
+    --edge-color: var(--color-brand);
+    background: var(--color-lilac-soft);
+    border-color: var(--color-brand);
+    color: var(--color-brand-ink);
   }
 
   .card {
     background: var(--color-card);
-    border-radius: 16px;
-    box-shadow: var(--shadow-card);
+    border: 2px solid var(--color-line);
+    border-radius: 22px;
+    box-shadow: 0 5px 0 var(--color-edge);
   }
 
   .btn {
+    --edge: 4px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    height: 3rem;
+    height: 3.25rem;
     padding-inline: 1.25rem;
-    border-radius: 12px;
-    font-size: 0.975rem;
-    font-weight: 600;
+    border-radius: 14px;
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.005em;
     white-space: nowrap;
   }
 
+  .btn.press:active:not(:disabled) {
+    transform: translateY(calc(var(--edge) - 1px));
+  }
+
   .btn-brand {
+    --edge-color: var(--color-brand-edge);
     background: var(--color-brand);
     color: var(--color-on-brand);
-    box-shadow:
-      inset 0 1px 0 oklch(1 0 0 / 0.16),
-      0 1px 2px oklch(0.3 0.1 272 / 0.2),
-      0 8px 18px -10px oklch(0.4 0.15 272 / 0.6);
+    box-shadow: 0 var(--edge) 0 var(--edge-color);
   }
 
-  .btn-brand:active:not(:disabled) {
-    background: var(--color-brand-2);
+  .btn-good {
+    --edge-color: var(--color-good-edge);
+    background: var(--color-good);
+    color: #fff;
+    box-shadow: 0 var(--edge) 0 var(--edge-color);
   }
 
-  .btn-brand:disabled {
-    opacity: 0.4;
-    box-shadow: none;
+  .btn-bad {
+    --edge-color: var(--color-bad-edge);
+    background: var(--color-bad);
+    color: #fff;
+    box-shadow: 0 var(--edge) 0 var(--edge-color);
+  }
+
+  :root[data-theme="dark"] .btn-good,
+  :root[data-theme="dark"] .btn-bad {
+    color: #14173a;
+  }
+
+  .btn.press:active:not(:disabled):is(.btn-brand, .btn-good, .btn-bad) {
+    box-shadow: 0 1px 0 var(--edge-color);
+  }
+
+  .btn-brand:disabled,
+  .btn-good:disabled,
+  .btn-bad:disabled {
+    opacity: 0.45;
   }
 
   .btn-plain {
-    background: var(--color-card);
     color: var(--color-ink);
-    box-shadow:
-      0 0 0 1px var(--color-line-2),
-      var(--shadow-sm);
   }
 
   .icon-btn {
     display: inline-grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 12px;
     color: var(--color-ink-2);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .btn-brand:hover:not(:disabled) {
-      background: var(--color-brand-2);
+      filter: brightness(1.08);
     }
 
-    .btn-plain:hover:not(:disabled) {
-      background: var(--color-card-2);
+    .tact.press:hover:not(:disabled),
+    .choice.tact:hover:not([data-disabled]) {
+      border-color: var(--color-faint);
+    }
+
+    .chip[data-on]:hover {
+      border-color: var(--color-brand);
     }
 
     .icon-btn:hover:not(:disabled) {
@@ -363,31 +409,30 @@
     }
   }
 
-  /* The back of a card: the icon's indigo with a printed lattice and a
-     thin inset frame, the same in both themes. */
+  /* The back of a card: the icon's indigo with a printed lattice and a thin
+     inset frame. */
   .card-back {
     background-color: var(--color-back);
     background-image:
       repeating-linear-gradient(
         45deg,
         transparent 0 7px,
-        oklch(1 0 0 / 0.13) 7px 8px
+        rgb(255 255 255 / 0.12) 7px 8px
       ),
       repeating-linear-gradient(
         -45deg,
         transparent 0 7px,
-        oklch(1 0 0 / 0.13) 7px 8px
+        rgb(255 255 255 / 0.12) 7px 8px
       );
-    color: oklch(0.99 0.005 285);
-    border-radius: 16px;
+    color: #fff;
+    border: 2px solid var(--color-back-edge);
+    border-radius: 22px;
     box-shadow:
-      inset 0 0 0 5px var(--color-back),
-      inset 0 0 0 6px oklch(1 0 0 / 0.22),
-      var(--shadow-card);
+      inset 0 0 0 4px var(--color-back),
+      inset 0 0 0 5px rgb(255 255 255 / 0.25),
+      0 5px 0 var(--color-back-edge);
   }
 
-  /* A reserved line for status copy that swaps in place without shifting
-     what's around it. */
   .slot {
     display: grid;
   }
@@ -463,7 +508,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .press:active:not(:disabled) {
+  .press:active:not(:disabled),
+  .tact.press:active:not(:disabled),
+  .btn.press:active:not(:disabled) {
     transform: none;
   }
 

@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Fire, X } from '@phosphor-icons/react';
+import { ArrowLeft, Check, Fire, Timer, X } from '@phosphor-icons/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -6,7 +6,7 @@ import { useTitle } from '../hooks/index.js';
 import { categoryLabel, categoryTone, flat } from '../lib/categories.js';
 import { currentStreak } from '../lib/quiz.js';
 import { sfx } from '../lib/sound.js';
-import { haptic } from '../lib/store.js';
+import { buzz } from '../lib/store.js';
 import { Pips } from './Pips.jsx';
 import Sheet from './Sheet.jsx';
 
@@ -14,19 +14,16 @@ const LETTERS = ['A', 'B', 'C', 'D'];
 const EASE = [0.23, 1, 0.32, 1];
 
 // Long questions step down in size so the answers stay near the fold on
-// phones. Tiers follow OpenTDB: median ~65 characters, longest ~140.
+// phones. Tiers follow OpenTDB: median ~65 characters, longest ~250.
 function questionSize(text) {
-  if (text.length > 110) {
-    return 'text-[clamp(1.15rem,3.4vw,1.6rem)] leading-[1.25]';
-  }
-  if (text.length > 70) {
-    return 'text-[clamp(1.3rem,3.9vw,1.85rem)] leading-[1.2]';
-  }
-  return 'text-[clamp(1.45rem,4.4vw,2.15rem)] leading-[1.15]';
+  if (text.length > 140) return 'text-[clamp(1.1rem,3.2vw,1.45rem)]';
+  if (text.length > 90) return 'text-[clamp(1.2rem,3.6vw,1.65rem)]';
+  if (text.length > 55) return 'text-[clamp(1.3rem,4vw,1.85rem)]';
+  return 'text-[clamp(1.45rem,4.6vw,2.1rem)]';
 }
 
-// The timer is a fuse along the top edge of the card. The CSS animation does
-// the drawing; the interval only counts whole seconds and fires expiry.
+// The timer counts whole seconds on the card's band and drains a fuse along
+// its bottom edge. The CSS animation draws; the interval counts and expires.
 function Fuse({ seconds, paused, onExpire }) {
   const [left, setLeft] = useState(seconds);
   const deadline = useRef(0);
@@ -59,10 +56,11 @@ function Fuse({ seconds, paused, onExpire }) {
   return (
     <>
       <span
-        className={`printed w-7 text-right text-lg transition-colors duration-200 ${low ? 'text-bad-ink' : ''}`}
+        className={`display flex min-w-12 items-center justify-end gap-1 text-base font-bold tabular-nums transition-colors duration-200 ${low ? 'text-bad-edge' : ''}`}
         role="timer"
         aria-label={`${left} seconds left`}
       >
+        <Timer size={16} weight="bold" />
         {left}
       </span>
       <span
@@ -70,7 +68,7 @@ function Fuse({ seconds, paused, onExpire }) {
         aria-hidden="true"
       >
         <span
-          className={`fuse block h-full transition-colors duration-200 ${low ? 'bg-bad' : 'bg-on-flat'}`}
+          className={`fuse block h-full transition-colors duration-200 ${low ? 'bg-bad' : 'bg-on-flat/70'}`}
           style={{
             animationDuration: `${seconds}s`,
             animationPlayState: paused ? 'paused' : 'running',
@@ -83,60 +81,60 @@ function Fuse({ seconds, paused, onExpire }) {
 
 function Progress({ questions, answers, index, mode, onJump }) {
   const n = questions.length;
-  const color = (i) => {
-    if (i === index) return 'bg-ink';
-    const a = answers[i];
-    if (!a) return 'bg-line-2';
-    if (mode === 'exam') return 'bg-ink-2/45';
-    return a.choice === questions[i].correct ? 'bg-good' : 'bg-bad';
-  };
+  const done = answers.filter(Boolean).length;
 
-  if (n > 25) {
-    const done = answers.filter(Boolean).length;
+  if (mode !== 'exam' || n > 25) {
     return (
-      <div className="h-2 flex-1 overflow-hidden rounded-xs bg-line-2">
+      <div
+        className="h-3.5 flex-1 overflow-hidden rounded-full bg-line"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={n}
+        aria-valuenow={done}
+        aria-label="Cards answered"
+      >
         <div
-          className="h-full origin-left bg-ink transition-transform duration-300 ease-out"
-          style={{ transform: `scaleX(${Math.max(done, index + 0.5) / n})` }}
+          className="h-full origin-left rounded-full bg-brand shadow-[inset_0_3px_0_rgb(255_255_255/0.25)] transition-transform duration-500 ease-out"
+          style={{ transform: `scaleX(${Math.max(done, 0.35) / n})` }}
         />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 gap-0.75" aria-hidden={mode !== 'exam'}>
-      {questions.map((q, i) =>
-        mode === 'exam' ? (
-          <button
-            key={q.id}
-            type="button"
-            onClick={() => onJump(i)}
-            aria-label={`Question ${i + 1}${answers[i] ? ', answered' : ''}`}
-            className="group relative flex-1 py-2.5"
-          >
-            <span
-              className={`block h-2 rounded-xs transition-[background-color,scale] duration-200 ${color(i)} group-hover:scale-y-150`}
-            />
-          </button>
-        ) : (
+    <div className="flex flex-1 gap-1">
+      {questions.map((q, i) => (
+        <button
+          key={q.id}
+          type="button"
+          onClick={() => onJump(i)}
+          aria-label={`Card ${i + 1}${answers[i] ? ', answered' : ''}`}
+          aria-current={i === index ? 'step' : undefined}
+          className="group relative flex-1 py-3"
+        >
           <span
-            key={q.id}
-            className={`h-2 flex-1 rounded-xs transition-colors duration-300 ${color(i)}`}
+            className={`block h-3 rounded-full transition-[background-color,scale] duration-200 group-hover:scale-y-125 ${
+              i === index ? 'bg-brand' : answers[i] ? 'bg-lilac' : 'bg-line'
+            }`}
           />
-        ),
-      )}
+        </button>
+      ))}
     </div>
   );
 }
 
-function Tick() {
+function Tick({ size = 18 }) {
   return (
-    <svg viewBox="0 0 20 20" className="size-4.5" aria-hidden="true">
+    <svg
+      viewBox="0 0 20 20"
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    >
       <motion.path
         d="M4.5 10.5l3.8 3.8L15.5 6"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2.6"
+        strokeWidth="2.8"
         strokeLinecap="round"
         strokeLinejoin="round"
         initial={{ pathLength: 0 }}
@@ -147,16 +145,20 @@ function Tick() {
   );
 }
 
-function Cross() {
+function Cross({ size = 18 }) {
   return (
-    <svg viewBox="0 0 20 20" className="size-4.5" aria-hidden="true">
+    <svg
+      viewBox="0 0 20 20"
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    >
       {['M5.5 5.5l9 9', 'M14.5 5.5l-9 9'].map((d, i) => (
         <motion.path
           key={d}
           d={d}
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.6"
+          strokeWidth="2.8"
           strokeLinecap="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
@@ -178,28 +180,28 @@ const SHAKE = {
   ],
 };
 
+const TONE = {
+  idle: '',
+  chosen:
+    'border-brand bg-lilac-soft text-brand-ink [--edge-color:var(--color-brand)]',
+  right:
+    'border-good bg-good-tint text-good-ink [--edge-color:var(--color-good-edge)]',
+  wrong:
+    'border-bad bg-bad-tint text-bad-ink [--edge-color:var(--color-bad-edge)]',
+  dim: 'opacity-45',
+};
+
+const KEY = {
+  idle: 'border-line text-muted',
+  chosen: 'border-brand bg-brand text-on-brand',
+  right: 'border-good bg-good text-white',
+  wrong: 'border-bad bg-bad text-white',
+  dim: 'border-line text-faint',
+};
+
 function AnswerButton({ label, index, state, onClick, disabled, big }) {
   const reduce = useReducedMotion();
   const shake = state === 'wrong' && !reduce;
-  const marked = state === 'right' || state === 'wrong';
-
-  const tone = {
-    idle: 'shadow-[inset_0_0_0_1px_var(--color-line-2)] hover-fine:bg-bg-2/70 hover-fine:shadow-[inset_0_0_0_1px_var(--color-ink)]',
-    chosen: 'bg-ink text-card shadow-[inset_0_0_0_1px_var(--color-ink)]',
-    right:
-      'bg-good-tint text-good-ink shadow-[inset_0_0_0_1.5px_var(--color-good)]',
-    wrong:
-      'bg-bad-tint text-bad-ink shadow-[inset_0_0_0_1.5px_var(--color-bad)]',
-    dim: 'text-muted opacity-50 shadow-[inset_0_0_0_1px_var(--color-line)]',
-  }[state];
-
-  const cap = {
-    idle: 'bg-bg-2 text-ink-2',
-    chosen: 'bg-card text-ink',
-    right: 'bg-good text-card',
-    wrong: 'bg-bad text-card',
-    dim: 'bg-bg-2 text-faint',
-  }[state];
 
   return (
     <motion.button
@@ -210,15 +212,15 @@ function AnswerButton({ label, index, state, onClick, disabled, big }) {
       aria-pressed={state === 'chosen'}
       animate={shake ? SHAKE : undefined}
       transition={{ duration: 0.34, ease: 'easeOut' }}
-      className={`press flex w-full items-center gap-3 rounded-[10px] p-2 pr-3.5 text-left disabled:cursor-default ${tone} ${
+      className={`tact press flex w-full min-w-0 items-center text-left disabled:cursor-default ${TONE[state]} ${
         big
-          ? 'min-h-24 flex-col justify-center gap-1.5 sm:min-h-28'
-          : 'min-h-14 short:min-h-12'
+          ? 'min-h-24 flex-col justify-center gap-1 px-3 sm:min-h-28'
+          : 'min-h-14 gap-3 py-2 pr-4 pl-2'
       }`}
     >
       {!big && (
         <span
-          className={`printed grid size-9 shrink-0 place-items-center rounded-[7px] text-lg transition-colors duration-200 ${cap}`}
+          className={`display grid size-9 shrink-0 place-items-center rounded-[10px] border-2 text-[0.95rem] font-bold transition-colors duration-200 ${KEY[state]}`}
         >
           {state === 'right' ? (
             <Tick />
@@ -232,7 +234,7 @@ function AnswerButton({ label, index, state, onClick, disabled, big }) {
       <span
         className={`min-w-0 wrap-break-word ${
           big
-            ? 'printed text-[2.1rem] uppercase sm:text-[2.5rem]'
+            ? 'display text-[1.6rem] font-bold sm:text-[1.9rem]'
             : 'text-[1.02rem] leading-snug font-medium text-pretty'
         }`}
       >
@@ -247,20 +249,21 @@ function AnswerButton({ label, index, state, onClick, disabled, big }) {
           {label}
         </span>
       </span>
-      {big && marked && (state === 'right' ? <Tick /> : <Cross />)}
+      {big && state === 'right' && <Tick size={22} />}
+      {big && state === 'wrong' && <Cross size={22} />}
     </motion.button>
   );
 }
 
-// A card thrown to the discard pile going forward; pulled back off it going
-// back. The next card rises from the deck underneath.
-// Every state keeps the same transform shape so Motion can interpolate it.
+// A card thrown off the deck going forward; pulled back going back. The next
+// card rises from the deck underneath. Every state keeps the same transform
+// shape so Motion can interpolate it.
 const card = (x, y, r, s) =>
   `translate(${x}%, ${y}px) rotate(${r}deg) scale(${s})`;
 const cardMotion = {
   enter: (d) =>
     d > 0
-      ? { opacity: 0, transform: card(0, 16, 0, 0.97), zIndex: 1 }
+      ? { opacity: 0, transform: card(0, 20, 0, 0.96), zIndex: 1 }
       : { opacity: 0, transform: card(-56, 0, -7, 1), zIndex: 2 },
   center: {
     opacity: 1,
@@ -280,7 +283,7 @@ const cardMotion = {
         }
       : {
           opacity: 0,
-          transform: card(0, 16, 0, 0.97),
+          transform: card(0, 20, 0, 0.96),
           zIndex: 0,
           transition: { duration: 0.22, ease: EASE },
         },
@@ -291,6 +294,14 @@ const fadeMotion = {
   enter: { opacity: 0 },
   center: { opacity: 1, transition: { duration: 0.2 } },
   exit: { opacity: 0, transition: { duration: 0.15 } },
+};
+
+const BANNER = {
+  idle: 'border-line bg-bg',
+  right: 'border-good-line bg-good-tint',
+  streak: 'border-good-line bg-good-tint',
+  wrong: 'border-bad-line bg-bad-tint',
+  timeout: 'border-bad-line bg-bad-tint',
 };
 
 export default function Play({
@@ -319,7 +330,7 @@ export default function Play({
   const tone = categoryTone(q.category);
 
   useEffect(() => () => clearTimeout(advance.current), []);
-  useTitle(`Question ${index + 1} of ${n} · QuizzMe!`);
+  useTitle(`Card ${index + 1} of ${n} · QuizzMe!`);
 
   const go = useCallback(
     (to) => {
@@ -327,6 +338,8 @@ export default function Play({
       clearTimeout(advance.current);
       setDir(to > index ? 1 : -1);
       setIndex(to);
+      sfx.flip();
+      buzz.flip();
       started.current = performance.now();
       if (window.scrollY > 0)
         window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
@@ -355,7 +368,7 @@ export default function Play({
         if (!el || barTop == null) return;
         const { top, bottom } = el.getBoundingClientRect();
         const by =
-          bottom > barTop - 12 ? bottom - barTop + 12 : Math.min(top - 80, 0);
+          bottom > barTop - 16 ? bottom - barTop + 16 : Math.min(top - 80, 0);
         if (by)
           window.scrollBy({ top: by, behavior: reduce ? 'auto' : 'smooth' });
       });
@@ -373,20 +386,30 @@ export default function Play({
       setAnswers(next);
 
       if (instant) {
-        const right = choice === q.correct;
         revealCorrect(q.answers.indexOf(q.correct));
-        haptic(right ? 10 : [14, 70, 14]);
-        if (right) sfx.right(currentStreak(questions, next, index));
-        else sfx.wrong();
+        if (choice === q.correct) {
+          const streak = currentStreak(questions, next, index);
+          sfx.right(streak);
+          if (streak >= 3) buzz.streak();
+          else buzz.right();
+        } else {
+          if (timedOut) sfx.timeout();
+          else sfx.wrong();
+          buzz.wrong();
+        }
         return;
       }
-      haptic(8);
-      if (timedOut) sfx.wrong();
-      else sfx.pick();
+      if (timedOut) {
+        sfx.timeout();
+        buzz.wrong();
+      } else {
+        sfx.pick();
+        buzz.select();
+      }
       if (wasEmpty || timedOut) {
         const target = next.findIndex((a, i) => !a && i > index);
         if (target !== -1)
-          advance.current = setTimeout(() => go(target), timedOut ? 500 : 320);
+          advance.current = setTimeout(() => go(target), timedOut ? 500 : 340);
       }
     },
     [locked, current, answers, index, instant, q, go, questions, revealCorrect],
@@ -448,11 +471,13 @@ export default function Play({
   const answeredCount = answers.filter(Boolean).length;
   const remaining = n - index - 1;
 
-  let status = null;
+  let status = 'idle';
   if (instant && current) {
     if (current.choice === q.correct) status = streak >= 3 ? 'streak' : 'right';
     else status = current.timedOut ? 'timeout' : 'wrong';
   }
+  const good = status === 'right' || status === 'streak';
+  const bad = status === 'wrong' || status === 'timeout';
 
   const nextLabel = instant
     ? isLast
@@ -464,15 +489,13 @@ export default function Play({
         ? `${n - answeredCount} left`
         : 'Next card';
 
-  const nextDisabled = instant ? !current : false;
-
   const topBar = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.12 } }}
       transition={{ duration: 0.2, ease: EASE }}
-      className="pointer-events-auto mx-auto flex h-full w-full max-w-2xl items-center gap-3 px-(--gutter)"
+      className="pointer-events-auto mx-auto flex h-full w-full max-w-3xl items-center gap-3 px-(--gutter)"
     >
       <button
         type="button"
@@ -481,7 +504,7 @@ export default function Play({
         aria-label="Leave quiz"
         data-tip="Leave quiz"
       >
-        <X weight="bold" size={19} />
+        <X weight="bold" size={20} />
       </button>
       <Progress
         questions={questions}
@@ -490,9 +513,8 @@ export default function Play({
         mode={mode}
         onJump={go}
       />
-      <span className="printed min-w-14 shrink-0 text-right text-[1.35rem]">
-        {String(index + 1).padStart(2, '0')}
-        <span className="text-muted">/{n}</span>
+      <span className="display shrink-0 text-right text-[0.95rem] font-bold text-ink-2 tabular-nums">
+        {index + 1} of {n}
       </span>
     </motion.div>
   );
@@ -501,16 +523,17 @@ export default function Play({
     <div className="flex min-h-[calc(100dvh-4rem-var(--safe-t))] flex-col">
       {barSlot ? createPortal(topBar, barSlot) : null}
 
-      <main className="relative mx-auto w-full max-w-2xl flex-1 px-(--gutter) pt-3 pb-10 sm:pt-8">
+      <main className="relative mx-auto w-full max-w-3xl flex-1 px-(--gutter) pt-2 pb-12 sm:pt-6">
         <div className="relative">
           {/* The rest of the deck, peeking out under the current card. */}
           {[2, 1].map((k) => (
             <div
               key={k}
-              className="card-back absolute inset-0 transition-[transform,opacity] duration-300 ease-out"
+              className="card absolute inset-0 transition-[opacity,translate,scale] duration-300 ease-out"
               style={{
-                transform: `translateY(${k * 10}px) scale(${1 - k * 0.035})`,
-                opacity: remaining >= k ? 1 - k * 0.25 : 0,
+                translate: `0 ${k * 10}px`,
+                scale: `${1 - k * 0.045} 1`,
+                opacity: remaining >= k ? 1 : 0,
               }}
               aria-hidden="true"
             />
@@ -527,14 +550,17 @@ export default function Play({
               className="card relative w-full overflow-hidden"
             >
               <div
-                className="relative flex h-12 items-center justify-between gap-3 px-4 text-on-flat sm:h-13 sm:px-6"
+                className="relative flex min-h-12 items-center justify-between gap-3 px-4 py-2 text-on-flat sm:px-6"
                 style={{ background: flat(tone) }}
               >
-                <span className="printed truncate text-[1.3rem] uppercase">
+                <span className="display min-w-0 text-[1.05rem] leading-tight font-bold wrap-break-word">
                   {categoryLabel(q.category)}
                 </span>
-                <span className="flex shrink-0 items-center gap-3">
-                  <Pips level={q.difficulty} />
+                <span className="flex shrink-0 items-center gap-3 text-[0.8125rem] font-semibold">
+                  <span className="flex items-center gap-1.5 capitalize">
+                    <Pips level={q.difficulty} />
+                    {q.difficulty}
+                  </span>
                   {timer > 0 && (
                     <Fuse
                       seconds={timer}
@@ -548,13 +574,15 @@ export default function Play({
               <div className="p-4 pt-5 sm:p-6 sm:pt-7">
                 <h2
                   id={`${q.id}-text`}
-                  className={`font-semibold tracking-[-0.015em] text-pretty wrap-break-word ${questionSize(q.question)}`}
+                  className={`display leading-[1.2] font-bold text-pretty wrap-break-word ${questionSize(q.question)}`}
                 >
                   {q.question}
                 </h2>
                 <div
                   ref={list}
-                  className={`mt-6 grid gap-2 sm:mt-8 ${q.type === 'boolean' ? 'grid-cols-2' : ''}`}
+                  className={`mt-5 grid gap-x-2.5 gap-y-3 sm:mt-7 ${
+                    q.type === 'boolean' ? 'grid-cols-2' : 'md:grid-cols-2'
+                  }`}
                 >
                   {q.answers.map((a, i) => (
                     <AnswerButton
@@ -574,74 +602,113 @@ export default function Play({
         </div>
       </main>
 
+      {/* The feedback banner. Its height never changes: only its colour and
+          the words in it do, so answering never moves the page. */}
       <footer
         ref={bar}
-        className="bottom-bar sticky bottom-0 z-20 border-t border-line bg-bg pt-3"
+        className={`bottom-bar sticky bottom-0 z-20 border-t-2 pt-3 transition-colors duration-200 sm:pt-4 ${BANNER[status]}`}
       >
-        <div className="mx-auto flex w-full max-w-2xl items-center gap-3 px-(--gutter)">
-          {!instant && (
-            <button
-              type="button"
-              onClick={() => go(index - 1)}
-              disabled={index === 0}
-              className="btn btn-plain press size-12 shrink-0 px-0 disabled:opacity-40"
-              aria-label="Previous card"
-              data-tip="Previous card"
-            >
-              <ArrowLeft weight="bold" size={18} />
-            </button>
-          )}
-          <div className="slot min-w-0 flex-1 text-sm" aria-live="polite">
-            <AnimatePresence initial={false}>
-              <motion.p
-                key={status ?? `idle-${instant}`}
-                initial={{ opacity: 0, transform: 'translateY(6px)' }}
-                animate={{ opacity: 1, transform: 'translateY(0px)' }}
-                exit={{
-                  opacity: 0,
-                  transform: 'translateY(-6px)',
-                  transition: { duration: 0.12 },
-                }}
-                transition={{ type: 'spring', duration: 0.34, bounce: 0.2 }}
-                className="flex items-center gap-2 self-center"
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-(--gutter) sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            {!instant && (
+              <button
+                type="button"
+                onClick={() => go(index - 1)}
+                disabled={index === 0}
+                className="tact press grid size-11 shrink-0 place-items-center text-ink-2 disabled:opacity-40"
+                aria-label="Previous card"
+                data-tip="Previous card"
               >
-                {status === 'streak' && (
-                  <span className="inline-flex items-center gap-1 rounded-md bg-yellow px-2 py-1 font-semibold text-on-flat">
-                    <Fire weight="fill" size={15} />
-                    {streak} in a row
-                  </span>
-                )}
-                {status === 'right' && (
-                  <span className="font-semibold text-good-ink">Correct.</span>
-                )}
-                {(status === 'wrong' || status === 'timeout') && (
-                  <span className="line-clamp-2 leading-snug text-bad-ink">
-                    {status === 'timeout' ? 'Out of time. ' : ''}It was{' '}
-                    <strong className="font-semibold">{q.correct}</strong>.
-                  </span>
-                )}
-                {status == null && (
-                  <span className="text-muted">
-                    {instant ? (
-                      <span className="hidden pointer-fine:inline">
-                        Press 1 to {q.answers.length} to answer
+                <ArrowLeft weight="bold" size={18} />
+              </button>
+            )}
+            {/* Tall enough for a heading and two lines of answer, in every
+                state, so the banner never grows. */}
+            <div
+              className="slot min-h-[4.25rem] min-w-0 flex-1"
+              aria-live="polite"
+            >
+              <AnimatePresence initial={false}>
+                <motion.div
+                  key={status === 'idle' ? `idle-${instant}` : status}
+                  initial={{ opacity: 0, transform: 'translateY(6px)' }}
+                  animate={{ opacity: 1, transform: 'translateY(0px)' }}
+                  exit={{
+                    opacity: 0,
+                    transform: 'translateY(-4px)',
+                    transition: { duration: 0.12 },
+                  }}
+                  transition={{ type: 'spring', duration: 0.34, bounce: 0.2 }}
+                  className="flex min-w-0 items-center gap-3 self-center"
+                >
+                  {status !== 'idle' && (
+                    <span
+                      className={`grid size-10 shrink-0 place-items-center rounded-full ${
+                        good ? 'bg-good text-white' : 'bg-bad text-white'
+                      } dark:text-bg`}
+                    >
+                      {good ? (
+                        <Check weight="bold" size={20} />
+                      ) : (
+                        <X weight="bold" size={20} />
+                      )}
+                    </span>
+                  )}
+                  {good && (
+                    <p className="min-w-0 flex-1">
+                      <span className="display block text-xl leading-tight font-extrabold text-good-ink">
+                        Correct
                       </span>
-                    ) : (
-                      `${answeredCount} of ${n} answered`
-                    )}
-                  </span>
-                )}
-              </motion.p>
-            </AnimatePresence>
+                      <span className="block text-[0.95rem] text-good-ink/85">
+                        {status === 'streak' ? 'On a roll.' : 'Nice one.'}
+                      </span>
+                    </p>
+                  )}
+                  {status === 'streak' && (
+                    <span className="display inline-flex shrink-0 items-center gap-1 rounded-full bg-yellow px-2.5 py-1 text-sm font-bold text-on-flat">
+                      <Fire weight="fill" size={15} />
+                      {streak} in a row
+                    </span>
+                  )}
+                  {bad && (
+                    <p className="min-w-0 flex-1">
+                      <span className="display block text-xl leading-tight font-extrabold text-bad-ink">
+                        {status === 'timeout' ? 'Out of time' : 'Not quite'}
+                      </span>
+                      <span className="line-clamp-2 block text-[0.95rem] leading-snug text-bad-ink/90">
+                        It was{' '}
+                        <strong className="font-semibold">{q.correct}</strong>.
+                      </span>
+                    </p>
+                  )}
+                  {status === 'idle' && (
+                    <p className="text-[0.95rem] text-muted">
+                      {instant ? (
+                        <>
+                          Pick an answer
+                          <span className="hidden pointer-fine:inline">
+                            , or press 1 to {q.answers.length}
+                          </span>
+                          .
+                        </>
+                      ) : (
+                        `${answeredCount} of ${n} answered`
+                      )}
+                    </p>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
           <button
             type="button"
             onClick={next}
-            disabled={nextDisabled}
-            className="btn btn-brand press min-w-36 shrink-0"
+            disabled={instant && !current}
+            className={`btn press w-full shrink-0 sm:w-auto sm:min-w-44 ${
+              good ? 'btn-good' : bad ? 'btn-bad' : 'btn-brand'
+            }`}
           >
             {nextLabel}
-            <ArrowRight weight="bold" size={17} />
           </button>
         </div>
       </footer>
@@ -655,7 +722,7 @@ export default function Play({
             <button
               type="button"
               onClick={() => setQuitting(false)}
-              className="btn btn-plain press"
+              className="btn btn-plain tact press"
             >
               Keep going
             </button>
@@ -665,7 +732,7 @@ export default function Play({
                 setQuitting(false);
                 onQuit();
               }}
-              className="btn press bg-bad text-card"
+              className="btn btn-bad press"
             >
               Leave
             </button>
@@ -683,7 +750,7 @@ export default function Play({
               setQuitting(false);
               finish(true);
             }}
-            className="press mt-4 text-sm font-semibold text-ink underline decoration-line-2 underline-offset-4 hover-fine:decoration-ink"
+            className="press mt-4 text-sm font-semibold text-brand-ink underline decoration-lilac decoration-2 underline-offset-4 hover-fine:decoration-brand"
           >
             Score what I have instead
           </button>

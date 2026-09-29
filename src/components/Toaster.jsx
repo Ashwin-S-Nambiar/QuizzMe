@@ -56,7 +56,7 @@ function Toast({ toast }) {
       onPointerLeave={() => {
         hovering.current = false;
       }}
-      className="pointer-events-auto flex w-full items-center gap-3 rounded-xl bg-ink py-2.5 pr-2.5 pl-4 text-sm font-medium text-card shadow-(--shadow-lift)"
+      className="pointer-events-auto flex w-full items-center gap-3 rounded-2xl bg-ink py-2.5 pr-2.5 pl-4 text-sm font-medium text-bg shadow-(--shadow-lift)"
       role="status"
     >
       <span className="min-w-0 flex-1 text-pretty">{toast.message}</span>
@@ -67,7 +67,7 @@ function Toast({ toast }) {
             toast.action.onClick();
             dismissToast(toast.id);
           }}
-          className="press shrink-0 rounded-lg bg-card/15 px-3 py-1.5 font-semibold hover-fine:bg-card/25"
+          className="press shrink-0 rounded-xl bg-bg/15 px-3 py-1.5 font-semibold hover-fine:bg-bg/25"
         >
           {toast.action.label}
         </button>

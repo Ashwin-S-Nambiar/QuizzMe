@@ -18,12 +18,14 @@ import { useTitle } from '../hooks/index.js';
 import { categoryLabel, categoryTone, flat } from '../lib/categories.js';
 import { formatSeconds, shareText, summarize, verdict } from '../lib/quiz.js';
 import { sfx } from '../lib/sound.js';
-import { haptic, toast } from '../lib/store.js';
+import { buzz, toast } from '../lib/store.js';
 import { DealNote, DeckGlyph } from './Deal.jsx';
 import { Pips } from './Pips.jsx';
 import Segmented from './Segmented.jsx';
+import SiteFooter from './SiteFooter.jsx';
 
 const EASE = [0.23, 1, 0.32, 1];
+const STAMP_AT = 0.95;
 
 function Score({ score, total }) {
   const reduce = useReducedMotion();
@@ -35,7 +37,7 @@ function Score({ score, total }) {
       return;
     }
     const controls = animate(0, score, {
-      duration: 0.9,
+      duration: 0.8,
       delay: 0.15,
       ease: EASE,
       onUpdate: (v) => {
@@ -46,52 +48,65 @@ function Score({ score, total }) {
   }, [score, reduce]);
 
   return (
-    <p className="printed flex items-baseline justify-center text-[clamp(6rem,24vw,8.5rem)] leading-[0.85]">
+    <p className="display flex items-baseline justify-center text-[clamp(4.5rem,18vw,5.75rem)] leading-[0.9] font-extrabold tracking-[-0.04em]">
       <span ref={number} className="tabular-nums">
-        0
+        {reduce ? score : 0}
       </span>
-      <span className="text-[0.4em] text-muted">/{total}</span>
+      <span className="ml-1 text-[0.42em] tracking-normal text-faint">
+        /{total}
+      </span>
     </p>
   );
 }
 
-// The verdict is stamped onto the scorecard once the count settles.
+// The verdict is stamped onto the scorecard once the count settles, with a
+// thump and a buzz.
 function Stamp({ ratio }) {
   const reduce = useReducedMotion();
   useEffect(() => {
-    if (ratio < 0.8) return;
-    const id = setTimeout(() => haptic([10, 40, 10]), 1000);
+    const id = setTimeout(
+      () => {
+        sfx.stamp();
+        buzz.stamp(ratio >= 0.8);
+      },
+      reduce ? 300 : STAMP_AT * 1000 + 60,
+    );
     return () => clearTimeout(id);
-  }, [ratio]);
+  }, [ratio, reduce]);
+
   const tone =
-    ratio >= 0.8 ? 'text-good-ink' : ratio >= 0.5 ? 'text-ink' : 'text-bad-ink';
+    ratio >= 0.8
+      ? 'bg-good-tint text-good-ink border-good-line'
+      : ratio >= 0.5
+        ? 'bg-lilac-soft text-brand-ink border-lilac'
+        : 'bg-bad-tint text-bad-ink border-bad-line';
   return (
     <motion.p
       initial={{
         opacity: 0,
         transform: reduce
-          ? 'rotate(-5deg) scale(1)'
-          : 'rotate(-14deg) scale(1.7)',
+          ? 'rotate(-2deg) scale(1)'
+          : 'rotate(-8deg) scale(1.5)',
       }}
-      animate={{ opacity: 1, transform: 'rotate(-5deg) scale(1)' }}
+      animate={{ opacity: 1, transform: 'rotate(-2deg) scale(1)' }}
       transition={{
-        delay: 0.95,
+        delay: reduce ? 0.2 : STAMP_AT,
         type: 'spring',
-        duration: 0.45,
-        bounce: 0.3,
+        duration: 0.4,
+        bounce: 0.35,
       }}
-      className={`printed mx-auto mt-5 w-fit rounded-md border-[2.5px] border-current px-3 pt-1.5 pb-1 text-[1.35rem] uppercase ${tone}`}
+      className={`display mx-auto mt-4 w-fit rounded-full border-2 px-4 py-1.5 text-[1.05rem] font-bold ${tone}`}
     >
       {verdict(ratio)}
     </motion.p>
   );
 }
 
-// One small card per question, dealt out in order.
+// One small tile per card, dealt out in order.
 function Strip({ questions, answers }) {
   return (
     <ol
-      className="flex flex-wrap justify-center gap-1"
+      className="flex flex-wrap justify-center gap-1.5"
       aria-label="Right and wrong, in order"
     >
       {questions.map((q, i) => {
@@ -106,7 +121,11 @@ function Strip({ questions, answers }) {
               duration: 0.25,
               ease: EASE,
             }}
-            className={`h-4.5 w-3.5 rounded-[3px] ${right ? 'bg-good' : 'bg-bad'}`}
+            className={`h-5 w-4 rounded-[5px] ${
+              right
+                ? 'bg-good shadow-[0_2px_0_var(--color-good-edge)]'
+                : 'bg-bad shadow-[0_2px_0_var(--color-bad-edge)]'
+            }`}
             aria-label={`${i + 1}: ${right ? 'right' : 'wrong'}`}
           />
         );
@@ -120,35 +139,36 @@ function ReviewRow({ q, a, n }) {
   const right = a.choice === q.correct;
   const Icon = right ? Check : a.choice == null ? Minus : X;
   return (
-    <div className="card relative overflow-hidden rounded-xl">
-      <span
-        className={`absolute inset-y-0 left-0 w-1 ${right ? 'bg-good' : 'bg-bad'}`}
-        aria-hidden="true"
-      />
+    <div className="tact overflow-hidden [--edge:3px]">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex w-full items-start gap-3 p-3.5 pl-4.5 text-left transition-colors duration-150 hover-fine:bg-card-2"
+        className="flex w-full items-start gap-3 p-3.5 text-left transition-colors duration-150 hover-fine:bg-card-2"
       >
         <span
-          className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-md ${
-            right ? 'bg-good-tint text-good-ink' : 'bg-bad-tint text-bad-ink'
-          }`}
+          className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg ${
+            right ? 'bg-good text-white' : 'bg-bad text-white'
+          } dark:text-bg`}
         >
-          <Icon size={13} weight="bold" />
+          <Icon size={14} weight="bold" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase semi-cond">
-            <span
-              className="size-2 rounded-xs"
-              style={{ background: flat(categoryTone(q.category)) }}
-            />
-            No. {String(n).padStart(2, '0')} · {categoryLabel(q.category)} ·{' '}
-            {formatSeconds(a.ms)}
+          <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[0.8125rem] font-medium text-muted">
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="size-2.5 rounded-full"
+                style={{ background: flat(categoryTone(q.category)) }}
+              />
+              {categoryLabel(q.category)}
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>Card {n}</span>
+            <span aria-hidden="true">·</span>
+            <span className="tabular-nums">{formatSeconds(a.ms)}</span>
           </span>
           <span
-            className={`mt-1 block text-[0.95rem] leading-snug font-medium ${open ? '' : 'line-clamp-2'}`}
+            className={`mt-1 block text-[0.98rem] leading-snug font-medium break-words ${open ? '' : 'line-clamp-2'}`}
           >
             {q.question}
           </span>
@@ -156,7 +176,7 @@ function ReviewRow({ q, a, n }) {
         <CaretDown
           weight="bold"
           size={16}
-          className={`mt-1 shrink-0 text-muted transition-transform duration-200 ease-out ${open ? 'rotate-180' : ''}`}
+          className={`mt-1.5 shrink-0 text-muted transition-transform duration-200 ease-out ${open ? 'rotate-180' : ''}`}
         />
       </button>
       <AnimatePresence initial={false}>
@@ -167,18 +187,18 @@ function ReviewRow({ q, a, n }) {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.24, ease: EASE }}
           >
-            <div className="space-y-1.5 px-3.5 pb-3.5 pl-13 text-sm">
+            <div className="space-y-1.5 px-3.5 pb-3.5 pl-13.5 text-sm">
               {!right && (
-                <p className="flex gap-2 rounded-lg bg-bad-tint px-3 py-2 text-bad-ink">
-                  <span className="shrink-0 font-semibold">You:</span>
-                  <span className="line-through decoration-2">
+                <p className="flex gap-2 rounded-xl bg-bad-tint px-3 py-2 text-bad-ink">
+                  <span className="shrink-0 font-semibold">You</span>
+                  <span className="min-w-0 break-words line-through decoration-2">
                     {a.choice ?? (a.timedOut ? 'Ran out of time' : 'Skipped')}
                   </span>
                 </p>
               )}
-              <p className="flex gap-2 rounded-lg bg-good-tint px-3 py-2 text-good-ink">
-                <span className="shrink-0 font-semibold">Answer:</span>
-                <span>{q.correct}</span>
+              <p className="flex gap-2 rounded-xl bg-good-tint px-3 py-2 text-good-ink">
+                <span className="shrink-0 font-semibold">Answer</span>
+                <span className="min-w-0 break-words">{q.correct}</span>
               </p>
             </div>
           </motion.div>
@@ -207,7 +227,7 @@ export default function Results({
   useTitle(`${s.score}/${s.total} on ${topic} · QuizzMe!`);
 
   useEffect(() => {
-    const id = setTimeout(() => sfx.finish(s.ratio), 450);
+    const id = setTimeout(() => sfx.finish(s.ratio), 300);
     return () => clearTimeout(id);
   }, [s.ratio]);
 
@@ -234,7 +254,9 @@ export default function Results({
   };
 
   const playAgain = () => {
-    if (!deal.busy) onPlayAgain();
+    if (deal.busy) return;
+    buzz.deal();
+    onPlayAgain();
   };
 
   const rows = questions
@@ -248,12 +270,13 @@ export default function Results({
       type="button"
       onClick={playAgain}
       aria-busy={deal.busy}
-      className="btn btn-brand press flex-1"
+      data-sfx="deal"
+      className="btn btn-brand press min-w-0 flex-1"
     >
       {deal.busy ? (
         <DeckGlyph busy />
       ) : (
-        <ArrowClockwise weight="bold" size={17} />
+        <ArrowClockwise weight="bold" size={18} />
       )}
       <span className="slot text-left">
         <span className={deal.busy ? 'invisible' : ''}>Deal again</span>
@@ -263,47 +286,44 @@ export default function Results({
   );
 
   return (
-    <div className="flex min-h-[calc(100dvh-4rem-var(--safe-t))] flex-col">
-      <div className="mx-auto grid w-full max-w-6xl flex-1 content-start gap-x-10 gap-y-8 px-(--gutter) pt-3 pb-10 lg:grid-cols-[24rem_minmax(0,1fr)] lg:pt-8 lg:pb-20">
-        <section className="lg:sticky lg:top-20 lg:self-start">
+    <div className="flex min-h-[calc(100dvh-4rem-var(--safe-t))] flex-col lg:h-[calc(100dvh-4rem-var(--safe-t))] lg:min-h-0">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 content-start gap-x-10 gap-y-8 px-(--gutter) pt-2 pb-10 md:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] md:gap-x-6 lg:min-h-0 lg:grid-cols-[24rem_minmax(0,1fr)] lg:gap-x-10 lg:pb-6">
+        <section className="min-w-0 md:sticky md:top-20 md:self-start lg:static lg:max-h-full lg:overflow-y-auto lg:overscroll-contain lg:px-1 lg:pb-2">
           <div className="card overflow-hidden">
             <div
-              className={`flex h-12 items-center justify-between gap-3 px-5 ${
-                tone
-                  ? 'text-on-flat'
-                  : 'card-back rounded-none text-card shadow-none'
+              className={`flex min-h-12 items-center justify-between gap-3 px-5 py-2 ${
+                tone ? 'text-on-flat' : 'bg-back text-white'
               }`}
               style={tone ? { background: flat(tone) } : undefined}
             >
-              <span className="printed truncate text-[1.3rem] uppercase">
+              <span className="display min-w-0 text-[1.05rem] leading-tight font-bold break-words">
                 {topic}
               </span>
-              <span className="text-[0.7rem] font-semibold tracking-[0.08em] uppercase opacity-75 semi-cond">
+              <span className="shrink-0 text-[0.8125rem] font-semibold opacity-80">
                 Scorecard
               </span>
             </div>
-            <div className="px-5 pt-7 pb-5 text-center">
+            <div className="px-5 pt-6 pb-5 text-center">
               <h1 className="sr-only">
                 {s.score} of {s.total}. {verdict(s.ratio)}
               </h1>
               <Score score={s.score} total={s.total} />
               <Stamp ratio={s.ratio} />
-              <div className="mt-6">
+              <div className="mt-5">
                 <Strip questions={questions} answers={answers} />
               </div>
 
-              <dl className="mt-6 grid grid-cols-3 border-y border-dashed border-line-2 py-3">
+              <dl className="mt-5 grid grid-cols-3 gap-2">
                 {[
                   ['Best streak', s.bestStreak],
                   ['Avg time', formatSeconds(s.avgMs)],
                   ['Missed', misses],
-                ].map(([k, v], i) => (
-                  <div
-                    key={k}
-                    className={`px-2 ${i ? 'border-l border-dashed border-line-2' : ''}`}
-                  >
-                    <dt className="caps text-[0.66rem]">{k}</dt>
-                    <dd className="printed mt-1 text-[1.7rem]">{v}</dd>
+                ].map(([k, v]) => (
+                  <div key={k} className="tact px-2 py-2.5 [--edge:3px]">
+                    <dt className="text-xs font-medium text-muted">{k}</dt>
+                    <dd className="display mt-0.5 text-[1.45rem] font-extrabold tabular-nums">
+                      {v}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -312,13 +332,13 @@ export default function Results({
                 <div className="mt-5 space-y-2.5 text-left">
                   {difficulties.map(([d, v]) => (
                     <div key={d} className="flex items-center gap-3 text-sm">
-                      <span className="flex w-20 items-center gap-2 text-xs font-semibold capitalize">
-                        <Pips level={d} className="text-ink-2" />
+                      <span className="flex w-22 shrink-0 items-center gap-2 font-semibold text-ink-2 capitalize">
+                        <Pips level={d} />
                         {d}
                       </span>
-                      <span className="h-2 flex-1 overflow-hidden rounded-xs bg-line">
+                      <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-line">
                         <motion.span
-                          className="block h-full origin-left bg-ink-2"
+                          className="block h-full origin-left rounded-full bg-brand"
                           initial={{ transform: 'scaleX(0)' }}
                           animate={{
                             transform: `scaleX(${v.right / v.total})`,
@@ -326,7 +346,7 @@ export default function Results({
                           transition={{ delay: 0.4, duration: 0.6, ease: EASE }}
                         />
                       </span>
-                      <span className="printed w-10 text-right text-base text-muted">
+                      <span className="display w-10 shrink-0 text-right font-bold text-muted tabular-nums">
                         {v.right}/{v.total}
                       </span>
                     </div>
@@ -334,22 +354,22 @@ export default function Results({
                 </div>
               )}
 
-              <div className="mt-6 hidden text-left lg:block">
+              <div className="mt-6 hidden text-left md:block">
                 <div className="flex gap-2">{again}</div>
-                <div className="mt-2 grid grid-cols-2 gap-2">
+                <div className="mt-3 grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={onNew}
-                    className="btn btn-plain press"
+                    className="btn btn-plain tact press px-3"
                   >
                     Change topic
                   </button>
                   <button
                     type="button"
                     onClick={share}
-                    className="btn btn-plain press"
+                    className="btn btn-plain tact press px-3"
                   >
-                    <Export weight="bold" size={17} />
+                    <Export weight="bold" size={18} />
                     Share
                   </button>
                 </div>
@@ -363,9 +383,15 @@ export default function Results({
           </div>
         </section>
 
-        <section aria-labelledby="review-title" className="min-w-0">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 id="review-title" className="printed text-[2.2rem] uppercase">
+        <section
+          aria-labelledby="review-title"
+          className="flex min-w-0 flex-col lg:min-h-0"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2
+              id="review-title"
+              className="display text-[1.6rem] font-extrabold tracking-[-0.02em]"
+            >
               Your cards
             </h2>
             {misses > 0 && (
@@ -388,23 +414,24 @@ export default function Results({
             <button
               type="button"
               onClick={onPractice}
-              className="group press mt-5 flex w-full items-center gap-3 rounded-xl bg-yellow p-3 text-left text-on-flat shadow-(--shadow-card) hover-fine:-translate-y-0.5"
+              className="tact press mt-4 flex w-full items-center gap-3 border-yellow-edge/60 bg-yellow p-3 text-left text-on-flat [--edge-color:var(--color-yellow-edge)]"
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-on-flat text-yellow">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-on-flat text-yellow">
                 <Target weight="bold" size={20} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block font-semibold">
+                <span className="display block text-[1.05rem] leading-tight font-bold">
                   Practice the {misses === 1 ? 'one' : misses} you missed
                 </span>
-                <span className="block text-sm opacity-75">
-                  Same cards, reshuffled, no waiting on the API.
+                <span className="block text-sm opacity-80">
+                  Same cards, reshuffled, no waiting.
                 </span>
               </span>
             </button>
           )}
 
-          <ol className="mt-5 space-y-2">
+          {/* On desktop the page holds still and only this list scrolls. */}
+          <ol className="mt-4 space-y-3 lg:-mx-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:px-1 lg:pt-0.5 lg:pb-3">
             <AnimatePresence initial={false} mode="popLayout">
               {rows.map(({ q, a, n }, i) => (
                 <motion.li
@@ -427,13 +454,17 @@ export default function Results({
         </section>
       </div>
 
-      <div className="bottom-bar sticky bottom-0 z-20 border-t border-line bg-bg px-(--gutter) pt-3 lg:hidden">
+      <div className="mx-auto w-full max-w-6xl px-(--gutter)">
+        <SiteFooter />
+      </div>
+
+      <div className="bottom-bar sticky bottom-0 z-20 border-t-2 border-line bg-bg px-(--gutter) pt-3 md:hidden">
         <div className="mx-auto max-w-xl">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onNew}
-              className="btn btn-plain press px-4"
+              className="btn btn-plain tact press shrink-0 px-4"
             >
               Topics
             </button>
@@ -441,11 +472,11 @@ export default function Results({
             <button
               type="button"
               onClick={share}
-              className="btn btn-plain press size-12 shrink-0 px-0"
+              className="btn btn-plain tact press w-13 shrink-0 px-0 text-brand"
               aria-label="Share result"
               data-tip="Share result"
             >
-              <Export weight="bold" size={18} />
+              <Export weight="bold" size={19} />
             </button>
           </div>
           <DealNote

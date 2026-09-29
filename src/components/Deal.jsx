@@ -83,22 +83,22 @@ export function DealNote({ deal, onCancel, onDismiss, className = '' }) {
                     <button
                       type="button"
                       onClick={onCancel}
-                      className="press shrink-0 rounded-md px-1 font-semibold text-ink underline decoration-line-2 underline-offset-4 hover-fine:decoration-ink"
+                      className="press shrink-0 rounded-md px-1 font-semibold text-brand-ink underline decoration-lilac decoration-2 underline-offset-4 hover-fine:decoration-brand"
                     >
                       Cancel
                     </button>
                   </p>
                 ) : (
                   <div
-                    className="flex items-start gap-3 rounded-[10px] bg-bad-tint py-2.5 pr-2 pl-3.5 text-sm text-bad-ink"
+                    className="flex items-center gap-2 rounded-2xl border-2 border-bad-line bg-bad-tint py-2 pr-2 pl-3.5 text-sm text-bad-ink"
                     role="alert"
                   >
-                    <p className="min-w-0 flex-1 pt-1">{deal.error.message}</p>
+                    <p className="min-w-0 flex-1 py-1">{deal.error.message}</p>
                     {deal.error.action && (
                       <button
                         type="button"
                         onClick={deal.error.action.run}
-                        className="press inline-flex h-8 shrink-0 items-center gap-1.5 rounded-lg bg-bad px-3 font-semibold text-card"
+                        className="btn btn-bad press h-9 shrink-0 gap-1.5 rounded-xl px-3 text-sm [--edge:3px]"
                       >
                         <ArrowClockwise weight="bold" size={14} />
                         {deal.error.action.label}
@@ -107,7 +107,7 @@ export function DealNote({ deal, onCancel, onDismiss, className = '' }) {
                     <button
                       type="button"
                       onClick={onDismiss}
-                      className="press grid size-8 shrink-0 place-items-center rounded-lg hover-fine:bg-bad/10"
+                      className="press grid size-9 shrink-0 place-items-center rounded-xl hover-fine:bg-bad/10"
                       aria-label="Dismiss"
                     >
                       <X weight="bold" size={14} />
