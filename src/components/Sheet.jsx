@@ -99,7 +99,7 @@ export default function Sheet({
             onDragEnd={(_, info) => {
               if (info.offset.y > 110 || info.velocity.y > 550) onClose();
             }}
-            className={`relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[18px] bg-card shadow-(--shadow-lift) outline-none sm:rounded-[16px] ${wide ? 'sm:max-w-2xl' : 'sm:max-w-md'}`}
+            className={`relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-[18px] bg-card shadow-(--shadow-lift) outline-none sm:rounded-2xl ${wide ? 'sm:max-w-2xl' : 'sm:max-w-md'}`}
           >
             {mobile && (
               <div

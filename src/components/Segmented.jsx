@@ -48,7 +48,7 @@ export default function Segmented({
               checked={active}
               disabled={o.disabled}
               onSelect={() => onChange(o.value)}
-              className={`relative flex min-h-11 flex-col items-center justify-center rounded-[8px] px-2 py-1.5 text-sm font-semibold outline-offset-0 ${
+              className={`relative flex min-h-11 flex-col items-center justify-center rounded-lg px-2 py-1.5 text-sm font-semibold outline-offset-0 ${
                 active ? 'text-ink' : 'text-muted hover-fine:text-ink'
               }`}
             >
@@ -56,7 +56,7 @@ export default function Segmented({
                 <motion.span
                   layoutId={id}
                   transition={{ type: 'spring', duration: 0.32, bounce: 0.12 }}
-                  className="absolute inset-0 rounded-[8px] bg-card shadow-(--shadow-card)"
+                  className="absolute inset-0 rounded-lg bg-card shadow-(--shadow-card)"
                 />
               )}
               <span className="relative leading-tight">{o.label}</span>

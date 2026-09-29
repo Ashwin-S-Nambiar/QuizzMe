@@ -49,15 +49,15 @@ function Hand({ topic, amount, difficulty, busy }) {
   const rest = 'translate(0px, 0px) rotate(7deg)';
   return (
     <div
-      className="group relative h-72 w-[25rem] max-w-full select-none"
+      className="group relative h-72 w-100 max-w-full select-none"
       aria-hidden="true"
     >
-      <div className="card-back absolute top-8 left-2 h-60 w-44 -rotate-[10deg] transition-transform duration-300 ease-out group-hover:-translate-x-3 group-hover:-rotate-[13deg]" />
+      <div className="card-back absolute top-8 left-2 h-60 w-44 rotate-[-10deg] transition-transform duration-300 ease-out group-hover:-translate-x-3 group-hover:rotate-[-13deg]" />
       <div
-        className="card absolute top-4 left-20 h-60 w-44 -rotate-[2deg] overflow-hidden transition-transform duration-300 ease-out group-hover:-translate-x-1"
+        className="card absolute top-4 left-20 h-60 w-44 -rotate-2 overflow-hidden transition-transform duration-300 ease-out group-hover:-translate-x-1"
         style={{ background: flat(topic.tone) }}
       >
-        <div className="absolute inset-3 rounded-[8px] border-[1.5px] border-dashed border-on-flat/25" />
+        <div className="absolute inset-3 rounded-lg border-[1.5px] border-dashed border-on-flat/25" />
       </div>
       <div
         className={`absolute top-2 left-40 h-60 w-44 ${busy ? 'dealing' : ''}`}
@@ -348,7 +348,7 @@ export default function Setup({
             className="group press flex w-full items-center gap-3 rounded-[11px] bg-bg-2 p-2 pr-3 text-left hover-fine:bg-bg"
           >
             <span
-              className={`grid h-13 w-10 shrink-0 place-items-center rounded-[6px] shadow-(--shadow-card) transition-transform duration-200 ease-out group-hover:-rotate-6 ${
+              className={`grid h-13 w-10 shrink-0 place-items-center rounded-md shadow-(--shadow-card) transition-transform duration-200 ease-out group-hover:-rotate-6 ${
                 topic.id ? 'text-on-flat' : 'card-back text-card'
               }`}
               style={topic.id ? { background: flat(topic.tone) } : undefined}
@@ -400,7 +400,7 @@ export default function Setup({
                     name="amount"
                     checked={n === amount}
                     onSelect={() => setPref('amount', n)}
-                    className={`printed grid h-11 place-items-center rounded-[8px] text-[1.3rem] ${
+                    className={`printed grid h-11 place-items-center rounded-lg text-[1.3rem] ${
                       n === amount
                         ? 'bg-ink text-card'
                         : 'bg-bg-2 text-ink-2 hover-fine:bg-bg hover-fine:text-ink'

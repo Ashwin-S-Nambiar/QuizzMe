@@ -5,14 +5,14 @@ export function Pips({ level, className = '' }) {
   const n = LEVEL[level] ?? 0;
   return (
     <span
-      className={`inline-flex items-center gap-[3px] ${className}`}
+      className={`inline-flex items-center gap-0.75 ${className}`}
       role="img"
       aria-label={`${level} difficulty`}
     >
       {[1, 2, 3].map((i) => (
         <span
           key={i}
-          className={`size-[7px] rounded-[1.5px] ${i <= n ? 'bg-current' : 'bg-current opacity-25'}`}
+          className={`size-1.75 rounded-[1.5px] ${i <= n ? 'bg-current' : 'bg-current opacity-25'}`}
         />
       ))}
     </span>

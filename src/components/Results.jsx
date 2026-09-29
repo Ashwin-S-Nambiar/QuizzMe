@@ -80,7 +80,7 @@ function Stamp({ ratio }) {
         duration: 0.45,
         bounce: 0.3,
       }}
-      className={`printed mx-auto mt-5 w-fit rounded-[6px] border-[2.5px] border-current px-3 pt-1.5 pb-1 text-[1.35rem] uppercase ${tone}`}
+      className={`printed mx-auto mt-5 w-fit rounded-md border-[2.5px] border-current px-3 pt-1.5 pb-1 text-[1.35rem] uppercase ${tone}`}
     >
       {verdict(ratio)}
     </motion.p>
@@ -120,7 +120,7 @@ function ReviewRow({ q, a, n }) {
   const right = a.choice === q.correct;
   const Icon = right ? Check : a.choice == null ? Minus : X;
   return (
-    <div className="card relative overflow-hidden rounded-[12px]">
+    <div className="card relative overflow-hidden rounded-xl">
       <span
         className={`absolute inset-y-0 left-0 w-1 ${right ? 'bg-good' : 'bg-bad'}`}
         aria-hidden="true"
@@ -132,7 +132,7 @@ function ReviewRow({ q, a, n }) {
         className="flex w-full items-start gap-3 p-3.5 pl-4.5 text-left transition-colors duration-150 hover-fine:bg-card-2"
       >
         <span
-          className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-[6px] ${
+          className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-md ${
             right ? 'bg-good-tint text-good-ink' : 'bg-bad-tint text-bad-ink'
           }`}
         >
@@ -141,7 +141,7 @@ function ReviewRow({ q, a, n }) {
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.04em] text-muted uppercase semi-cond">
             <span
-              className="size-2 rounded-[2px]"
+              className="size-2 rounded-xs"
               style={{ background: flat(categoryTone(q.category)) }}
             />
             No. {String(n).padStart(2, '0')} · {categoryLabel(q.category)} ·{' '}
@@ -169,14 +169,14 @@ function ReviewRow({ q, a, n }) {
           >
             <div className="space-y-1.5 px-3.5 pb-3.5 pl-13 text-sm">
               {!right && (
-                <p className="flex gap-2 rounded-[8px] bg-bad-tint px-3 py-2 text-bad-ink">
+                <p className="flex gap-2 rounded-lg bg-bad-tint px-3 py-2 text-bad-ink">
                   <span className="shrink-0 font-semibold">You:</span>
                   <span className="line-through decoration-2">
                     {a.choice ?? (a.timedOut ? 'Ran out of time' : 'Skipped')}
                   </span>
                 </p>
               )}
-              <p className="flex gap-2 rounded-[8px] bg-good-tint px-3 py-2 text-good-ink">
+              <p className="flex gap-2 rounded-lg bg-good-tint px-3 py-2 text-good-ink">
                 <span className="shrink-0 font-semibold">Answer:</span>
                 <span>{q.correct}</span>
               </p>
@@ -316,7 +316,7 @@ export default function Results({
                         <Pips level={d} className="text-ink-2" />
                         {d}
                       </span>
-                      <span className="h-2 flex-1 overflow-hidden rounded-[2px] bg-line">
+                      <span className="h-2 flex-1 overflow-hidden rounded-xs bg-line">
                         <motion.span
                           className="block h-full origin-left bg-ink-2"
                           initial={{ transform: 'scaleX(0)' }}
@@ -388,9 +388,9 @@ export default function Results({
             <button
               type="button"
               onClick={onPractice}
-              className="group press mt-5 flex w-full items-center gap-3 rounded-[12px] bg-yellow p-3 text-left text-on-flat shadow-(--shadow-card) hover-fine:-translate-y-0.5"
+              className="group press mt-5 flex w-full items-center gap-3 rounded-xl bg-yellow p-3 text-left text-on-flat shadow-(--shadow-card) hover-fine:-translate-y-0.5"
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-[8px] bg-on-flat text-yellow">
+              <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-on-flat text-yellow">
                 <Target weight="bold" size={20} />
               </span>
               <span className="min-w-0 flex-1">
