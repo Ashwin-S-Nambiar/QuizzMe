@@ -500,7 +500,7 @@ export default function Setup({
               onClick={start}
               disabled={noQuestions}
               aria-busy={busy}
-              className="btn btn-ink press flex-1"
+              className="btn btn-brand press flex-1"
             >
               <DeckGlyph busy={busy} />
               <span className="slot text-left">
