@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://quizzme.ashwin.co.in">
-    <img src="./assets/readme/hero.svg" width="100%" alt="QuizzMe!: settle a bet, or start one. the stickers from the landing page float beside the title: a question mark, a five in a row streak, a correct chip, a hard chip, and a card asking the capital of australia with sydney marked wrong and canberra marked right">
+    <img src="./assets/readme/hero.svg" width="100%" alt="QuizzMe!: settle a bet, or start one. a fanned hand of trivia cards sits beside the title: a patterned card back, a pink film card, and a blue geography card asking the capital of australia, with sydney struck through and canberra ticked">
   </a>
 </p>
 
@@ -17,7 +17,7 @@
 <br>
 
 <p align="center">
-  <img src="./docs/screenshots/QuizzMe.webp" width="100%" alt="the landing page on desktop: draggable stickers, the line settle a bet, or start one, and the round card with the topic picker, difficulty counts, question amounts, more options, start quiz and surprise me">
+  <img src="./docs/screenshots/QuizzMe.webp" width="100%" alt="the landing page on desktop: the line settle a bet, or start one, a fanned hand of cards showing the film topic you are about to be dealt, and the deck box with the topic picker, difficulty counts, how many cards, more options, deal and surprise me">
 </p>
 
 the source of **[quizzme.ashwin.co.in](https://quizzme.ashwin.co.in)**. quick trivia rounds on 24 topics, with the questions pulled live from [open trivia db](https://opentdb.com/api_config.php), so i don't know what's next either.
@@ -28,17 +28,17 @@ it is a react spa with no server and no account. your scores stay in your browse
 
 | screen | what it is |
 | --- | --- |
-| setup | one card: pick a topic, a difficulty and how many questions, and go. everything else folds into more options, and surprise me picks a topic for you |
-| play | one question at a time, either answered as you go with streaks, or all revealed at the end with free movement between questions |
-| results | a score ring, best streak, average time, a split by difficulty, and every answer to look back through |
+| setup | the deck box: pick a topic, a difficulty and how many cards, and deal. everything else folds into more options, and surprise me picks a topic for you |
+| play | one card at a time, dealt off a deck and thrown to the discard pile when you move on, either answered as you go with streaks, or all revealed at the end with free movement between cards |
+| results | a scorecard with the score stamped, a strip of every card right or wrong, best streak, average time, a split by difficulty, and every card to look back through |
 | stats | rounds, accuracy, best streak and accuracy by topic, from your last hundred rounds on this device |
 | 404 | a question too: where did this page go? |
 
 <table>
   <tr>
     <td width="33%"><img src="./docs/screenshots/QuizzMe-8.webp" alt="the landing page on a phone, everything above the fold"></td>
-    <td width="33%"><img src="./docs/screenshots/QuizzMe-9.webp" alt="the topic sheet on a phone: every open trivia db topic as a card with its own colour, icon and question count"></td>
-    <td width="33%"><img src="./docs/screenshots/QuizzMe-2.webp" alt="a hard geography question answered right in dark mode, with a four in a row streak chip"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-9.webp" alt="the topic sheet on a phone: every open trivia db topic as a small card with its own printed colour, icon and question count"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-2.webp" alt="a history card answered right in dark mode, with a four in a row streak chip"></td>
   </tr>
 </table>
 
@@ -54,8 +54,8 @@ it is a react spa with no server and no account. your scores stay in your browse
 
 <table>
   <tr>
-    <td width="33%"><img src="./docs/screenshots/QuizzMe-3.webp" alt="a wrong answer: yellow marked in red, red marked in green, and the bar saying it was red"></td>
-    <td width="33%"><img src="./docs/screenshots/QuizzMe-6.webp" alt="results on a phone: 7 out of 10, with play again, topics and share pinned to the bottom"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-3.webp" alt="a wrong answer: sydney struck through in red, canberra ticked in green, and the bar saying it was canberra"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-6.webp" alt="the scorecard on a phone: 6 out of 10 stamped solid run, a strip of right and wrong cards, with deal again, topics and share pinned to the bottom"></td>
     <td width="33%"><img src="./docs/screenshots/QuizzMe-7.webp" alt="the stats sheet: rounds, accuracy, best streak, accuracy by topic and recent rounds"></td>
   </tr>
 </table>
@@ -83,9 +83,11 @@ function throttle(signal, onWait) {
 
 - **one queue.** every question request waits its turn on a single promise chain, 5.2 s apart, so two quick rounds can never collide.
 - **it survives a reload.** the time of the last request lives in `localStorage`, not memory, so refreshing the page doesn't reset the clock and earn you a 429.
-- **the wait is said out loud.** the queue hands the loading screen a deadline, and it counts down to it rather than spinning.
+- **the wait is said out loud.** the queue hands the deal button a deadline, and the line under it counts down rather than spinning.
+- **fast answers never flash.** the page stays where it is while cards are fetched. a busy state only appears after 250 ms, and once it does it stays for at least 450 ms, so a quick response goes straight to the first card and a slow one never blinks.
 - **retries that know why.** a 429 or code 5 waits its turn and tries again, up to four times. a lost token (code 3) is dropped and a new one fetched. an empty mix (1) or an exhausted one (4) fails straight away with its own message, because retrying won't help.
-- **cancel means cancel.** leaving the loading screen aborts both the wait and the fetch.
+- **cancel means cancel.** cancelling a deal aborts both the wait and the fetch.
+- **errors stay where you were.** a failed deal opens a note right under the button you pressed, with retry, instead of a toast somewhere else.
 - **the token stays warm.** it is reused until it has sat idle for five and a half hours, just inside the six open trivia db allows, and every successful round resets that clock.
 - **the cheap calls skip the queue.** topics are cached for a week, counts per topic for the session, and neither counts against the question limit.
 
@@ -109,10 +111,11 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 ## small things that took a while
 
 - **numbers roll.** each digit is a strip of 0 to 9 that slides to its value, the places staggered 45 ms apart, while screen readers get the plain number.
-- **nothing shifts when fonts load.** geist, geist mono and bricolage grotesque are self-hosted, preloaded and paired with arial fallbacks tuned with `size-adjust` and ascent overrides, so the swap is invisible.
+- **nothing shifts when fonts load.** archivo is self-hosted, preloaded and paired with an arial fallback tuned with `size-adjust` and ascent overrides, so the swap is invisible.
+- **nothing shifts between screens.** one header stays put for every screen, and play puts its progress into it rather than swapping in a bar of its own.
 - **one screen, any screen.** the landing fits above the fold from an iphone se up to desktop, with a `short` variant for low viewports.
 - **sheets you can throw.** on phones the topic, quit and stats sheets drag to dismiss, and the bottom bars clear the home indicator.
-- **icons on a diet.** a small vite plugin strips every phosphor icon weight except bold, duotone and fill at build time.
+- **icons on a diet.** a small vite plugin strips every phosphor icon weight except bold and fill at build time.
 - **a real 404.** the build copies `index.html` to `404.html`, so any static host serves the app's own not found page, and every screen sets its own title.
 
 <details>
@@ -120,9 +123,9 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
 <br>
 
-![the results page in dark mode: 8 out of 10 on a green ring, best streak, average time, a split by difficulty, and the answer review with one missed question opened](./docs/screenshots/QuizzMe-4.webp)
+![the results page in dark mode: 8 out of 10 stamped that was sharp, best streak, average time, a split by difficulty, and the card review with one missed card opened](./docs/screenshots/QuizzMe-4.webp)
 
-![reveal at the end mode: answers stay hidden, the chosen one is outlined in indigo, and the progress segments double as a way to jump between questions](./docs/screenshots/QuizzMe-5.webp)
+![reveal at the end mode: answers stay hidden, the chosen one is inked in, and the progress segments double as a way to jump between cards](./docs/screenshots/QuizzMe-5.webp)
 
 <img src="./docs/screenshots/QuizzMe-10.webp" width="33%" alt="the 404 page, asked as a question: where did this page go, with one wrong answer already marked">
 
@@ -130,9 +133,11 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
 ## the design
 
-- **restraint.** a warm off-white ground, near-black ink, one indigo accent, and green and red kept for right and wrong.
-- **stickers for play.** pastel butter, sky, mint, lilac and peach, each topic with its own colour and duotone icon.
-- **two families.** bricolage grotesque for the big lines, geist for everything else, geist mono for numbers.
+- **a deck of trivia cards.** a quiz already is one, so every screen is built from it: the setup is the deck box, each question is a card dealt off the top, and the results are a scorecard.
+- **card stock on a table.** a warm table ground, off-white cards, near-black ink, and a patterned card back. green and red are marker ink, kept for right and wrong.
+- **printed topic colours.** flat yellow, blue, green, pink and orange across the top of each card, like the category band on a game card, with difficulty as pips.
+- **one family.** archivo, with its width axis doing the work of a second typeface: condensed and heavy for anything printed on a card, normal width for what you read.
+- **motion that means something.** cards are dealt, thrown and pulled back, ticks and strike-throughs are drawn in, and the verdict is stamped. three durations and one ease-out curve, and no blur.
 - **oklch tokens.** every colour is an oklch value in one theme block, with a dark set that swaps in on `data-theme`.
 - **phones first.** 44 px touch targets, safe-area padding, and actions pinned to the bottom where thumbs are.
 - **reduced motion.** movement becomes fades when the system asks for it.
@@ -142,8 +147,8 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 | layer | choices |
 | --- | --- |
 | framework | [react 19](https://react.dev/) · no router, the screens are state, and the url only carries a shared setup |
-| styling | [tailwind css 4](https://tailwindcss.com/) with oklch theme tokens · [phosphor icons](https://phosphoricons.com) duotone |
-| motion | [motion](https://motion.dev/) for question transitions, sheets and springs · view transitions for the theme · [canvas-confetti](https://www.npmjs.com/package/canvas-confetti) for the good rounds |
+| styling | [tailwind css 4](https://tailwindcss.com/) with oklch theme tokens · [archivo](https://fonts.google.com/specimen/Archivo) · [phosphor icons](https://phosphoricons.com) bold |
+| motion | [motion](https://motion.dev/) for dealing cards, sheets and springs · view transitions for the theme |
 | data | [open trivia db](https://opentdb.com/) for topics, counts, tokens and questions · `localStorage` for prefs, stats and the rate limit clock |
 | tooling | [vite 8](https://vite.dev/) · [biome](https://biomejs.dev/) · `node --test` for the quiz logic |
 
@@ -171,8 +176,8 @@ npm run build && npm run preview
 
 ```
 src/
-  components/  setup, play, results, the stats and topic sheets, stickers,
-               the rolling number, toasts, the top and bottom bars, 404
+  components/  setup, play, results, the stats and topic sheets, the deal
+               note, the rolling number, toasts, the top bar, 404
   hooks/       theme, media queries, topics and their counts
   lib/         the open trivia db client and its queue, quiz logic and
                its tests, topic colours and icons, stores, sounds
@@ -182,7 +187,7 @@ src/
 
 ## known rough edges
 
-- **the first chunk is heavy.** about 145 KB gzipped, mostly react, motion and icons. play, results, stats, the 404 and confetti are split out and load when needed.
+- **the first chunk is heavy.** about 140 KB gzipped, mostly react, motion and icons. play, results, stats and the 404 are split out and load when needed.
 - **the limit is per ip.** on shared wifi, someone else's round can make you wait.
 - **stats don't travel.** they live in one browser, and clearing site data clears them.
 - **the questions are crowd-sourced.** open trivia db's questions are checked, but now and then one is dated or debatable. that's on them, not me. mostly.
