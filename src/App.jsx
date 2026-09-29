@@ -7,7 +7,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import Loading from './components/Loading.jsx';
 import Setup from './components/Setup.jsx';
 import Toaster from './components/Toaster.jsx';
 import Topbar from './components/Topbar.jsx';
@@ -16,12 +15,20 @@ import { topicLabel } from './lib/categories.js';
 import { fetchQuestions, resetToken } from './lib/opentdb.js';
 import { shuffle, summarize } from './lib/quiz.js';
 import { sfx } from './lib/sound.js';
-import { prefsStore, recordRun, toast } from './lib/store.js';
+import { prefsStore, recordRun } from './lib/store.js';
 
-const loadPlay = () => import('./components/Play.jsx');
-const loadResults = () => import('./components/Results.jsx');
-const Play = lazy(loadPlay);
-const Results = lazy(loadResults);
+// Play and Results are split out but never suspend: App waits for their code
+// before switching to them, so a screen change can't blank the page.
+let Play = null;
+let Results = null;
+const loadPlay = () =>
+  import('./components/Play.jsx').then((m) => {
+    Play = m.default;
+  });
+const loadResults = () =>
+  import('./components/Results.jsx').then((m) => {
+    Results = m.default;
+  });
 const StatsSheet = lazy(() => import('./components/StatsSheet.jsx'));
 const NotFound = lazy(() => import('./components/NotFound.jsx'));
 
@@ -53,17 +60,35 @@ function linkFor({ category, difficulty, type, amount }) {
   return `${SITE}/?${p}`;
 }
 
+const EASE = [0.23, 1, 0.32, 1];
+
 const screenMotion = {
-  initial: { opacity: 0, transform: 'translateY(6px)', filter: 'blur(2px)' },
-  animate: { opacity: 1, transform: 'translateY(0px)', filter: 'blur(0px)' },
+  initial: { opacity: 0, transform: 'translateY(10px)' },
+  animate: { opacity: 1, transform: 'translateY(0px)' },
   exit: {
     opacity: 0,
-    transform: 'translateY(-4px)',
-    filter: 'blur(2px)',
-    transition: { duration: 0.12, ease: [0.23, 1, 0.32, 1] },
+    transform: 'translateY(-6px)',
+    transition: { duration: 0.15, ease: EASE },
   },
-  transition: { duration: 0.2, ease: [0.23, 1, 0.32, 1] },
+  transition: { duration: 0.26, ease: EASE },
 };
+
+// Play brings its own entrance (the card is dealt), so the screen itself
+// only fades.
+const playMotion = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0, transition: { duration: 0.15, ease: EASE } },
+  transition: { duration: 0.2, ease: EASE },
+};
+
+// A fetch that answers quickly never shows a busy state at all; one that
+// doesn't shows it for long enough to read instead of flickering.
+const SHOW_AFTER = 250;
+const SHOW_AT_LEAST = 450;
+const IDLE = { busy: false, shown: false, waitUntil: 0, error: null };
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function App() {
   const [theme, toggleTheme] = useTheme();
@@ -71,7 +96,8 @@ export default function App() {
   const [screen, setScreen] = useState('setup');
   const [quiz, setQuiz] = useState(null);
   const [result, setResult] = useState(null);
-  const [waitUntil, setWaitUntil] = useState(0);
+  const [deal, setDeal] = useState(IDLE);
+  const [barSlot, setBarSlot] = useState(null);
   const [statsOpen, setStatsOpen] = useState(null);
   const [round, setRound] = useState(0);
   const loader = useRef(null);
@@ -125,10 +151,16 @@ export default function App() {
     };
   }, []);
 
-  const toSetup = useCallback(() => {
+  const cancelDeal = useCallback(() => {
     loader.current?.abort();
-    setScreen('setup');
+    loader.current = null;
+    setDeal(IDLE);
   }, []);
+
+  const toSetup = useCallback(() => {
+    cancelDeal();
+    setScreen('setup');
+  }, [cancelDeal]);
 
   useEffect(() => {
     if (screen === 'setup') return;
@@ -152,36 +184,51 @@ export default function App() {
     loader.current?.abort();
     const ctrl = new AbortController();
     loader.current = ctrl;
-    setWaitUntil(0);
-    setScreen('loading');
-    fetchQuestions(options, { signal: ctrl.signal, onWait: setWaitUntil })
-      .then((questions) => {
+    let shownAt = 0;
+    const show = () => {
+      shownAt ||= Date.now();
+      setDeal((d) => (d.shown ? d : { ...d, shown: true }));
+    };
+    const timer = setTimeout(show, SHOW_AFTER);
+    setDeal({ ...IDLE, busy: true });
+
+    Promise.all([
+      fetchQuestions(options, {
+        signal: ctrl.signal,
+        onWait: (until) => {
+          show();
+          setDeal((d) => ({ ...d, waitUntil: until }));
+        },
+      }),
+      loadPlay(),
+    ])
+      .then(async ([questions]) => {
+        clearTimeout(timer);
+        if (shownAt) await sleep(SHOW_AT_LEAST - (Date.now() - shownAt));
         if (ctrl.signal.aborted) return;
+        loader.current = null;
         setQuiz({ questions, options, practice: false });
         setRound((r) => r + 1);
         setScreen('play');
+        setDeal(IDLE);
       })
       .catch((error) => {
-        if (error.name === 'AbortError') return;
-        setScreen('setup');
+        clearTimeout(timer);
+        if (error.name === 'AbortError' || ctrl.signal.aborted) return;
+        loader.current = null;
+        let action = { label: 'Retry', run: () => start(options) };
+        let message = error.message;
         if (error.kind === 'empty') {
-          toast(
-            'Not enough questions for that mix. Try fewer, or set the type to Mixed.',
-          );
+          message =
+            'Not enough questions for that mix. Try fewer, or set the type to Mixed.';
+          action = null;
         } else if (error.kind === 'exhausted') {
-          toast(error.message, {
-            duration: 8000,
-            action: {
-              label: 'Start over',
-              onClick: () => resetToken().then(() => start(options)),
-            },
-          });
-        } else {
-          toast(error.message, {
-            duration: 6000,
-            action: { label: 'Retry', onClick: () => start(options) },
-          });
+          action = {
+            label: 'Start over',
+            run: () => resetToken().then(() => start(options)),
+          };
         }
+        setDeal({ ...IDLE, error: { message, action } });
       });
   }, []);
 
@@ -229,79 +276,92 @@ export default function App() {
         practice: quiz.practice,
       });
       setResult({ questions, answers: list });
-      setScreen('results');
+      loadResults().then(() => setScreen('results'));
     },
     [quiz, categories],
   );
 
   const options = quiz?.options;
 
+  const playing = screen === 'play' && !lost;
+
   return (
     <MotionConfig reducedMotion="user">
-      {screen !== 'play' && (
-        <Topbar
-          theme={theme}
-          onToggleTheme={toggleTheme}
-          onOpenStats={() => setStatsOpen(true)}
-          onHome={lost ? () => location.assign('/') : toSetup}
-        />
+      <Topbar
+        playing={playing}
+        onSlot={setBarSlot}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onOpenStats={() => setStatsOpen(true)}
+        onHome={lost ? () => location.assign('/') : toSetup}
+      />
+
+      {lost ? (
+        <Suspense fallback={null}>
+          <NotFound />
+        </Suspense>
+      ) : (
+        <AnimatePresence
+          mode="wait"
+          initial={false}
+          onExitComplete={() => window.scrollTo({ top: 0 })}
+        >
+          {screen === 'setup' && (
+            <motion.div key="setup" {...screenMotion}>
+              <Setup
+                categories={categories}
+                counts={counts}
+                status={status}
+                deal={deal}
+                onStart={start}
+                onCancel={cancelDeal}
+                onDismiss={() => setDeal(IDLE)}
+              />
+            </motion.div>
+          )}
+          {screen === 'play' && quiz && Play && (
+            <motion.div key={`play-${round}`} {...playMotion}>
+              <Play
+                questions={quiz.questions}
+                mode={options.mode}
+                timer={options.timer}
+                barSlot={barSlot}
+                onFinish={finish}
+                onQuit={toSetup}
+              />
+            </motion.div>
+          )}
+          {screen === 'results' && result && Results && (
+            <motion.div key={`results-${round}`} {...screenMotion}>
+              <Results
+                questions={result.questions}
+                answers={result.answers}
+                topic={
+                  quiz.practice
+                    ? 'Practice round'
+                    : topicLabel(categories, options.category)
+                }
+                tone={
+                  quiz.practice || !options.category
+                    ? null
+                    : categories.find((c) => c.id === options.category)?.tone
+                }
+                shareUrl={linkFor(options)}
+                deal={deal}
+                onPlayAgain={() => start(options)}
+                onCancel={cancelDeal}
+                onDismiss={() => setDeal(IDLE)}
+                onPractice={practice}
+                onNew={toSetup}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       )}
 
+      {/* Its own boundary: the first open loads a chunk, and that must not
+          blank the screen behind it. */}
       <Suspense fallback={null}>
-        {lost ? (
-          <NotFound />
-        ) : (
-          <AnimatePresence
-            mode="wait"
-            initial={false}
-            onExitComplete={() => window.scrollTo({ top: 0 })}
-          >
-            {screen === 'setup' && (
-              <motion.div key="setup" {...screenMotion}>
-                <Setup
-                  categories={categories}
-                  counts={counts}
-                  status={status}
-                  onStart={start}
-                />
-              </motion.div>
-            )}
-            {screen === 'loading' && (
-              <motion.div key="loading" {...screenMotion}>
-                <Loading waitUntil={waitUntil} onCancel={toSetup} />
-              </motion.div>
-            )}
-            {screen === 'play' && quiz && (
-              <motion.div key={`play-${round}`} {...screenMotion}>
-                <Play
-                  questions={quiz.questions}
-                  mode={options.mode}
-                  timer={options.timer}
-                  onFinish={finish}
-                  onQuit={toSetup}
-                />
-              </motion.div>
-            )}
-            {screen === 'results' && result && (
-              <motion.div key={`results-${round}`} {...screenMotion}>
-                <Results
-                  questions={result.questions}
-                  answers={result.answers}
-                  topic={
-                    quiz.practice
-                      ? 'Practice round'
-                      : topicLabel(categories, options.category)
-                  }
-                  shareUrl={linkFor(options)}
-                  onPlayAgain={() => start(options)}
-                  onPractice={practice}
-                  onNew={toSetup}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        )}
-
         {statsOpen !== null && (
           <StatsSheet open={statsOpen} onClose={() => setStatsOpen(false)} />
         )}

@@ -67,7 +67,7 @@ export default function StatsSheet({ open, onClose }) {
               historyStore.set([]);
               setArming(false);
             }}
-            className={`btn press w-full ${arming ? 'bg-bad text-raised' : 'glass text-bad-ink'}`}
+            className={`btn press w-full ${arming ? 'bg-bad text-card' : 'btn-plain text-bad-ink'}`}
           >
             {arming ? 'Tap again to clear everything' : 'Clear history'}
           </button>
@@ -80,7 +80,7 @@ export default function StatsSheet({ open, onClose }) {
         </p>
       ) : (
         <div className="space-y-6">
-          <dl className="grid grid-cols-3 gap-2">
+          <dl className="grid grid-cols-3 border-y border-dashed border-line-2 py-3">
             {[
               ['Rounds', runs.length],
               [
@@ -88,30 +88,31 @@ export default function StatsSheet({ open, onClose }) {
                 `${Math.round((stats.right / Math.max(1, stats.total)) * 100)}%`,
               ],
               ['Best streak', stats.bestStreak],
-            ].map(([k, v]) => (
-              <div key={k} className="rounded-2xl bg-surface p-3">
-                <dt className="text-xs text-muted">{k}</dt>
-                <dd className="mt-1 font-mono text-xl font-medium tabular-nums">
-                  {v}
-                </dd>
+            ].map(([k, v], i) => (
+              <div
+                key={k}
+                className={`px-3 ${i ? 'border-l border-dashed border-line-2' : ''}`}
+              >
+                <dt className="caps text-[0.66rem]">{k}</dt>
+                <dd className="printed mt-1 text-[2rem]">{v}</dd>
               </div>
             ))}
           </dl>
 
           <section>
-            <h3 className="eyebrow mb-3">By topic</h3>
+            <h3 className="caps mb-3">By topic</h3>
             <ul className="space-y-2.5">
               {stats.byTopic.map(([topic, t]) => (
                 <li key={topic} className="text-sm">
                   <div className="mb-1 flex justify-between gap-3">
-                    <span className="truncate">{topic}</span>
-                    <span className="shrink-0 font-mono text-xs text-muted tabular-nums">
+                    <span className="truncate font-medium">{topic}</span>
+                    <span className="shrink-0 text-xs text-muted tabular-nums">
                       {Math.round((t.right / t.total) * 100)}% · {t.runs}
                     </span>
                   </div>
-                  <span className="block h-1.5 overflow-hidden rounded-full bg-surface-2">
+                  <span className="block h-2 overflow-hidden rounded-[2px] bg-line">
                     <span
-                      className="block h-full origin-left rounded-full bg-accent"
+                      className="block h-full origin-left bg-ink"
                       style={{ transform: `scaleX(${t.right / t.total})` }}
                     />
                   </span>
@@ -121,15 +122,17 @@ export default function StatsSheet({ open, onClose }) {
           </section>
 
           <section>
-            <h3 className="eyebrow mb-2">Recent</h3>
-            <ul className="divide-y divide-line">
+            <h3 className="caps mb-1">Recent</h3>
+            <ul className="divide-y divide-dashed divide-line-2">
               {runs.slice(0, 12).map((r) => (
                 <li
                   key={r.at}
                   className="flex items-center gap-3 py-2.5 text-sm"
                 >
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate">{r.topic}</span>
+                    <span className="block truncate font-medium">
+                      {r.topic}
+                    </span>
                     <span className="block text-xs text-muted first-letter:uppercase">
                       {[
                         r.difficulty || 'any difficulty',
@@ -140,7 +143,7 @@ export default function StatsSheet({ open, onClose }) {
                         .join(' · ')}
                     </span>
                   </span>
-                  <span className="font-mono tabular-nums">
+                  <span className="printed text-xl">
                     {r.score}/{r.total}
                   </span>
                 </li>

@@ -36,14 +36,14 @@ function Toast({ toast }) {
   return (
     <motion.li
       layout
-      initial={{ opacity: 0, transform: 'translateY(16px) scale(0.97)' }}
+      initial={{ opacity: 0, transform: 'translateY(14px) scale(0.98)' }}
       animate={{ opacity: 1, transform: 'translateY(0px) scale(1)' }}
       exit={{
         opacity: 0,
-        transform: 'translateY(8px) scale(0.97)',
-        transition: { duration: 0.16 },
+        transform: 'translateY(10px) scale(0.98)',
+        transition: { duration: 0.22, ease: [0.23, 1, 0.32, 1] },
       }}
-      transition={{ type: 'spring', duration: 0.4, bounce: 0.15 }}
+      transition={{ type: 'spring', duration: 0.42, bounce: 0.12 }}
       drag="y"
       dragConstraints={{ top: 0, bottom: 0 }}
       dragElastic={{ top: 0.1, bottom: 0.8 }}
@@ -56,7 +56,7 @@ function Toast({ toast }) {
       onPointerLeave={() => {
         hovering.current = false;
       }}
-      className="pointer-events-auto flex w-full items-center gap-3 rounded-2xl bg-ink py-2.5 pr-2.5 pl-4 text-sm text-bg shadow-(--shadow-lg)"
+      className="pointer-events-auto flex w-full items-center gap-3 rounded-[12px] bg-ink py-2.5 pr-2.5 pl-4 text-sm font-medium text-card shadow-(--shadow-lift)"
       role="status"
     >
       <span className="min-w-0 flex-1 text-pretty">{toast.message}</span>
@@ -67,7 +67,7 @@ function Toast({ toast }) {
             toast.action.onClick();
             dismissToast(toast.id);
           }}
-          className="press shrink-0 rounded-full bg-bg/15 px-3 py-1.5 font-medium hover-fine:bg-bg/25"
+          className="press shrink-0 rounded-lg bg-card/15 px-3 py-1.5 font-semibold hover-fine:bg-card/25"
         >
           {toast.action.label}
         </button>
@@ -83,7 +83,7 @@ export default function Toaster() {
       aria-live="polite"
       className="pointer-events-none fixed inset-x-0 bottom-[calc(var(--safe-b)+6rem)] z-60 mx-auto flex w-[min(26rem,calc(100%-2rem))] flex-col items-center gap-2"
     >
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={false} mode="popLayout">
         {toasts.map((t) => (
           <Toast key={t.id} toast={t} />
         ))}
