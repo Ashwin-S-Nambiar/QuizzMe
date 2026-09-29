@@ -1,4 +1,4 @@
-import { X } from '@phosphor-icons/react';
+import { XIcon } from '@phosphor-icons/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -119,7 +119,7 @@ export default function Sheet({
                 className="tact press grid size-10 shrink-0 place-items-center rounded-xl text-ink-2 [--edge:3px]"
                 aria-label="Close"
               >
-                <X weight="bold" size={18} />
+                <XIcon weight="bold" size={18} />
               </button>
             </header>
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5">

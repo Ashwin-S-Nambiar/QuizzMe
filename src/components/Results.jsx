@@ -1,11 +1,11 @@
 import {
-  ArrowClockwise,
-  CaretDown,
-  Check,
-  Export,
-  Minus,
-  Target,
-  X,
+  ArrowClockwiseIcon,
+  CaretDownIcon,
+  CheckIcon,
+  ExportIcon,
+  MinusIcon,
+  TargetIcon,
+  XIcon,
 } from '@phosphor-icons/react';
 import {
   AnimatePresence,
@@ -137,7 +137,7 @@ function Strip({ questions, answers }) {
 function ReviewRow({ q, a, n }) {
   const [open, setOpen] = useState(false);
   const right = a.choice === q.correct;
-  const Icon = right ? Check : a.choice == null ? Minus : X;
+  const Icon = right ? CheckIcon : a.choice == null ? MinusIcon : XIcon;
   return (
     <div className="tact overflow-hidden [--edge:3px]">
       <button
@@ -168,12 +168,12 @@ function ReviewRow({ q, a, n }) {
             <span className="tabular-nums">{formatSeconds(a.ms)}</span>
           </span>
           <span
-            className={`mt-1 block text-[0.98rem] leading-snug font-medium break-words ${open ? '' : 'line-clamp-2'}`}
+            className={`mt-1 block text-[0.98rem] leading-snug font-medium wrap-break-word ${open ? '' : 'line-clamp-2'}`}
           >
             {q.question}
           </span>
         </span>
-        <CaretDown
+        <CaretDownIcon
           weight="bold"
           size={16}
           className={`mt-1.5 shrink-0 text-muted transition-transform duration-200 ease-out ${open ? 'rotate-180' : ''}`}
@@ -191,14 +191,14 @@ function ReviewRow({ q, a, n }) {
               {!right && (
                 <p className="flex gap-2 rounded-xl bg-bad-tint px-3 py-2 text-bad-ink">
                   <span className="shrink-0 font-semibold">You</span>
-                  <span className="min-w-0 break-words line-through decoration-2">
+                  <span className="min-w-0 wrap-break-word line-through decoration-2">
                     {a.choice ?? (a.timedOut ? 'Ran out of time' : 'Skipped')}
                   </span>
                 </p>
               )}
               <p className="flex gap-2 rounded-xl bg-good-tint px-3 py-2 text-good-ink">
                 <span className="shrink-0 font-semibold">Answer</span>
-                <span className="min-w-0 break-words">{q.correct}</span>
+                <span className="min-w-0 wrap-break-word">{q.correct}</span>
               </p>
             </div>
           </motion.div>
@@ -276,7 +276,7 @@ export default function Results({
       {deal.busy ? (
         <DeckGlyph busy />
       ) : (
-        <ArrowClockwise weight="bold" size={18} />
+        <ArrowClockwiseIcon weight="bold" size={18} />
       )}
       <span className="slot text-left">
         <span className={deal.busy ? 'invisible' : ''}>Deal again</span>
@@ -286,9 +286,9 @@ export default function Results({
   );
 
   return (
-    <div className="flex min-h-[calc(100dvh-4rem-var(--safe-t))] flex-col lg:h-[calc(100dvh-4rem-var(--safe-t))] lg:min-h-0">
-      <div className="mx-auto grid w-full max-w-6xl flex-1 content-start gap-x-10 gap-y-8 px-(--gutter) pt-2 pb-10 md:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] md:gap-x-6 lg:min-h-0 lg:grid-cols-[24rem_minmax(0,1fr)] lg:gap-x-10 lg:pb-6">
-        <section className="min-w-0 md:sticky md:top-20 md:self-start lg:static lg:max-h-full lg:overflow-y-auto lg:overscroll-contain lg:px-1 lg:pb-2">
+    <div className="flex min-h-[calc(100dvh-4rem-var(--safe-t))] flex-col md:h-[calc(100dvh-4rem-var(--safe-t))] md:min-h-0">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 content-start gap-x-10 gap-y-8 px-(--gutter) pt-2 pb-10 md:min-h-0 md:grid-cols-[minmax(0,21rem)_minmax(0,1fr)] md:gap-x-6 md:pb-4 lg:grid-cols-[24rem_minmax(0,1fr)] lg:gap-x-10">
+        <section className="min-w-0 md:-mx-1 md:max-h-full md:overflow-y-auto md:overscroll-contain md:px-1 md:pb-2">
           <div className="card overflow-hidden">
             <div
               className={`flex min-h-12 items-center justify-between gap-3 px-5 py-2 ${
@@ -296,7 +296,7 @@ export default function Results({
               }`}
               style={tone ? { background: flat(tone) } : undefined}
             >
-              <span className="display min-w-0 text-[1.05rem] leading-tight font-bold break-words">
+              <span className="display min-w-0 text-[1.05rem] leading-tight font-bold wrap-break-word">
                 {topic}
               </span>
               <span className="shrink-0 text-[0.8125rem] font-semibold opacity-80">
@@ -369,7 +369,7 @@ export default function Results({
                     onClick={share}
                     className="btn btn-plain tact press px-3"
                   >
-                    <Export weight="bold" size={18} />
+                    <ExportIcon weight="bold" size={18} />
                     Share
                   </button>
                 </div>
@@ -385,7 +385,7 @@ export default function Results({
 
         <section
           aria-labelledby="review-title"
-          className="flex min-w-0 flex-col lg:min-h-0"
+          className="flex min-w-0 flex-col md:min-h-0"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2
@@ -417,7 +417,7 @@ export default function Results({
               className="tact press mt-4 flex w-full items-center gap-3 border-yellow-edge/60 bg-yellow p-3 text-left text-on-flat [--edge-color:var(--color-yellow-edge)]"
             >
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-on-flat text-yellow">
-                <Target weight="bold" size={20} />
+                <TargetIcon weight="bold" size={20} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="display block text-[1.05rem] leading-tight font-bold">
@@ -430,8 +430,8 @@ export default function Results({
             </button>
           )}
 
-          {/* On desktop the page holds still and only this list scrolls. */}
-          <ol className="mt-4 space-y-3 lg:-mx-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain lg:px-1 lg:pt-0.5 lg:pb-3">
+          {/* From tablets up the page holds still and only this list scrolls. */}
+          <ol className="mt-4 space-y-3 md:-mx-1 md:min-h-0 md:flex-1 md:overflow-y-auto md:overscroll-contain md:px-1 md:pt-0.5 md:pb-3">
             <AnimatePresence initial={false} mode="popLayout">
               {rows.map(({ q, a, n }, i) => (
                 <motion.li
@@ -476,7 +476,7 @@ export default function Results({
               aria-label="Share result"
               data-tip="Share result"
             >
-              <Export weight="bold" size={19} />
+              <ExportIcon weight="bold" size={19} />
             </button>
           </div>
           <DealNote

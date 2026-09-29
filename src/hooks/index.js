@@ -27,7 +27,7 @@ function applyTheme(theme, origin) {
   const swap = () => {
     root.dataset.theme = theme;
     document.querySelector('meta[name="theme-color"]').content =
-      theme === 'dark' ? '#13100d' : '#ede9e1';
+      theme === 'dark' ? '#0c0c0e' : '#f6f2ea';
   };
   if (
     !document.startViewTransition ||

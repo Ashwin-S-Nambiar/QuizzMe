@@ -1,9 +1,9 @@
 import {
-  ChartBar,
-  Moon,
-  SpeakerHigh,
-  SpeakerSlash,
-  Sun,
+  ChartBarIcon,
+  MoonIcon,
+  SpeakerHighIcon,
+  SpeakerSlashIcon,
+  SunIcon,
 } from '@phosphor-icons/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useScrolled } from '../hooks/index.js';
@@ -108,8 +108,8 @@ export default function Topbar({
                 >
                   <Swap
                     on={sound}
-                    a={<SpeakerHigh size={19} weight="bold" />}
-                    b={<SpeakerSlash size={19} weight="bold" />}
+                    a={<SpeakerHighIcon size={19} weight="bold" />}
+                    b={<SpeakerSlashIcon size={19} weight="bold" />}
                   />
                 </button>
                 <button
@@ -119,7 +119,7 @@ export default function Topbar({
                   aria-label="Your stats"
                   data-tip="Your stats"
                 >
-                  <ChartBar size={19} weight="bold" />
+                  <ChartBarIcon size={19} weight="bold" />
                 </button>
                 <button
                   type="button"
@@ -132,8 +132,8 @@ export default function Topbar({
                 >
                   <Swap
                     on={theme === 'dark'}
-                    a={<Sun size={19} weight="bold" />}
-                    b={<Moon size={19} weight="bold" />}
+                    a={<SunIcon size={19} weight="bold" />}
+                    b={<MoonIcon size={19} weight="bold" />}
                   />
                 </button>
               </div>

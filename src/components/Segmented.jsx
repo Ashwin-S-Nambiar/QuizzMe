@@ -34,6 +34,7 @@ export default function Segmented({
   options,
   onChange,
   hideLabel = false,
+  tall = false,
 }) {
   const id = useId();
   return (
@@ -47,7 +48,7 @@ export default function Segmented({
             checked={o.value === value}
             disabled={o.disabled}
             onSelect={() => onChange(o.value)}
-            className="tact chip flex min-h-11 min-w-0 flex-col items-center justify-center px-1.5 py-1 text-[0.95rem]"
+            className={`tact chip flex min-w-0 flex-col items-center justify-center px-1.5 py-1 text-[0.95rem] ${tall ? 'h-13 short:h-11' : 'min-h-11'}`}
           >
             <span className="leading-tight">{o.label}</span>
             {o.hint != null && (

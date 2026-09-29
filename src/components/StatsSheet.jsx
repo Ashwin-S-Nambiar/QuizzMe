@@ -104,7 +104,7 @@ export default function StatsSheet({ open, onClose }) {
               {stats.byTopic.map(([topic, t]) => (
                 <li key={topic} className="text-sm">
                   <div className="mb-1 flex justify-between gap-3">
-                    <span className="min-w-0 font-medium break-words">
+                    <span className="min-w-0 font-medium wrap-break-word">
                       {topic}
                     </span>
                     <span className="shrink-0 text-xs text-muted tabular-nums">
@@ -131,7 +131,7 @@ export default function StatsSheet({ open, onClose }) {
                   className="flex items-center gap-3 py-2.5 text-sm"
                 >
                   <span className="min-w-0 flex-1">
-                    <span className="block font-medium break-words">
+                    <span className="block font-medium wrap-break-word">
                       {r.topic}
                     </span>
                     <span className="block text-xs text-muted first-letter:uppercase">

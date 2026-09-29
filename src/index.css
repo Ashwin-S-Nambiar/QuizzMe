@@ -137,35 +137,36 @@
   color-scheme: light;
 }
 
-/* Night: a deep indigo table with cards a step lighter. */
+/* Night: a near-black table with charcoal cards; indigo stays only as the
+   accent and the backs of the cards. */
 :root[data-theme="dark"] {
-  --color-bg: #171a33;
-  --color-bg-2: #1d2142;
-  --color-card: #22264a;
-  --color-card-2: #292e57;
-  --color-line: #343a6b;
-  --color-edge: #10132a;
-  --color-ink: #f3f1ea;
-  --color-ink-2: #c9ccdf;
-  --color-muted: #a3a7c7;
-  --color-faint: #6a6f99;
+  --color-bg: #0c0c0e;
+  --color-bg-2: #141417;
+  --color-card: #19191d;
+  --color-card-2: #202025;
+  --color-line: #2e2e35;
+  --color-edge: #232329;
+  --color-ink: #f4f3ef;
+  --color-ink-2: #cdccd4;
+  --color-muted: #9b9aa6;
+  --color-faint: #5f5e69;
   --color-brand: #8f9bff;
   --color-brand-edge: #5d68d6;
-  --color-on-brand: #14173a;
+  --color-on-brand: #0c0c0e;
   --color-brand-ink: #c9cfff;
   --color-lilac: #b3a4f5;
-  --color-lilac-soft: #2c2f63;
+  --color-lilac-soft: #24223f;
   --color-back: #4553c4;
   --color-back-edge: #2c3689;
   --color-good: #4cc27a;
   --color-good-edge: #2c8a52;
-  --color-good-tint: #173a2a;
-  --color-good-line: #22573d;
+  --color-good-tint: #10281b;
+  --color-good-line: #1c4a31;
   --color-good-ink: #9ff0bb;
   --color-bad: #ff6b6f;
   --color-bad-edge: #c23237;
-  --color-bad-tint: #3d1d2a;
-  --color-bad-line: #62293a;
+  --color-bad-tint: #2c1316;
+  --color-bad-line: #57232a;
   --color-bad-ink: #ffb8ba;
   --color-yellow: #f7d06a;
   --color-yellow-edge: #b98d1c;
@@ -174,7 +175,7 @@
   --color-pink: #ffb3cf;
   --color-orange: #ffb877;
   --shadow-lift: 0 2px 6px rgb(0 0 0 / 0.3), 0 32px 56px -24px rgb(0 0 0 / 0.7);
-  --scrim: rgb(8 10 26 / 0.6);
+  --scrim: rgb(0 0 0 / 0.66);
   color-scheme: dark;
 }
 
@@ -219,7 +220,6 @@
     /* Thrown cards leave the viewport; they must not widen the page. */
     overflow-x: clip;
   }
-
 
   button,
   [role="button"],

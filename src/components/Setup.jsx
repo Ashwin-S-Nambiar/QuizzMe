@@ -1,9 +1,11 @@
 import {
-  CaretDown,
-  CaretRight,
-  Check,
-  DiceFive,
-  Warning,
+  CaretRightIcon,
+  CheckIcon,
+  DiceFiveIcon,
+  FilmSlateIcon,
+  FireIcon,
+  SlidersHorizontalIcon,
+  WarningIcon,
 } from '@phosphor-icons/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useMemo, useState } from 'react';
@@ -32,7 +34,7 @@ function About({ className = '' }) {
       {ABOUT.map((text) => (
         <li key={text} className="flex items-start gap-3">
           <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-md bg-lilac-soft text-brand-ink">
-            <Check size={12} weight="bold" />
+            <CheckIcon size={12} weight="bold" />
           </span>
           <span>{text}</span>
         </li>
@@ -58,6 +60,81 @@ function TopicMark({ topic, size = 'md' }) {
         <Icon size={size === 'lg' ? 22 : 20} weight="bold" />
       </span>
     </span>
+  );
+}
+
+// A few cards and chips from the game, dealt onto the landing where the
+// fanned hand doesn't fit.
+const DECOR = [
+  { kind: 'card', tone: 'pink', icon: FilmSlateIcon, rotate: -9 },
+  { kind: 'card', tone: 'blue', label: '?', rotate: 6 },
+  { kind: 'chip', tone: 'good', label: 'Correct', rotate: -4 },
+  { kind: 'chip', tone: 'yellow', label: '5 in a row', rotate: 5 },
+];
+
+function Decor({ className = '' }) {
+  const reduce = useReducedMotion();
+  return (
+    <div
+      className={`items-end gap-2.5 select-none ${className}`}
+      aria-hidden="true"
+    >
+      {DECOR.map((d, i) => {
+        const Icon = d.icon;
+        return (
+          <motion.span
+            key={d.label ?? d.tone}
+            initial={
+              reduce
+                ? { opacity: 0 }
+                : { opacity: 0, transform: `translateY(14px) rotate(0deg)` }
+            }
+            animate={{
+              opacity: 1,
+              transform: `translateY(0px) rotate(${d.rotate}deg)`,
+            }}
+            whileHover={
+              reduce
+                ? undefined
+                : { transform: `translateY(-4px) rotate(${d.rotate / 2}deg)` }
+            }
+            transition={{
+              type: 'spring',
+              duration: 0.55,
+              bounce: 0.3,
+              delay: 0.08 + i * 0.07,
+            }}
+            className={
+              d.kind === 'card'
+                ? 'display grid h-13 w-10 place-items-center rounded-lg border-2 border-on-flat/15 text-xl font-extrabold text-on-flat shadow-[0_3px_0_rgb(31_35_64/0.15)]'
+                : `display inline-flex h-9 items-center gap-1.5 rounded-full border-2 px-3 text-sm font-bold whitespace-nowrap ${
+                    d.tone === 'good'
+                      ? 'border-good-line bg-good-tint text-good-ink shadow-[0_3px_0_var(--color-good-line)]'
+                      : 'border-yellow-edge/50 bg-yellow text-on-flat shadow-[0_3px_0_var(--color-yellow-edge)]'
+                  }`
+            }
+            style={d.kind === 'card' ? { background: flat(d.tone) } : undefined}
+          >
+            {d.kind === 'card' ? (
+              Icon ? (
+                <Icon size={20} weight="bold" />
+              ) : (
+                d.label
+              )
+            ) : (
+              <>
+                {d.tone === 'good' ? (
+                  <CheckIcon size={14} weight="bold" />
+                ) : (
+                  <FireIcon size={14} weight="fill" />
+                )}
+                {d.label}
+              </>
+            )}
+          </motion.span>
+        );
+      })}
+    </div>
   );
 }
 
@@ -116,7 +193,11 @@ function Hand({ topic, amount, difficulty, busy }) {
             </div>
             <div className="flex items-center justify-between border-t-2 border-line px-3.5 py-2.5 text-xs font-semibold text-muted">
               <span>{amount} cards</span>
-              <span className="capitalize">{difficulty || 'Any level'}</span>
+              <span>
+                {difficulty
+                  ? difficulty[0].toUpperCase() + difficulty.slice(1)
+                  : 'Any level'}
+              </span>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -167,13 +248,13 @@ function TopicTile({ topic, count, active, onSelect, wide }) {
         )}
         {!wide && active && (
           <span className="grid size-5 shrink-0 place-items-center rounded-full bg-brand text-on-brand">
-            <Check size={11} weight="bold" />
+            <CheckIcon size={11} weight="bold" />
           </span>
         )}
       </span>
       {wide && active && (
         <span className="grid size-6 shrink-0 place-items-center rounded-full bg-brand text-on-brand">
-          <Check size={13} weight="bold" />
+          <CheckIcon size={13} weight="bold" />
         </span>
       )}
     </Choice>
@@ -287,11 +368,10 @@ export default function Setup({
     });
   };
 
-  // Always rendered, empty until a topic is picked, so the chips keep their
-  // height when the counts arrive.
-  const hint = (d) => (
-    <RollingNumber value={prefs.category ? (catCounts?.[d] ?? null) : null} />
-  );
+  // The difficulty chips have a fixed height with room for these, so the
+  // counts arriving never moves anything.
+  const hint = (d) =>
+    prefs.category ? <RollingNumber value={catCounts?.[d] ?? null} /> : null;
 
   const moreSummary = [
     {
@@ -305,10 +385,11 @@ export default function Setup({
 
   return (
     <div className="mx-auto flex min-h-[calc(100dvh-4rem-var(--safe-t))] max-w-6xl flex-col px-(--gutter)">
-      <div className="grid flex-1 grid-cols-[minmax(0,1fr)] items-center gap-x-12 gap-y-6 pt-2 pb-10 md:gap-y-8 lg:grid-cols-[minmax(0,1fr)_26rem] xl:gap-x-20">
+      <div className="grid flex-1 grid-cols-[minmax(0,1fr)] items-center gap-x-12 gap-y-5 pt-1 pb-6 short:gap-y-3 short:pb-3 md:gap-y-6 lg:pb-8 lg:grid-cols-[minmax(0,1fr)_26rem] xl:gap-x-20">
         <section className="flex min-w-0 flex-col gap-6 md:flex-row md:items-center md:justify-between lg:flex-col lg:items-start">
           <div className="min-w-0">
-            <h1 className="display text-[clamp(2.5rem,9vw,4.75rem)] leading-[0.98] font-extrabold tracking-[-0.035em]">
+            <Decor className="mb-5 flex short:hidden" />
+            <h1 className="display text-[clamp(2.5rem,9vw,3.5rem)] short:text-[2.25rem] leading-[0.98] font-extrabold tracking-[-0.035em] lg:text-[clamp(3.5rem,5.4vw,4.75rem)]">
               Settle a bet.
               <br />
               <span className="relative inline-block text-brand">
@@ -330,7 +411,7 @@ export default function Setup({
                 </svg>
               </span>
             </h1>
-            <p className="mt-5 max-w-md text-[1.02rem] text-ink-2 short:hidden sm:text-lg">
+            <p className="mt-4 hidden max-w-md text-lg text-ink-2 sm:block">
               Quick trivia on 24 topics, straight from Open Trivia DB.
             </p>
             <About className="mt-6 hidden lg:[@media(min-height:980px)]:block" />
@@ -343,11 +424,22 @@ export default function Setup({
               busy={busy && deal.shown}
             />
           </div>
+          {/* The same hand at 70% for shorter desktop screens. */}
+          <div className="hidden h-53 w-67 lg:[@media(max-height:800px)]:block">
+            <div className="origin-top-left scale-70">
+              <Hand
+                topic={topic}
+                amount={amount}
+                difficulty={prefs.difficulty}
+                busy={busy && deal.shown}
+              />
+            </div>
+          </div>
         </section>
 
         <section
           aria-labelledby="round-title"
-          className="card mx-auto w-full max-w-xl p-4 sm:p-5 lg:max-w-none"
+          className="card mx-auto w-full max-w-xl p-4 short:p-3.5 sm:p-5 lg:max-w-none"
         >
           <h2 id="round-title" className="sr-only">
             Your round
@@ -355,7 +447,7 @@ export default function Setup({
 
           {status === 'offline' && (
             <p className="mb-4 flex items-start gap-2.5 rounded-2xl border-2 border-bad-line bg-bad-tint p-3 text-sm text-bad-ink">
-              <Warning weight="bold" size={17} className="mt-px shrink-0" />
+              <WarningIcon weight="bold" size={17} className="mt-px shrink-0" />
               Open Trivia DB isn't answering right now. It's usually back in a
               few minutes.
             </p>
@@ -364,7 +456,7 @@ export default function Setup({
           <button
             type="button"
             onClick={() => setTopicsOpen(true)}
-            className="tact press group flex w-full items-center gap-3 bg-card-2 p-2.5 pr-3.5 text-left"
+            className="tact press group flex w-full items-center gap-3 bg-card-2 p-2.5 pr-3.5 text-left short:py-2"
           >
             <TopicMark topic={topic} />
             <span className="min-w-0 flex-1">
@@ -376,16 +468,17 @@ export default function Setup({
             <span className="shrink-0 text-sm font-medium text-muted">
               <RollingNumber value={topicCount ?? null} />
             </span>
-            <CaretRight
+            <CaretRightIcon
               size={17}
               weight="bold"
               className="shrink-0 text-muted transition-transform duration-200 ease-out group-hover:translate-x-0.5"
             />
           </button>
 
-          <div className="mt-5 space-y-5">
+          <div className="mt-5 space-y-5 short:mt-3 short:space-y-3">
             <Segmented
               label="Difficulty"
+              tall
               value={prefs.difficulty}
               onChange={(v) => setPref('difficulty', v)}
               options={[
@@ -412,7 +505,7 @@ export default function Setup({
                     name="amount"
                     checked={n === amount}
                     onSelect={() => setPref('amount', n)}
-                    className="tact chip grid h-11 place-items-center text-[1.05rem] tabular-nums"
+                    className="tact chip grid h-11 place-items-center text-[1.05rem] tabular-nums short:h-10"
                   >
                     {n}
                   </Choice>
@@ -420,91 +513,31 @@ export default function Setup({
               </div>
             </fieldset>
 
-            <div className="rounded-2xl border-2 border-dashed border-edge">
-              <button
-                type="button"
-                onClick={() => setMore((m) => !m)}
-                aria-expanded={more}
-                className="flex w-full items-center gap-3 px-3.5 py-3 text-left"
-              >
-                <span className="min-w-0 flex-1">
-                  <span className="block text-[0.95rem] font-semibold">
-                    More options
-                  </span>
-                  <span className="slot text-[0.8125rem] text-muted">
-                    <AnimatePresence initial={false}>
-                      {!more && (
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                          transition={{ duration: 0.2 }}
-                          className="block"
-                        >
-                          {moreSummary}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                    <span className="invisible block" aria-hidden="true">
-                      {moreSummary}
-                    </span>
-                  </span>
+            <button
+              type="button"
+              onClick={() => setMore(true)}
+              className="tact press group flex w-full items-center gap-3 px-3.5 py-3 text-left short:py-2 [--edge:3px]"
+            >
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-lilac-soft text-brand-ink">
+                <SlidersHorizontalIcon size={18} weight="bold" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[0.95rem] font-semibold">
+                  More options
                 </span>
-                <CaretDown
-                  size={17}
-                  weight="bold"
-                  className={`shrink-0 text-muted transition-transform duration-200 ease-out ${more ? 'rotate-180' : ''}`}
-                />
-              </button>
-              <AnimatePresence initial={false}>
-                {more && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.26, ease: EASE }}
-                    className="overflow-hidden"
-                  >
-                    <div className="space-y-4 px-3.5 pt-1 pb-4">
-                      <Segmented
-                        label="Question type"
-                        value={prefs.type}
-                        onChange={(v) => setPref('type', v)}
-                        options={[
-                          { value: '', label: 'Mixed' },
-                          { value: 'multiple', label: 'Choice' },
-                          { value: 'boolean', label: 'True/false' },
-                        ]}
-                      />
-                      <div className="grid grid-cols-1 gap-4 min-[360px]:grid-cols-2 min-[360px]:gap-3">
-                        <Segmented
-                          label="Answers"
-                          value={prefs.mode}
-                          onChange={(v) => setPref('mode', v)}
-                          options={[
-                            { value: 'instant', label: 'Each' },
-                            { value: 'exam', label: 'At end' },
-                          ]}
-                        />
-                        <Segmented
-                          label="Timer"
-                          value={prefs.timer}
-                          onChange={(v) => setPref('timer', v)}
-                          options={[
-                            { value: 0, label: 'Off' },
-                            { value: 15, label: '15s' },
-                            { value: 30, label: '30s' },
-                          ]}
-                        />
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                <span className="block text-[0.8125rem] text-muted">
+                  {moreSummary}
+                </span>
+              </span>
+              <CaretRightIcon
+                size={17}
+                weight="bold"
+                className="shrink-0 text-muted transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+              />
+            </button>
           </div>
 
-          <div className="mt-5 flex gap-2">
+          <div className="mt-5 flex gap-2 short:mt-4">
             <button
               type="button"
               onClick={start}
@@ -529,7 +562,7 @@ export default function Setup({
               aria-label="Surprise me: a random topic, ten cards"
               data-tip="Random topic, ten cards"
             >
-              <DiceFive size={21} weight="bold" />
+              <DiceFiveIcon size={21} weight="bold" />
               <span className="hidden text-ink min-[420px]:inline">
                 Surprise me
               </span>
@@ -540,6 +573,53 @@ export default function Setup({
       </div>
 
       <SiteFooter />
+
+      <Sheet
+        open={more}
+        onClose={() => setMore(false)}
+        title="More options"
+        footer={
+          <button
+            type="button"
+            onClick={() => setMore(false)}
+            className="btn btn-brand press w-full"
+          >
+            Done
+          </button>
+        }
+      >
+        <div className="space-y-5 pb-1">
+          <Segmented
+            label="Question type"
+            value={prefs.type}
+            onChange={(v) => setPref('type', v)}
+            options={[
+              { value: '', label: 'Mixed' },
+              { value: 'multiple', label: 'Choice' },
+              { value: 'boolean', label: 'True/false' },
+            ]}
+          />
+          <Segmented
+            label="Answers"
+            value={prefs.mode}
+            onChange={(v) => setPref('mode', v)}
+            options={[
+              { value: 'instant', label: 'As you go' },
+              { value: 'exam', label: 'At the end' },
+            ]}
+          />
+          <Segmented
+            label="Timer per card"
+            value={prefs.timer}
+            onChange={(v) => setPref('timer', v)}
+            options={[
+              { value: 0, label: 'Off' },
+              { value: 15, label: '15s' },
+              { value: 30, label: '30s' },
+            ]}
+          />
+        </div>
+      </Sheet>
 
       <TopicSheet
         open={topicsOpen}

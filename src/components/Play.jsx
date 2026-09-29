@@ -1,4 +1,10 @@
-import { ArrowLeft, Check, Fire, Timer, X } from '@phosphor-icons/react';
+import {
+  ArrowLeftIcon,
+  CheckIcon,
+  FireIcon,
+  TimerIcon,
+  XIcon,
+} from '@phosphor-icons/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -60,7 +66,7 @@ function Fuse({ seconds, paused, onExpire }) {
         role="timer"
         aria-label={`${left} seconds left`}
       >
-        <Timer size={16} weight="bold" />
+        <TimerIcon size={16} weight="bold" />
         {left}
       </span>
       <span
@@ -215,7 +221,7 @@ function AnswerButton({ label, index, state, onClick, disabled, big }) {
       className={`tact press flex w-full min-w-0 items-center text-left disabled:cursor-default ${TONE[state]} ${
         big
           ? 'min-h-24 flex-col justify-center gap-1 px-3 sm:min-h-28'
-          : 'min-h-14 gap-3 py-2 pr-4 pl-2'
+          : 'min-h-14 gap-3 py-2 pr-4 pl-2 short:min-h-12 short:py-1.5'
       }`}
     >
       {!big && (
@@ -504,7 +510,7 @@ export default function Play({
         aria-label="Leave quiz"
         data-tip="Leave quiz"
       >
-        <X weight="bold" size={20} />
+        <XIcon weight="bold" size={20} />
       </button>
       <Progress
         questions={questions}
@@ -523,7 +529,7 @@ export default function Play({
     <div className="flex min-h-[calc(100dvh-4rem-var(--safe-t))] flex-col">
       {barSlot ? createPortal(topBar, barSlot) : null}
 
-      <main className="relative mx-auto w-full max-w-3xl flex-1 px-(--gutter) pt-2 pb-12 sm:pt-6">
+      <main className="relative mx-auto w-full max-w-3xl flex-1 px-(--gutter) pt-2 pb-12 short:pb-8 sm:pt-6">
         <div className="relative">
           {/* The rest of the deck, peeking out under the current card. */}
           {[2, 1].map((k) => (
@@ -571,7 +577,7 @@ export default function Play({
                   )}
                 </span>
               </div>
-              <div className="p-4 pt-5 sm:p-6 sm:pt-7">
+              <div className="p-4 pt-5 short:pt-4 sm:p-6 sm:pt-7">
                 <h2
                   id={`${q.id}-text`}
                   className={`display leading-[1.2] font-bold text-pretty wrap-break-word ${questionSize(q.question)}`}
@@ -580,7 +586,7 @@ export default function Play({
                 </h2>
                 <div
                   ref={list}
-                  className={`mt-5 grid gap-x-2.5 gap-y-3 sm:mt-7 ${
+                  className={`mt-5 grid gap-x-2.5 gap-y-3 short:mt-4 short:gap-y-2.5 sm:mt-7 ${
                     q.type === 'boolean' ? 'grid-cols-2' : 'md:grid-cols-2'
                   }`}
                 >
@@ -606,9 +612,9 @@ export default function Play({
           the words in it do, so answering never moves the page. */}
       <footer
         ref={bar}
-        className={`bottom-bar sticky bottom-0 z-20 border-t-2 pt-3 transition-colors duration-200 sm:pt-4 ${BANNER[status]}`}
+        className={`bottom-bar sticky bottom-0 z-20 border-t-2 pt-3 transition-colors duration-200 short:pt-2 sm:pt-4 ${BANNER[status]}`}
       >
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-(--gutter) sm:flex-row sm:items-center sm:gap-4">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-(--gutter) short:gap-2 sm:flex-row sm:items-center sm:gap-4">
           <div className="flex min-w-0 flex-1 items-center gap-3">
             {!instant && (
               <button
@@ -619,15 +625,12 @@ export default function Play({
                 aria-label="Previous card"
                 data-tip="Previous card"
               >
-                <ArrowLeft weight="bold" size={18} />
+                <ArrowLeftIcon weight="bold" size={18} />
               </button>
             )}
             {/* Tall enough for a heading and two lines of answer, in every
                 state, so the banner never grows. */}
-            <div
-              className="slot min-h-[4.25rem] min-w-0 flex-1"
-              aria-live="polite"
-            >
+            <div className="slot min-h-17 min-w-0 flex-1" aria-live="polite">
               <AnimatePresence initial={false}>
                 <motion.div
                   key={status === 'idle' ? `idle-${instant}` : status}
@@ -648,9 +651,9 @@ export default function Play({
                       } dark:text-bg`}
                     >
                       {good ? (
-                        <Check weight="bold" size={20} />
+                        <CheckIcon weight="bold" size={20} />
                       ) : (
-                        <X weight="bold" size={20} />
+                        <XIcon weight="bold" size={20} />
                       )}
                     </span>
                   )}
@@ -666,7 +669,7 @@ export default function Play({
                   )}
                   {status === 'streak' && (
                     <span className="display inline-flex shrink-0 items-center gap-1 rounded-full bg-yellow px-2.5 py-1 text-sm font-bold text-on-flat">
-                      <Fire weight="fill" size={15} />
+                      <FireIcon weight="fill" size={15} />
                       {streak} in a row
                     </span>
                   )}
