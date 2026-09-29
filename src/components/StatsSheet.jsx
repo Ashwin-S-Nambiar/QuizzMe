@@ -67,7 +67,7 @@ export default function StatsSheet({ open, onClose }) {
               historyStore.set([]);
               setArming(false);
             }}
-            className={`btn press w-full ${arming ? 'bg-bad text-card' : 'btn-plain text-bad-ink'}`}
+            className={`btn press w-full ${arming ? 'btn-bad' : 'btn-plain tact text-bad-ink'}`}
           >
             {arming ? 'Tap again to clear everything' : 'Clear history'}
           </button>
@@ -80,7 +80,7 @@ export default function StatsSheet({ open, onClose }) {
         </p>
       ) : (
         <div className="space-y-6">
-          <dl className="grid grid-cols-3 border-y border-dashed border-line-2 py-3">
+          <dl className="grid grid-cols-3 gap-2">
             {[
               ['Rounds', runs.length],
               [
@@ -88,13 +88,12 @@ export default function StatsSheet({ open, onClose }) {
                 `${Math.round((stats.right / Math.max(1, stats.total)) * 100)}%`,
               ],
               ['Best streak', stats.bestStreak],
-            ].map(([k, v], i) => (
-              <div
-                key={k}
-                className={`px-3 ${i ? 'border-l border-dashed border-line-2' : ''}`}
-              >
-                <dt className="caps text-[0.66rem]">{k}</dt>
-                <dd className="printed mt-1 text-[2rem]">{v}</dd>
+            ].map(([k, v]) => (
+              <div key={k} className="tact px-3 py-2.5 [--edge:3px]">
+                <dt className="caps text-xs">{k}</dt>
+                <dd className="display mt-0.5 text-[1.6rem] font-extrabold tabular-nums">
+                  {v}
+                </dd>
               </div>
             ))}
           </dl>
@@ -105,14 +104,16 @@ export default function StatsSheet({ open, onClose }) {
               {stats.byTopic.map(([topic, t]) => (
                 <li key={topic} className="text-sm">
                   <div className="mb-1 flex justify-between gap-3">
-                    <span className="truncate font-medium">{topic}</span>
+                    <span className="min-w-0 font-medium break-words">
+                      {topic}
+                    </span>
                     <span className="shrink-0 text-xs text-muted tabular-nums">
                       {Math.round((t.right / t.total) * 100)}% · {t.runs}
                     </span>
                   </div>
-                  <span className="block h-2 overflow-hidden rounded-xs bg-line">
+                  <span className="block h-2.5 overflow-hidden rounded-full bg-line">
                     <span
-                      className="block h-full origin-left bg-ink"
+                      className="block h-full origin-left rounded-full bg-brand"
                       style={{ transform: `scaleX(${t.right / t.total})` }}
                     />
                   </span>
@@ -123,14 +124,14 @@ export default function StatsSheet({ open, onClose }) {
 
           <section>
             <h3 className="caps mb-1">Recent</h3>
-            <ul className="divide-y divide-dashed divide-line-2">
+            <ul className="divide-y-2 divide-line">
               {runs.slice(0, 12).map((r) => (
                 <li
                   key={r.at}
                   className="flex items-center gap-3 py-2.5 text-sm"
                 >
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-medium">
+                    <span className="block font-medium break-words">
                       {r.topic}
                     </span>
                     <span className="block text-xs text-muted first-letter:uppercase">
@@ -143,7 +144,7 @@ export default function StatsSheet({ open, onClose }) {
                         .join(' · ')}
                     </span>
                   </span>
-                  <span className="printed text-xl">
+                  <span className="display text-lg font-extrabold tabular-nums">
                     {r.score}/{r.total}
                   </span>
                 </li>

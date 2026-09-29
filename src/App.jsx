@@ -15,7 +15,7 @@ import { topicLabel } from './lib/categories.js';
 import { fetchQuestions, resetToken } from './lib/opentdb.js';
 import { shuffle, summarize } from './lib/quiz.js';
 import { sfx } from './lib/sound.js';
-import { prefsStore, recordRun } from './lib/store.js';
+import { buzz, prefsStore, recordRun } from './lib/store.js';
 
 // Play and Results are split out but never suspend: App waits for their code
 // before switching to them, so a screen change can't blank the page.
@@ -126,12 +126,19 @@ export default function App() {
       const hit = target(e);
       if (hit) press = { hit, x: e.clientX, y: e.clientY };
     };
+    // Each control sounds like what it does: chips pop, the deal buttons
+    // riffle, everything else knocks. Answer buttons and the sound toggle
+    // play their own (data-sfx="none").
     const onUp = (e) => {
       const p = press;
       press = null;
       if (!p || target(e) !== p.hit) return;
       if (Math.hypot(e.clientX - p.x, e.clientY - p.y) > 10) return;
-      sfx.tap();
+      const kind = p.hit.dataset.sfx;
+      if (kind && sfx[kind]) sfx[kind]();
+      else if (p.hit.matches('label.choice')) sfx.select();
+      else sfx.tap();
+      if (kind !== 'deal') buzz.tap();
     };
     const onCancel = () => {
       press = null;

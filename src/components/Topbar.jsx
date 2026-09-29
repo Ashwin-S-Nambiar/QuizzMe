@@ -32,8 +32,8 @@ function Swap({ on, a, b }) {
 export function Logo({ className = '' }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <svg viewBox="0 0 100 100" className="size-7" aria-hidden="true">
-        <rect width="100" height="100" rx="24" fill="var(--color-back)" />
+      <svg viewBox="0 0 100 100" className="size-8" aria-hidden="true">
+        <rect width="100" height="100" rx="24" fill="#3e4eb3" />
         <path
           d="M36.5 38.5C36.5 30.5 42.5 25 50.5 25S64 30.5 64 37.5c0 6.5-4.5 9.5-8.5 12-3.5 2.2-5 4.2-5 8v2.5"
           fill="none"
@@ -44,7 +44,7 @@ export function Logo({ className = '' }) {
         />
         <circle cx="50.5" cy="74" r="5.8" fill="#c0b2f8" />
       </svg>
-      <span className="printed text-[1.45rem]">
+      <span className="display text-[1.4rem] font-extrabold tracking-[-0.02em]">
         QuizzMe<span className="text-brand">!</span>
       </span>
     </span>
@@ -65,11 +65,15 @@ export default function Topbar({
   const sound = useStore(soundStore);
 
   return (
-    <header
-      className={`sticky top-0 z-30 pt-(--safe-t) transition-[background-color,box-shadow] duration-200 ${
-        scrolled ? 'bg-bg shadow-[0_1px_0_var(--color-line)]' : 'bg-bg/0'
-      }`}
-    >
+    <header className="sticky top-0 z-30 bg-bg pt-(--safe-t)">
+      {/* Always opaque, so content never shows through while scrolling;
+          only the divider fades in. */}
+      <span
+        className={`pointer-events-none absolute inset-x-0 -bottom-0.5 h-0.5 bg-line transition-opacity duration-200 ${
+          scrolled ? 'opacity-100' : 'opacity-0'
+        }`}
+        aria-hidden="true"
+      />
       <div className="relative h-16">
         <AnimatePresence initial={false}>
           {!playing && (

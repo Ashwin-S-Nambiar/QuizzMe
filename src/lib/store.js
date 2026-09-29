@@ -73,3 +73,17 @@ export function haptic(pattern = 8) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   navigator.vibrate?.(pattern);
 }
+
+// Named haptic patterns, tuned to the sounds: short taps for presses, a
+// double pulse for a deal, a lift for a right answer and a heavier
+// thud-thud for a wrong one.
+export const buzz = {
+  tap: () => haptic(6),
+  select: () => haptic(8),
+  deal: () => haptic([6, 40, 10]),
+  flip: () => haptic(5),
+  right: () => haptic([10, 40, 18]),
+  streak: () => haptic([8, 30, 8, 30, 22]),
+  wrong: () => haptic([26, 60, 26]),
+  stamp: (good) => haptic(good ? [14, 50, 14, 50, 30] : 22),
+};
