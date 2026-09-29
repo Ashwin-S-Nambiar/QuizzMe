@@ -1,4 +1,4 @@
-import { ArrowRight, Check, X } from '@phosphor-icons/react';
+import { ArrowRightIcon, CheckIcon, XIcon } from '@phosphor-icons/react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { useTitle } from '../hooks/index.js';
@@ -116,9 +116,9 @@ export default function NotFound() {
                     >
                       {done ? (
                         o.right ? (
-                          <Check size={17} weight="bold" />
+                          <CheckIcon size={17} weight="bold" />
                         ) : (
-                          <X size={17} weight="bold" />
+                          <XIcon size={17} weight="bold" />
                         )
                       ) : (
                         'ABCD'[i]
@@ -128,7 +128,7 @@ export default function NotFound() {
                       {o.label}
                     </span>
                     {o.right && !done && (
-                      <ArrowRight
+                      <ArrowRightIcon
                         size={17}
                         weight="bold"
                         className="text-muted"

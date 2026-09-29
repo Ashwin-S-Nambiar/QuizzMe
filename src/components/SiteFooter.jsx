@@ -1,6 +1,6 @@
 export default function SiteFooter() {
   return (
-    <footer className="bottom-bar flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t-2 border-line pt-4 text-xs text-muted">
+    <footer className="bottom-bar flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t-2 border-line pt-4 text-xs text-muted short:pt-3">
       <span>
         Questions from{' '}
         <a

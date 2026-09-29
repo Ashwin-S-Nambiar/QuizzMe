@@ -1,4 +1,4 @@
-import { ArrowClockwise, X } from '@phosphor-icons/react';
+import { ArrowClockwiseIcon, XIcon } from '@phosphor-icons/react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
@@ -100,7 +100,7 @@ export function DealNote({ deal, onCancel, onDismiss, className = '' }) {
                         onClick={deal.error.action.run}
                         className="btn btn-bad press h-9 shrink-0 gap-1.5 rounded-xl px-3 text-sm [--edge:3px]"
                       >
-                        <ArrowClockwise weight="bold" size={14} />
+                        <ArrowClockwiseIcon weight="bold" size={14} />
                         {deal.error.action.label}
                       </button>
                     )}
@@ -110,7 +110,7 @@ export function DealNote({ deal, onCancel, onDismiss, className = '' }) {
                       className="press grid size-9 shrink-0 place-items-center rounded-xl hover-fine:bg-bad/10"
                       aria-label="Dismiss"
                     >
-                      <X weight="bold" size={14} />
+                      <XIcon weight="bold" size={14} />
                     </button>
                   </div>
                 )}

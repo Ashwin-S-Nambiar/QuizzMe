@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://quizzme.ashwin.co.in">
-    <img src="./assets/readme/hero.svg" width="100%" alt="QuizzMe!: settle a bet, or start one. a fanned hand of trivia cards sits beside the title: a patterned card back, a pink film card, and a blue geography card asking the capital of australia, with sydney struck through and canberra ticked">
+    <img src="./assets/readme/hero.svg" width="100%" alt="QuizzMe!: settle a bet, or start one. beside the title a trivia card sits on its deck, asking the capital of australia, with sydney struck through in red and canberra ticked in green, next to a patterned indigo card back and chips reading correct and five in a row">
   </a>
 </p>
 
@@ -17,7 +17,7 @@
 <br>
 
 <p align="center">
-  <img src="./docs/screenshots/QuizzMe.webp" width="100%" alt="the landing page on desktop: the line settle a bet, or start one, a fanned hand of cards showing the film topic you are about to be dealt, and the deck box with the topic picker, difficulty counts, how many cards, more options, deal and surprise me">
+  <img src="./docs/screenshots/QuizzMe.webp" width="100%" alt="the landing page on desktop: a few game chips, the line settle a bet, or start one, a fanned hand of cards showing the film topic you are about to be dealt, and the deck box with the topic picker, difficulty counts, how many cards, more options, deal and surprise me">
 </p>
 
 the source of **[quizzme.ashwin.co.in](https://quizzme.ashwin.co.in)**. quick trivia rounds on 24 topics, with the questions pulled live from [open trivia db](https://opentdb.com/api_config.php), so i don't know what's next either.
@@ -28,9 +28,9 @@ it is a react spa with no server and no account. your scores stay in your browse
 
 | screen | what it is |
 | --- | --- |
-| setup | the deck box: pick a topic, a difficulty and how many cards, and deal. everything else folds into more options, and surprise me picks a topic for you |
-| play | one card at a time, dealt off a deck and thrown to the discard pile when you move on, either answered as you go with streaks, or all revealed at the end with free movement between cards |
-| results | a scorecard with the score stamped, a strip of every card right or wrong, best streak, average time, a split by difficulty, and every card to look back through |
+| setup | the deck box: pick a topic, a difficulty and how many cards, and deal. question type, answer mode and the timer live in a more options sheet, and surprise me picks a topic for you |
+| play | one card at a time off a visible deck, thrown aside when you move on. answer as you go and a banner turns green or red with the right answer, or answer everything and reveal it at the end |
+| results | a scorecard with the verdict stamped on, a strip of every card right or wrong, best streak, average time, a split by difficulty, and every card to look back through |
 | stats | rounds, accuracy, best streak and accuracy by topic, from your last hundred rounds on this device |
 | 404 | a question too: where did this page go? |
 
@@ -38,7 +38,7 @@ it is a react spa with no server and no account. your scores stay in your browse
   <tr>
     <td width="33%"><img src="./docs/screenshots/QuizzMe-8.webp" alt="the landing page on a phone, everything above the fold"></td>
     <td width="33%"><img src="./docs/screenshots/QuizzMe-9.webp" alt="the topic sheet on a phone: every open trivia db topic as a small card with its own printed colour, icon and question count"></td>
-    <td width="33%"><img src="./docs/screenshots/QuizzMe-2.webp" alt="a history card answered right in dark mode, with a four in a row streak chip"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-2.webp" alt="a history card answered right in dark mode: the answer ticked in green and a green banner saying correct, with a four in a row streak chip"></td>
   </tr>
 </table>
 
@@ -54,8 +54,8 @@ it is a react spa with no server and no account. your scores stay in your browse
 
 <table>
   <tr>
-    <td width="33%"><img src="./docs/screenshots/QuizzMe-3.webp" alt="a wrong answer: sydney struck through in red, canberra ticked in green, and the bar saying it was canberra"></td>
-    <td width="33%"><img src="./docs/screenshots/QuizzMe-6.webp" alt="the scorecard on a phone: 6 out of 10 stamped solid run, a strip of right and wrong cards, with deal again, topics and share pinned to the bottom"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-3.webp" alt="a wrong answer: sydney struck through in red, canberra ticked in green, and a red banner saying not quite, it was canberra"></td>
+    <td width="33%"><img src="./docs/screenshots/QuizzMe-6.webp" alt="the scorecard on a phone: 6 out of 10 stamped solid run, a strip of right and wrong cards, stats, and deal again, topics and share pinned to the bottom"></td>
     <td width="33%"><img src="./docs/screenshots/QuizzMe-7.webp" alt="the stats sheet: rounds, accuracy, best streak, accuracy by topic and recent rounds"></td>
   </tr>
 </table>
@@ -93,7 +93,7 @@ function throttle(signal, onWait) {
 
 ## the sounds are made, not played
 
-there are no audio files. every click, chime and buzz is an oscillator and a gain envelope from the web audio api, built the moment it plays:
+there are no audio files. every knock, riffle and chime is built from oscillators, filtered noise and gain envelopes in the web audio api, the moment it plays, and each one is paired with a haptic pattern:
 
 ```js
 amp.gain.setValueAtTime(0.0001, t);
@@ -101,19 +101,22 @@ amp.gain.exponentialRampToValueAtTime(gain, t + 0.006);
 amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 ```
 
-- **the chime climbs.** a right answer plays two triangle notes, and each answer in a streak lifts them a semitone, up to seven.
-- **the round has an ending.** finish with 60% or more and it plays a rising c major arpeggio. under that, it walks down.
+- **controls sound like what they do.** buttons knock like a chunky key, chips pop, the deal buttons riffle a deck of cards, and each new card brushes off the pile.
+- **the chime climbs.** a right answer plays two marimba notes, and each answer in a streak lifts them a semitone, up to seven. from three in a row a third note sparkles on top.
+- **wrong is gentle.** a soft, low bonk-bonk rather than a buzzer, and running out of time walks three notes down.
+- **the round has an ending.** finish with 60% or more and a mallet arpeggio climbs; under that, it walks down. then the verdict lands on the scorecard with a thump.
+- **one limiter.** everything runs through a compressor on the way out, so stacked notes never clip.
 - **it waits to be asked.** no audio context exists until you have touched the page, so nothing is blocked or suspended on load.
 - **it respects the silent switch.** on ios the audio session is set to `ambient`, so a phone on silent stays silent.
 - **quiet when hidden.** nothing plays in a background tab, and one tap in the top bar mutes it for good.
-- **haptics too.** short vibrations on android, skipped when reduced motion is on.
+- **haptics to match.** named patterns on android: a tap for presses, a double pulse for a deal, a lift for a right answer, a heavier thud-thud for a wrong one, and a longer pattern when a good round is stamped. skipped when reduced motion is on.
 
 ## small things that took a while
 
 - **numbers roll.** each digit is a strip of 0 to 9 that slides to its value, the places staggered 45 ms apart, while screen readers get the plain number.
-- **nothing shifts when fonts load.** archivo is self-hosted, preloaded and paired with an arial fallback tuned with `size-adjust` and ascent overrides, so the swap is invisible.
-- **nothing shifts between screens.** one header stays put for every screen, and play puts its progress into it rather than swapping in a bar of its own.
-- **one screen, any screen.** the landing fits above the fold from an iphone se up to desktop, with a `short` variant for low viewports.
+- **nothing shifts when fonts load.** gabarito and instrument sans are self-hosted, preloaded and paired with arial fallbacks tuned with `size-adjust` and ascent overrides, so the swap is invisible.
+- **nothing shifts, anywhere.** one header stays put for every screen and play puts its progress into it. presses sink a control into its own edge with a transform. the feedback banner keeps one height in every state. measured with the browser's layout shift api through a whole round: zero.
+- **one screen, any screen.** setup, play and the 404 fit without scrolling from an iphone se to a 1920 px desktop. from tablets up, results hold still and only the list of cards scrolls. the landing uses the extra room for a fanned hand of cards, at full size or 70% depending on height.
 - **sheets you can throw.** on phones the topic, quit and stats sheets drag to dismiss, and the bottom bars clear the home indicator.
 - **icons on a diet.** a small vite plugin strips every phosphor icon weight except bold and fill at build time.
 - **a real 404.** the build copies `index.html` to `404.html`, so any static host serves the app's own not found page, and every screen sets its own title.
@@ -125,7 +128,7 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
 ![the results page in dark mode: 8 out of 10 stamped that was sharp, best streak, average time, a split by difficulty, and the card review with one missed card opened](./docs/screenshots/QuizzMe-4.webp)
 
-![reveal at the end mode: answers stay hidden, the chosen one is inked in, and the progress segments double as a way to jump between cards](./docs/screenshots/QuizzMe-5.webp)
+![reveal at the end mode: answers stay hidden, the chosen one is inked in lilac, and the progress segments double as a way to jump between cards](./docs/screenshots/QuizzMe-5.webp)
 
 <img src="./docs/screenshots/QuizzMe-10.webp" width="33%" alt="the 404 page, asked as a question: where did this page go, with one wrong answer already marked">
 
@@ -133,12 +136,12 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
 ## the design
 
-- **a deck of trivia cards.** a quiz already is one, so every screen is built from it: the setup is the deck box, each question is a card dealt off the top, and the results are a scorecard.
-- **card stock on a table.** a warm table ground, off-white cards, near-black ink, and a patterned card back. green and red are marker ink, kept for right and wrong.
-- **printed topic colours.** flat yellow, blue, green, pink and orange across the top of each card, like the category band on a game card, with difficulty as pips.
-- **one family.** archivo, with its width axis doing the work of a second typeface: condensed and heavy for anything printed on a card, normal width for what you read.
-- **motion that means something.** cards are dealt, thrown and pulled back, ticks and strike-throughs are drawn in, and the verdict is stamped. three durations and one ease-out curve, and no blur.
-- **oklch tokens.** every colour is an oklch value in one theme block, with a dark set that swaps in on `data-theme`.
+- **game night.** a deck of trivia cards with the feel of a game you can press. every button, chip and answer is a tactile tile: a 2px border and a solid bottom edge it sinks into.
+- **the icon's colours.** the indigo and lilac from the app icon carry the brand: the main action, what's selected and the backs of the cards. warm paper in light mode, near-black in dark.
+- **printed topic colours.** yellow, blue, green, pink and orange across the top of each card, with difficulty as dots.
+- **two families.** gabarito for anything printed on a card or a button, instrument sans for what you read. sentence case everywhere, no capitals for effect.
+- **feedback you can't miss.** answers tick or strike through as you watch, and a banner along the bottom turns green or red with the right answer in it.
+- **motion that means something.** cards are dealt, thrown and pulled back, and the verdict is stamped. a few durations, one ease-out curve, no blur.
 - **phones first.** 44 px touch targets, safe-area padding, and actions pinned to the bottom where thumbs are.
 - **reduced motion.** movement becomes fades when the system asks for it.
 
@@ -147,7 +150,7 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 | layer | choices |
 | --- | --- |
 | framework | [react 19](https://react.dev/) · no router, the screens are state, and the url only carries a shared setup |
-| styling | [tailwind css 4](https://tailwindcss.com/) with oklch theme tokens · [archivo](https://fonts.google.com/specimen/Archivo) · [phosphor icons](https://phosphoricons.com) bold |
+| styling | [tailwind css 4](https://tailwindcss.com/) with theme tokens · [gabarito](https://fonts.google.com/specimen/Gabarito) and [instrument sans](https://fonts.google.com/specimen/Instrument+Sans) · [phosphor icons](https://phosphoricons.com) bold |
 | motion | [motion](https://motion.dev/) for dealing cards, sheets and springs · view transitions for the theme |
 | data | [open trivia db](https://opentdb.com/) for topics, counts, tokens and questions · `localStorage` for prefs, stats and the rate limit clock |
 | tooling | [vite 8](https://vite.dev/) · [biome](https://biomejs.dev/) · `node --test` for the quiz logic |
@@ -176,11 +179,11 @@ npm run build && npm run preview
 
 ```
 src/
-  components/  setup, play, results, the stats and topic sheets, the deal
-               note, the rolling number, toasts, the top bar, 404
+  components/  setup, play, results, the stats, topic and options sheets,
+               the deal note, the rolling number, toasts, the top bar, 404
   hooks/       theme, media queries, topics and their counts
   lib/         the open trivia db client and its queue, quiz logic and
-               its tests, topic colours and icons, stores, sounds
+               its tests, topic colours and icons, stores and haptics, sounds
   index.css    fonts, tokens, both themes, then the few things tailwind
                can't say
 ```
