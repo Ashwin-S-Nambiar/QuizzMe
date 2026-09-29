@@ -94,7 +94,7 @@ function Progress({ questions, answers, index, mode, onJump }) {
   if (n > 25) {
     const done = answers.filter(Boolean).length;
     return (
-      <div className="h-2 flex-1 overflow-hidden rounded-[2px] bg-line-2">
+      <div className="h-2 flex-1 overflow-hidden rounded-xs bg-line-2">
         <div
           className="h-full origin-left bg-ink transition-transform duration-300 ease-out"
           style={{ transform: `scaleX(${Math.max(done, index + 0.5) / n})` }}
@@ -104,7 +104,7 @@ function Progress({ questions, answers, index, mode, onJump }) {
   }
 
   return (
-    <div className="flex flex-1 gap-[3px]" aria-hidden={mode !== 'exam'}>
+    <div className="flex flex-1 gap-0.75" aria-hidden={mode !== 'exam'}>
       {questions.map((q, i) =>
         mode === 'exam' ? (
           <button
@@ -115,13 +115,13 @@ function Progress({ questions, answers, index, mode, onJump }) {
             className="group relative flex-1 py-2.5"
           >
             <span
-              className={`block h-2 rounded-[2px] transition-[background-color,scale] duration-200 ${color(i)} group-hover:scale-y-150`}
+              className={`block h-2 rounded-xs transition-[background-color,scale] duration-200 ${color(i)} group-hover:scale-y-150`}
             />
           </button>
         ) : (
           <span
             key={q.id}
-            className={`h-2 flex-1 rounded-[2px] transition-colors duration-300 ${color(i)}`}
+            className={`h-2 flex-1 rounded-xs transition-colors duration-300 ${color(i)}`}
           />
         ),
       )}
@@ -131,7 +131,7 @@ function Progress({ questions, answers, index, mode, onJump }) {
 
 function Tick() {
   return (
-    <svg viewBox="0 0 20 20" className="size-[18px]" aria-hidden="true">
+    <svg viewBox="0 0 20 20" className="size-4.5" aria-hidden="true">
       <motion.path
         d="M4.5 10.5l3.8 3.8L15.5 6"
         fill="none"
@@ -149,7 +149,7 @@ function Tick() {
 
 function Cross() {
   return (
-    <svg viewBox="0 0 20 20" className="size-[18px]" aria-hidden="true">
+    <svg viewBox="0 0 20 20" className="size-4.5" aria-hidden="true">
       {['M5.5 5.5l9 9', 'M14.5 5.5l-9 9'].map((d, i) => (
         <motion.path
           key={d}
@@ -606,7 +606,7 @@ export default function Play({
                 className="flex items-center gap-2 self-center"
               >
                 {status === 'streak' && (
-                  <span className="inline-flex items-center gap-1 rounded-[6px] bg-yellow px-2 py-1 font-semibold text-on-flat">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-yellow px-2 py-1 font-semibold text-on-flat">
                     <Fire weight="fill" size={15} />
                     {streak} in a row
                   </span>

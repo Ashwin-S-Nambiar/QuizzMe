@@ -56,7 +56,7 @@ function Toast({ toast }) {
       onPointerLeave={() => {
         hovering.current = false;
       }}
-      className="pointer-events-auto flex w-full items-center gap-3 rounded-[12px] bg-ink py-2.5 pr-2.5 pl-4 text-sm font-medium text-card shadow-(--shadow-lift)"
+      className="pointer-events-auto flex w-full items-center gap-3 rounded-xl bg-ink py-2.5 pr-2.5 pl-4 text-sm font-medium text-card shadow-(--shadow-lift)"
       role="status"
     >
       <span className="min-w-0 flex-1 text-pretty">{toast.message}</span>

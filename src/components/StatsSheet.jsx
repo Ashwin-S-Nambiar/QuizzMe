@@ -110,7 +110,7 @@ export default function StatsSheet({ open, onClose }) {
                       {Math.round((t.right / t.total) * 100)}% · {t.runs}
                     </span>
                   </div>
-                  <span className="block h-2 overflow-hidden rounded-[2px] bg-line">
+                  <span className="block h-2 overflow-hidden rounded-xs bg-line">
                     <span
                       className="block h-full origin-left bg-ink"
                       style={{ transform: `scaleX(${t.right / t.total})` }}
