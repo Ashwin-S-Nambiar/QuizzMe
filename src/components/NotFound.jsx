@@ -27,7 +27,7 @@ const OPTIONS = [
 ];
 
 export default function NotFound() {
-  useTitle('Page not found · QuizzMe!');
+  useTitle('Not found · QuizzMe!');
   const [picked, setPicked] = useState([]);
   const reduce = useReducedMotion();
   const last = OPTIONS[picked.at(-1)];
