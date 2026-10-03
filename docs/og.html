@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1200">
+  <title>QuizzMe! · Share image</title>
+  <style>
+    @font-face { font-family: 'Instrument Sans'; src: url('../public/fonts/instrument-sans-latin.woff2') format('woff2'); font-weight: 400 700; font-stretch: 75% 100%; font-display: block; }
+    @font-face { font-family: Gabarito; src: url('../public/fonts/gabarito-latin.woff2') format('woff2'); font-weight: 400 900; font-display: block; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+    body { background: #f6f2ea; color: #1f2340; font-family: 'Instrument Sans', sans-serif; font-synthesis: none; -webkit-font-smoothing: antialiased; }
+    main { position: relative; width: 1200px; height: 630px; }
+    .copy { position: absolute; left: 72px; top: 50%; transform: translateY(-50%); width: 600px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-family: Gabarito, sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -.04em; }
+    .brand img { width: 42px; height: 42px; }
+    .brand .bang { color: #3e4eb3; }
+    h1 { margin: 42px 0 28px; font-family: Gabarito, sans-serif; font-size: 64px; font-weight: 800; line-height: 1.1; letter-spacing: -.045em; }
+    h1 span { position: relative; color: #3e4eb3; }
+    h1 span::after { content: ''; position: absolute; left: 0; right: 0; bottom: -5px; height: 7px; background: #b8a6f2; border-radius: 8px; transform: rotate(-1deg); }
+    p { margin: 0; font-size: 20px; line-height: 1.5; color: #4a4f6e; }
+    .visual { position: absolute; left: 700px; top: 145px; width: 438px; height: 345px; }
+    .back { position: absolute; left: 26px; top: 34px; width: 252px; height: 285px; border: 3px solid #3e4eb3; border-radius: 23px; transform: rotate(-12deg); background-color: #3e4eb3; background-image: repeating-linear-gradient(45deg, transparent 0 10px, #ffffff0d 10px 11px), repeating-linear-gradient(-45deg, transparent 0 10px, #ffffff0d 10px 11px); box-shadow: inset 0 0 0 3px #ffffff22; }
+    .card { position: absolute; left: 110px; top: 3px; width: 298px; padding-bottom: 18px; border: 2px solid #deddd7; border-bottom-width: 6px; border-radius: 23px; background: #fff; box-shadow: 0 12px 0 -5px #fff, 0 14px 0 -5px #deddd7; }
+    .bar { padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; background: #8fc3ff; border-radius: 20px 20px 0 0; font-family: Gabarito, sans-serif; font-size: 17px; font-weight: 700; }
+    .bar small { font-family: 'Instrument Sans', sans-serif; font-size: 12px; font-weight: 400; }
+    h2 { font-family: Gabarito, sans-serif; font-size: 23px; line-height: 1.12; font-weight: 700; margin: 20px 14px 18px; }
+    .answer { display: flex; align-items: center; gap: 10px; margin: 9px 12px 0; padding: 6px; border: 2px solid #e7e1d6; border-bottom-width: 4px; border-radius: 14px; font-size: 15px; }
+    .answer b { display: grid; place-items: center; width: 29px; height: 29px; border: 2px solid #ddd5c7; border-radius: 8px; font-family: Gabarito, sans-serif; font-size: 21px; }
+    .wrong { background: #fbe7e6; border-color: #df4653; color: #9d3036; }
+    .wrong b { background: #df4653; color: #fff; border-color: #df4653; }
+    .right { background: #e4f5e9; border-color: #319b64; color: #246d49; }
+    .right b { background: #319b64; color: #fff; border-color: #319b64; }
+    .inactive { color: #a8aab7; }
+    .sticker { position: absolute; font-family: Gabarito, sans-serif; font-size: 14px; font-weight: 700; border: 2px solid; border-radius: 20px; padding: 8px 12px; }
+    .correct { white-space: nowrap; left: 378px; top: 137px; background: #e4f5e9; color: #246d49; border-color: #bae3c8; transform: rotate(5deg); }
+    .check { display: inline-block; width: 11px; height: 7px; border-left: 3px solid currentColor; border-bottom: 3px solid currentColor; transform: rotate(-45deg); margin-bottom: 3px; }
+    .streak { left: 15px; top: 273px; background: #ffdc79; color: #1f2340; border-color: #e5b839; transform: rotate(-7deg); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="copy">
+      <div class="brand"><img src="../public/icon.svg" alt=""><span>QuizzMe<span class="bang">!</span></span></div>
+      <h1>Settle a bet.<br><span>Or start one.</span></h1>
+      <p>Quick trivia on 24 topics, straight from Open Trivia DB.</p>
+    </div>
+    <div class="visual">
+      <div class="back"></div>
+      <div class="card">
+        <div class="bar">Geography<small>●•• &nbsp; Easy</small></div>
+        <h2>What is the capital<br>of Australia?</h2>
+        <div class="answer wrong"><b>×</b><s>Sydney</s></div>
+        <div class="answer right"><b><i class="check"></i></b>Canberra</div>
+        <div class="answer inactive"><b>C</b>Melbourne</div>
+      </div>
+      <div class="sticker correct"><i class="check"></i> Correct</div>
+      <div class="sticker streak">5 in a row</div>
+    </div>
+  </main>
+</body>
+</html>
