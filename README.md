@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://quizzme.ashwin.co.in">
-    <img src="./assets/readme/hero.svg" width="100%" alt="QuizzMe!: settle a bet, or start one. beside the title a trivia card sits on its deck, asking the capital of australia, with sydney struck through in red and canberra ticked in green, next to a patterned indigo card back and chips reading correct and five in a row">
+    <img src="./docs/screenshots/QuizzMe.webp" width="100%" alt="the landing page on desktop: a few game chips, the line settle a bet, or start one, a fanned hand of cards showing the film topic you are about to be dealt, and the deck box with the topic picker, difficulty counts, how many cards, more options, deal and surprise me">
   </a>
 </p>
 
@@ -9,16 +9,12 @@
   &nbsp;·&nbsp;
   <a href="#what-it-does">what it does</a>
   &nbsp;·&nbsp;
-  <a href="#one-request-every-five-seconds">the rate limit</a>
+  <a href="#the-design">the design</a>
   &nbsp;·&nbsp;
   <a href="#running-it">running it</a>
 </p>
 
 <br>
-
-<p align="center">
-  <img src="./docs/screenshots/QuizzMe.webp" width="100%" alt="the landing page on desktop: a few game chips, the line settle a bet, or start one, a fanned hand of cards showing the film topic you are about to be dealt, and the deck box with the topic picker, difficulty counts, how many cards, more options, deal and surprise me">
-</p>
 
 the source of **[quizzme.ashwin.co.in](https://quizzme.ashwin.co.in)**. quick trivia rounds on 24 topics, with the questions pulled live from [open trivia db](https://opentdb.com/api_config.php), so i don't know what's next either.
 
@@ -121,19 +117,6 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 - **icons on a diet.** a small vite plugin strips every phosphor icon weight except bold and fill at build time.
 - **a real 404.** the build copies `index.html` to `404.html`, so any static host serves the app's own not found page, and every screen sets its own title.
 
-<details>
-<summary><strong>more screenshots</strong></summary>
-
-<br>
-
-![the results page in dark mode: 8 out of 10 stamped that was sharp, best streak, average time, a split by difficulty, and the card review with one missed card opened](./docs/screenshots/QuizzMe-4.webp)
-
-![reveal at the end mode: answers stay hidden, the chosen one is inked in lilac, and the progress segments double as a way to jump between cards](./docs/screenshots/QuizzMe-5.webp)
-
-<img src="./docs/screenshots/QuizzMe-10.webp" width="33%" alt="the 404 page, asked as a question: where did this page go, with one wrong answer already marked">
-
-</details>
-
 ## the design
 
 - **game night.** a deck of trivia cards with the feel of a game you can press. every button, chip and answer is a tactile tile: a 2px border and a solid bottom edge it sinks into.
@@ -159,7 +142,7 @@ no state library. the stores are a 75 line module built on `useSyncExternalStore
 
 ## running it
 
-you'll need node 20.19+ (vite 8's floor). no api key, open trivia db doesn't need one.
+you'll need node 20.19+ on the 20.x line, or node 22.12+. no api key, open trivia db doesn't need one.
 
 ```sh
 git clone https://github.com/Ashwin-S-Nambiar/QuizzMe.git
@@ -174,6 +157,10 @@ npm run check      # lint, format and import order
 npm run check:fix  # apply the safe fixes
 npm run build && npm run preview
 ```
+
+### hosting and indexing
+
+production indexing is configured for `quizzme.ashwin.co.in`; vercel sends `noindex, nofollow` on other hosts, including preview deployments. `public/robots.txt` points to the homepage sitemap in `public/sitemap.xml`. if you deploy under another domain, update the indexing headers and site urls along with it.
 
 ## the shape of it
 
@@ -194,6 +181,19 @@ src/
 - **the limit is per ip.** on shared wifi, someone else's round can make you wait.
 - **stats don't travel.** they live in one browser, and clearing site data clears them.
 - **the questions are crowd-sourced.** open trivia db's questions are checked, but now and then one is dated or debatable. that's on them, not me. mostly.
+
+<details>
+<summary><strong>more screenshots</strong></summary>
+
+<br>
+
+![the results page in dark mode: 8 out of 10 stamped that was sharp, best streak, average time, a split by difficulty, and the card review with one missed card opened](./docs/screenshots/QuizzMe-4.webp)
+
+![reveal at the end mode: answers stay hidden, the chosen one is inked in lilac, and the progress segments double as a way to jump between cards](./docs/screenshots/QuizzMe-5.webp)
+
+<img src="./docs/screenshots/QuizzMe-10.webp" width="33%" alt="the 404 page, asked as a question: where did this page go, with one wrong answer already marked">
+
+</details>
 
 ## credit
 
