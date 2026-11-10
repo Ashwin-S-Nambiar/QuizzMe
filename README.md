@@ -22,13 +22,13 @@ it is a react spa with no server and no account. your scores stay in your browse
 
 ## what it does
 
-| screen | what it is |
-| --- | --- |
-| setup | the deck box: pick a topic, a difficulty and how many cards, and deal. question type, answer mode and the timer live in a more options sheet, and surprise me picks a topic for you |
-| play | one card at a time off a visible deck, thrown aside when you move on. answer as you go and a banner turns green or red with the right answer, or answer everything and reveal it at the end |
-| results | a scorecard with the verdict stamped on, a strip of every card right or wrong, best streak, average time, a split by difficulty, and every card to look back through |
-| stats | rounds, accuracy, best streak and accuracy by topic, from your last hundred rounds on this device |
-| 404 | a question too: where did this page go? |
+| screen  | what it is                                                                                                                                                                                  |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| setup   | the deck box: pick a topic, a difficulty and how many cards, and deal. question type, answer mode and the timer live in a more options sheet, and surprise me picks a topic for you         |
+| play    | one card at a time off a visible deck, thrown aside when you move on. answer as you go and a banner turns green or red with the right answer, or answer everything and reveal it at the end |
+| results | a scorecard with the verdict stamped on, a strip of every card right or wrong, best streak, average time, a split by difficulty, and every card to look back through                        |
+| stats   | rounds, accuracy, best streak and accuracy by topic, from your last hundred rounds on this device                                                                                           |
+| 404     | a question too: where did this page go?                                                                                                                                                     |
 
 <table>
   <tr>
@@ -130,13 +130,13 @@ amp.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
 ## the stack
 
-| layer | choices |
-| --- | --- |
-| framework | [react 19](https://react.dev/) · no router, the screens are state, and the url only carries a shared setup |
-| styling | [tailwind css 4](https://tailwindcss.com/) with theme tokens · [gabarito](https://fonts.google.com/specimen/Gabarito) and [instrument sans](https://fonts.google.com/specimen/Instrument+Sans) · [phosphor icons](https://phosphoricons.com) bold |
-| motion | [motion](https://motion.dev/) for dealing cards, sheets and springs · view transitions for the theme |
-| data | [open trivia db](https://opentdb.com/) for topics, counts, tokens and questions · `localStorage` for prefs, stats and the rate limit clock |
-| tooling | [vite 8](https://vite.dev/) · [biome](https://biomejs.dev/) · `node --test` for the quiz logic |
+| layer     | choices                                                                                                                                                                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| framework | [react 19](https://react.dev/) · no router, the screens are state, and the url only carries a shared setup                                                                                                                                        |
+| styling   | [tailwind css 4](https://tailwindcss.com/) with theme tokens · [gabarito](https://fonts.google.com/specimen/Gabarito) and [instrument sans](https://fonts.google.com/specimen/Instrument+Sans) · [phosphor icons](https://phosphoricons.com) bold |
+| motion    | [motion](https://motion.dev/) for dealing cards, sheets and springs · view transitions for the theme                                                                                                                                              |
+| data      | [open trivia db](https://opentdb.com/) for topics, counts, tokens and questions · `localStorage` for prefs, stats and the rate limit clock                                                                                                        |
+| tooling   | [vite 8](https://vite.dev/) · [biome](https://biomejs.dev/) · `node --test` for the quiz logic                                                                                                                                                    |
 
 no state library. the stores are a 75 line module built on `useSyncExternalStore`.
 
